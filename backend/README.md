@@ -1,10 +1,15 @@
-#Setup
+### Prerequisites
+You have Python installed.
+You have MySQL server installed
 Navigate to the `backend` directory
+
+# Initial Setup
 1. Create virtual environment
 `> python -m venv venv`
 2. Activate Virtual Environment
 `> venv\Scripts\activate`
 3. Install packages
+`> python -m pip install -r requirements.txt`
 4. Create database
 `> mysql -u root -p`
 `mysql> create schema rml`
@@ -21,3 +26,10 @@ Now check that it worked
 `flask db upgrade`
 8. Start the server
 `> python -m flask run`
+9. Navigate to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
+
+## Starting the server
+`> python -m flask run`
+
+## Getting the latest database changes
+ `flask db upgrade`
