@@ -1,6 +1,13 @@
-![RateMyLandlord Logo](RateMyLandlord2.png)
+<p align=center>
+  <img src="RateMyLandlord2.png">
+</p>
 
-**Jacob Capra and Hayden Stegman**
+<p align=center>
+A Capstone Project by <br />
+<strong>Hayden Stegman & Jacob Capra</strong>
+<br /><br />Submitted to the Faculty of the Department of Software Technology <br />in partial fulfillment of the requirements for the degree of <br /><br />
+  <strong>BACHELOR OF SCIENCE <br /> in <br /> COMPUTER SCIENCE and INNOVATION</strong>
+</p>
 
 ### - The Problem -
 People who are searching for rental properties are unaware of how the landlord treats their tenets and their property. They should be able to look at public reviews and stories of previous tenants who lived there.
