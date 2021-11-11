@@ -1,4 +1,5 @@
 <p align=center>
+  <br />
   <img src="Images/RateMyLandlord2.png">
 </p>
 
