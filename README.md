@@ -10,7 +10,7 @@ A Capstone Project by <br />
 </p>
 
 ### - The Problem -
-People who are searching for rental properties are unaware of how the landlord treats their tenets and their property. They should be able to look at public reviews and stories of previous tenants who lived there.
+People who are searching for rental properties are unaware of how the landlord treats their tenets and their property before they come into a contractual agreement with them. A prospective tenant should be able to look at public reviews and stories of previous tenants who lived in these locations in order to help make more informed renting descisions.
 
 ### - Our Purpose -
 The goal of this project is to create a platform for tenants to share reviews and critiques of landlords and their respective properties.
