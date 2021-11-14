@@ -1,12 +1,28 @@
 <p align=center>
+  <br />
   <img src="Images/RateMyLandlord2.png">
 </p>
 
 <p align=center>
-A Capstone Project by <br />
-<strong>Hayden Stegman & Jacob Capra</strong>
-<br /><br />Submitted to the Faculty of the Department of Software Technology <br />in partial fulfillment of the requirements for the degree of <br /><br />
-  <strong>BACHELOR OF SCIENCE <br /> in <br /> COMPUTER SCIENCE and INNOVATION</strong>
+  A Capstone Project by <br />
+  <strong>
+    Hayden Stegman & Jacob Capra
+  </strong>
+  <br /><br />
+  Submitted to the Faculty of the Department of Software Technology <br />in partial fulfillment of the requirements for the degree of <br /><br />
+  <strong>
+    BACHELOR OF SCIENCE 
+    <br /> in <br />
+    COMPUTER SCIENCE and INNOVATION
+  </strong>
+  <br /> <br />
+  <img src="Images/ChamplainCollege.png" width=100>
+  <br />
+  Champlain College 
+  <br /> <br />
+  Copyright © by Hayden Stegman and Jacob Capra
+  <br />
+  2021
 </p>
 
 ### - The Problem -
