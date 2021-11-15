@@ -1,4 +1,4 @@
-from . import app
+from . import api
 from flask import jsonify
 from app.exceptions import ValidationError
 
@@ -17,6 +17,6 @@ def forbidden(message):
     response.status_code = 403
     return response
 
-@app.errorhandler(ValidationError)
+@api.errorhandler(ValidationError)
 def validation_error(e):
     return bad_request(e.args[0])

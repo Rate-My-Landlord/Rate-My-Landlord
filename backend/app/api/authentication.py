@@ -1,9 +1,9 @@
-from enum import EnumMeta
-from flask import Flask, g, jsonify
-from app import app
-from models import User
+from flask import g, jsonify
+from . import api
+from ..models import User
 from flask_httpauth import HTTPBasicAuth
 from .errors import unauthorized, forbidden
+
 auth = HTTPBasicAuth()
 
 @auth.verify_password
@@ -25,14 +25,14 @@ def verify_password(phone_or_token, password):
 def auth_error():
     return unauthorized('Invalid credentials')
 
-@app.before_request
-@auth.login_required
-def before_request():
-    if not g.current_user.is_anonymous and \
-            not g.current_user.confirmed:
-        return forbidden('Unconfirmed account')
+# @api.before_request
+# @auth.login_required
+# def before_request():
+#     if not g.current_user.is_anonymous and \
+#             not g.current_user.confirmed:
+#         return forbidden('Unconfirmed account')
     
-@app.route('/tokens/', methods=['POST'])
+@api.route('/tokens/', methods=['POST'])
 def get_token():
     if g.current_user.is_anonymous or g.token_used:
         return unauthorized('Invalid credentials')

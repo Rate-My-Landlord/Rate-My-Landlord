@@ -1,24 +1,25 @@
-from flask import json, request, g, jsonify, url_for
-from app import app, db
-from models import User, Review, Permission
+from flask import jsonify, request, g, url_for
+from .. import db
+from ..models import Review, Permission
+from . import api
 from .decorators import permission_required
 from .errors import forbidden
 
-@app.route('/')
-def index():
-    return "Hello World"
+@api.route('/test/')
+def test():
+    return jsonify({ 'hello': 'world'})
 
-@app.route('/reviews/')
+@api.route('/reviews/')
 def get_reviews():
     reviews = Review.query.all()
     return jsonify({ 'reviews': [review.to_json() for review in reviews] })
 
-@app.route('/reviews/<int:id>')
+@api.route('/reviews/<int:id>')
 def get_review(id):
     review = Review.query.get_or_404(id)
     return jsonify(review.to_json())
 
-@app.route('/reviews', methods=['POST'])
+@api.route('/reviews', methods=['POST'])
 @permission_required(Permission.WRITE)
 def new_post():
     review = Review.from_json(request.json)
@@ -28,7 +29,7 @@ def new_post():
     return jsonify(review.to_json()), 201, \
         {'Location': url_for('api.get_post', id=review.id)}
         
-@app.route('/reviews/<int:id>', methods=['PUT'])
+@api.route('/reviews/<int:id>', methods=['PUT'])
 @permission_required(Permission.WRITE)
 def edit_post(id):
     review = Review.query.get_or_404(id)
