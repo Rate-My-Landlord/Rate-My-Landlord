@@ -20,10 +20,8 @@ Navigate to the `backend` directory
 Now check that it worked  
 `mysql> exit`  
 `> mysql -u rml -p`  
-6. Init database  
-`python -m flask db init`  
 7. Populate the database  
-`flask db upgrade`  
+`> python -m flask db upgrade`  
 8. Start the server  
 `> python -m flask run`  
 9. Navigate to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)  
@@ -32,4 +30,4 @@ Now check that it worked
 `> python -m flask run`  
 
 ## Getting the latest database changes
- `flask db upgrade`  
+ `> python -m flask db upgrade`  
