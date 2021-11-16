@@ -4,7 +4,7 @@
 
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Button, Text, View } from 'react-native';
+import { StyleSheet, Button, Text, View, Alert } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -77,12 +77,14 @@ const LandlordPageScreen = ({ navigation }) => {
 */}
 const LandlordWidget = ( props ) => {
   return (
-    <view style={{ backgroundColor: 'grey', padding: 10, margin: 2, width: '80%'}}>
-      <text>{props.name}</text>
+    <View style={{ backgroundColor: 'grey', padding: 10, margin: 2, width: '80%'}}>
+      <Text>{props.name}</Text>
+      
       <Button
         title={props.name + "'s Reviews"}
+        onPress={() => Alert.alert('Simple Button pressed')}
       />
-    </view>
+    </View>
   );
 };
 
