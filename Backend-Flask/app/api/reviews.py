@@ -20,7 +20,7 @@ def get_review(id):
     return jsonify(review.to_json())
 
 @api.route('/reviews', methods=['POST'])
-@permission_required(Permission.WRITE)
+# @permission_required(Permission.WRITE)
 def new_post():
     review = Review.from_json(request.json)
     review.author_id = g.current_user
@@ -30,7 +30,7 @@ def new_post():
         {'Location': url_for('api.get_post', id=review.id)}
         
 @api.route('/reviews/<int:id>', methods=['PUT'])
-@permission_required(Permission.WRITE)
+# @permission_required(Permission.WRITE)
 def edit_post(id):
     review = Review.query.get_or_404(id)
     if g.current_user != review.author_id and \

@@ -1,3 +1,4 @@
+from typing import NamedTuple
 from flask import json
 from flask.globals import current_app
 from flask.helpers import url_for
@@ -17,9 +18,9 @@ class Permission:
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    phone = db.Column(db.String(15), unique=True)
-    first_name = db.Column(db.String(30), nullable=True)
-    last_name = db.Column(db.String(30), nullable=True)
+    phone = db.Column(db.String(15), unique=True, nullable=False)
+    first_name = db.Column(db.String(30))
+    last_name = db.Column(db.String(30))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def generate_auth_token(self, expiration):
@@ -37,7 +38,7 @@ class User(db.Model):
     
     def to_json(self):
         json_user = {
-            'url': url_for('app.get_user', id=self.id),
+            'url': url_for('api.get_user', id=self.id),
             'first_name': self.first_name,
             'last_name': self.last_name,
         }
@@ -50,27 +51,81 @@ class User(db.Model):
     
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    text = db.Column(db.Text, nullable=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=False)
+    overall_start_rating = db.Column(db.Integer)
+    communication_star_rating = db.Column(db.Integer)
+    maintenance_start_rating = db.Column(db.Integer)
+    text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def to_json(self):
         json_review = {
-            'url': url_for('app.get_review', id=self.id),
+            'url': url_for('api.get_review', id=self.id),
             'id': self.id,
+            'overall_star_rating': self.overall_start_rating,
+            'communication_star_rating': self.communication_star_rating,
+            'maintenance_star_rating': self.maintenance_start_rating,
             'text': self.text,
             'created_at': self.created_at
         }
         return json_review
     
-    @staticmethod
-    def from_json(json_review):
-        text = json_review.get('body')
-        if text is None or text =='':
-            raise ValidationError('review does not have text')
-        return Review(text=text)
+    # Need to think more about this
+    # @staticmethod
+    # def from_json(json_review):
+    #     text = json_review.get('body')
+    #     if text is None or text =='':
+    #         raise ValidationError('review does not have text')
+    #     return Review(text=text)
     
     
     # for debug purposes
     def __repr__(self):
         return '<Review {}>'.format(self.id)
+    
+class Landlord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'))
+    
+    def to_json(self):
+        json_landlord = {
+            'url': url_for('api.get_landlord', id=self.id),
+            'property_url': url_for('api.get_property', id=self.property_id),
+            'user_url': url_for('api.get_user', id=self.user_id),
+            'id': self.id,
+        }
+        return json_landlord
+    
+    # @staticmethod
+    # def from_json(json_review):
+    #     text = json_review.get('body')
+    #     if text is None or text =='':
+    #         raise ValidationError('review does not have text')
+    #     return Landlord(text=text)
+    
+    
+    # for debug purposes
+    def __repr__(self):
+        return '<Landlord {}>'.format(self.id)
+    
+class Property(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    address_1 = db.Column(db.String(50))
+    address_2 = db.Column(db.String(50))
+    zip_code =  db.Column(db.String(5))
+    state = db.Column(db.String(2))
+    country =  db.Column(db.String(50))
+    
+    def to_json(self):
+        json_property = {
+            'url': url_for('api.get_property', id=self.id),
+            'id': self.id,
+            'address_1': self.address_1,
+            'address_2': self.address_2,
+            'zip_code': self.zip_code,
+            'state': self.state,
+            'country': self.country
+        }
+        return json_property
