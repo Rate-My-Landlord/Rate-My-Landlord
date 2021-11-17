@@ -51,11 +51,11 @@ class User(db.Model):
     
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=False)
-    overall_start_rating = db.Column(db.Integer)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to True later
+    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to True later
+    overall_star_rating = db.Column(db.Integer)
     communication_star_rating = db.Column(db.Integer)
-    maintenance_start_rating = db.Column(db.Integer)
+    maintenance_star_rating = db.Column(db.Integer)
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -63,21 +63,31 @@ class Review(db.Model):
         json_review = {
             'url': url_for('api.get_review', id=self.id),
             'id': self.id,
-            'overall_star_rating': self.overall_start_rating,
+            'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
-            'maintenance_star_rating': self.maintenance_start_rating,
+            'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
             'created_at': self.created_at
         }
         return json_review
     
-    # Need to think more about this
-    # @staticmethod
-    # def from_json(json_review):
-    #     text = json_review.get('body')
-    #     if text is None or text =='':
-    #         raise ValidationError('review does not have text')
-    #     return Review(text=text)
+    @staticmethod
+    def from_json(json_review):
+        body = json_review.get('body')
+        if body is None or body == '':
+            raise ValidationError('Review has no body')
+        
+        review_items = { 'overall_star_rating': '',
+            'communication_star_rating': '',
+            'maintenance_star_rating': '',
+            'text': ''}
+        for key, _ in review_items.items():
+            review_items[key] = body[key]
+        
+        return Review(overall_star_rating=review_items['overall_star_rating'],
+                      communication_star_rating=review_items['communication_star_rating'],
+                      maintenance_star_rating=review_items['maintenance_star_rating'],
+                      text=review_items['text'])
     
     
     # for debug purposes
