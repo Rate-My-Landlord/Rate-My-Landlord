@@ -1,93 +1,32 @@
 /*
   Author: Hayden Stegman
 */
-
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Button, Text, View, Alert } from 'react-native';
+import { StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from './Screens/RootStackParamList';
 
-const Stack = createNativeStackNavigator();
+// Screen Imports
+import HomeScreen from './Screens/HomeScreen';
+import LandlordScreen from './Screens/LandlordScreen';
 
-// 
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen 
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Rate My Landlord' }}
-        />
-        <Stack.Screen
-          name="LandlordPage"
-          component={LandlordPageScreen}
-        />
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen}/>
+        <Stack.Screen name="Landlord" component={LandlordScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
-/* 
-  Home Screen
+/*
+    Style Sheet
 */
-const HomeScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      
-      {/* Page Heading */}
-      <Text>Showing all Landlords from '05401'</Text>
-      <StatusBar style="auto" />
-
-      {/* List of Landlords */}
-      <LandlordWidget name='Chris'/>
-      <LandlordWidget name='Mark'/>
-      <LandlordWidget name='Charlie'/>
-      <LandlordWidget name='Sarah'/>
-    </View>
-  );
-};
-
-/* 
-  Landlord Screen
-*/
-const LandlordPageScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>Landlord 1 Page</Text>
-      <StatusBar style="auto" />
-
-      <Button
-        title="Home"
-        onPress={() =>
-          navigation.navigate('Home')
-        }
-      />
-    </View>
-  );
-};
-
-{/* 
-  Widget added to list for each landlord present in area.
-  Features:
-    - Name
-    - 1-5 Star Rating
-    - Button to go to landlord page
-*/}
-const LandlordWidget = ( props ) => {
-  return (
-    <View style={{ backgroundColor: 'grey', padding: 10, margin: 2, width: '80%'}}>
-      <Text>{props.name}</Text>
-      
-      <Button
-        title={props.name + "'s Reviews"}
-        onPress={() => Alert.alert('Simple Button pressed')}
-      />
-    </View>
-  );
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
