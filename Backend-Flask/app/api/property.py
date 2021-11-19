@@ -1,3 +1,6 @@
+from flask import json
+from flask.globals import request
+from flask.helpers import url_for
 from flask.json import jsonify
 from .. import db
 from ..models import Property, Permission
@@ -14,3 +17,13 @@ def get_properties():
 def get_property(id):
     property = Property.get_or_404(id)
     return jsonify(property.to_json())
+
+@api.route('/properties', methods=['POST'])
+def add_property():
+    property = Property.from_json(request.json)
+    
+    db.session.add(property)
+    db.session.commit()
+    
+    return jsonify(property.to_json()), 201, \
+        {'Location': url_for('api.get_property', id=property.id)}

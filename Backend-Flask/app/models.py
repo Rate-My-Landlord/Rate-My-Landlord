@@ -1,5 +1,3 @@
-from typing import NamedTuple
-from flask import json
 from flask.globals import current_app
 from flask.helpers import url_for
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -67,8 +65,7 @@ class Review(db.Model):
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'created_at': self.created_at
-        }
+            'created_at': self.created_at}
         return json_review
     
     @staticmethod
@@ -98,22 +95,44 @@ class Landlord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'))
+    first_name = db.Column(db.String(40))
+    last_name = db.Column(db.String(40))
     
     def to_json(self):
         json_landlord = {
             'url': url_for('api.get_landlord', id=self.id),
             'property_url': url_for('api.get_property', id=self.property_id),
             'user_url': url_for('api.get_user', id=self.user_id),
-            'id': self.id,
-        }
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'id': self.id}
         return json_landlord
     
-    # @staticmethod
-    # def from_json(json_review):
-    #     text = json_review.get('body')
-    #     if text is None or text =='':
-    #         raise ValidationError('review does not have text')
-    #     return Landlord(text=text)
+    @staticmethod
+    def from_json(json_review):
+        body = json_review.get('body')
+        if body is None or body =='':
+            raise ValidationError('review does not have text')
+        landlord_items = {'first_name': '',
+                          'last_name': '',
+                          'property_id': '',
+                          'user_id': ''}
+        for key, _ in landlord_items.items():
+            landlord_items[key] = body[key]
+        
+        if landlord_items['property_id'] is not None and landlord_items['property_id'] != '':
+            property = Property.query.get(landlord_items['property_id'])
+            if property is None:
+                raise ValidationError('property does not exist')
+        if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
+            user = User.query.get(landlord_items['user_id'])
+            if user is None:
+                raise ValidationError('user does not exist')    
+        
+        return Landlord(user_id=landlord_items['user_id'],
+                        property_id=landlord_items['property_id'],
+                        first_name=landlord_items['first_name'],
+                        last_name=landlord_items['last_name'])
     
     
     # for debug purposes
@@ -124,6 +143,7 @@ class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     address_1 = db.Column(db.String(50))
     address_2 = db.Column(db.String(50))
+    city = db.Column(db.String(30))
     zip_code =  db.Column(db.String(5))
     state = db.Column(db.String(2))
     country =  db.Column(db.String(50))
@@ -134,8 +154,33 @@ class Property(db.Model):
             'id': self.id,
             'address_1': self.address_1,
             'address_2': self.address_2,
+            'city': self.city,
             'zip_code': self.zip_code,
             'state': self.state,
-            'country': self.country
-        }
+            'country': self.country}
         return json_property
+    
+    @staticmethod
+    def from_json(json_property):
+        body = json_property.get('body')
+        if body is None or body == '':
+            raise ValidationError('Property has no body')
+        property_items = {'address_1': '',
+                          'address_2': '',
+                          'city': '',
+                          'zip_code': '',
+                          'state': '',
+                          'country': ''}
+        for key, _ in property_items.items():
+            property_items[key] = body[key]
+            
+        return Property(address_1=property_items['address_1'],
+                        address_2=property_items['address_2'],
+                        city=property_items['city'],
+                        zip_code=property_items['zip_code'],
+                        state=property_items['state'],
+                        country=property_items['country'])
+        
+    # for debug purposes
+    def __repr__(self):
+        return '<Property {}>'.format(self.id)

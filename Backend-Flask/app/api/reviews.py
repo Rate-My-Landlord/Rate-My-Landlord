@@ -28,7 +28,7 @@ def new_review():
     db.session.add(review)
     db.session.commit()
     return jsonify(review.to_json()), 201, \
-        {'Location': url_for('api.get_reviews', id=review.id)}
+        {'Location': url_for('api.get_review', id=review.id)}
 
 # editing review
 @api.route('/reviews/<int:id>', methods=['PUT'])
