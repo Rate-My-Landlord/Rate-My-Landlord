@@ -2,4 +2,4 @@ from flask import Blueprint
 
 api = Blueprint('api', __name__)
 
-from . import authentication, errors, reviews, users
+from . import authentication, errors, reviews, users, landlord, property

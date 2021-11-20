@@ -59,11 +59,21 @@ class Review(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def to_json(self):
+        author_url = None
+        if self.author_id is not None:
+            author_url = url_for('api.get_user', id=self.author_id)
+        landlord_url = None
+        if self.landlord_id is not None:
+            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
+        property_url = None
+        if self.property_id is not None:
+            property_url = url_for('api.get_property', id=self.property_id)
+        
         json_review = {
             'url': url_for('api.get_review', id=self.id),
-            'author_url': url_for('api.get_user', id=self.author_id),
-            'landlord_url': url_for('api.get_landlord', id=self.landlord_id),
-            'property_url': url_for('api.get_property', id=self.property_id),
+            'author_url': author_url,
+            'landlord_url': landlord_url,
+            'property_url': property_url,
             'id': self.id,
             'author_id': self.author_id,
             'landlord_id': self.landlord_id,
@@ -86,7 +96,7 @@ class Review(db.Model):
                         'maintenance_star_rating': '',
                         'text': ''}
         for key, _ in review_items.items():
-            review_items[key] = body[key]
+            review_items[key] = body.get(key)
         
         return Review(overall_star_rating=review_items['overall_star_rating'],
                       communication_star_rating=review_items['communication_star_rating'],
@@ -106,10 +116,13 @@ class Landlord(db.Model):
     
     def to_json(self):
         properties  = Property.query.filter_by(landlord_id=self.id)
-        reviews = Review.query.filter_by(landlord_id=self.landlord_id)
+        reviews = Review.query.filter_by(landlord_id=self.id)
+        user_url = None
+        # if self.user_id is not None:
+        #     user_url = url_for('api.get_user')
         json_landlord = {
             'url': url_for('api.get_landlord', id=self.id),
-            'user_url': url_for('api.get_user', id=self.user_id),
+            'user_url': user_url,
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
@@ -124,22 +137,15 @@ class Landlord(db.Model):
             raise ValidationError('review does not have text')
         landlord_items = {'first_name': '',
                           'last_name': '',
-                          'property_id': '',
                           'user_id': ''}
         for key, _ in landlord_items.items():
-            landlord_items[key] = body[key]
-        
-        if landlord_items['property_id'] is not None and landlord_items['property_id'] != '':
-            property = Property.query.get(landlord_items['property_id'])
-            if property is None:
-                raise ValidationError('property does not exist')
+            landlord_items[key] = body.get(key)
         if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
             user = User.query.get(landlord_items['user_id'])
             if user is None:
                 raise ValidationError('user does not exist')    
         
         return Landlord(user_id=landlord_items['user_id'],
-                        property_id=landlord_items['property_id'],
                         first_name=landlord_items['first_name'],
                         last_name=landlord_items['last_name'])
     
@@ -159,9 +165,13 @@ class Property(db.Model):
     country =  db.Column(db.String(50))
     
     def to_json(self):
+        landlord_url = ''
+        if self.landlord_id is not None:
+            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
+            
         json_property = {
             'url': url_for('api.get_property', id=self.id),
-            'landlord_url': url_for('api.get_landlord', id=self.landlord_id),
+            'landlord_url': landlord_url,
             'id': self.id,
             'landlord_id': self.landlord_id,
             'address_1': self.address_1,
@@ -184,7 +194,7 @@ class Property(db.Model):
                           'state': '',
                           'country': ''}
         for key, _ in property_items.items():
-            property_items[key] = body[key]
+            property_items[key] = body.get(key)
             
         return Property(address_1=property_items['address_1'],
                         address_2=property_items['address_2'],
