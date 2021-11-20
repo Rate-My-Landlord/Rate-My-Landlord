@@ -51,6 +51,7 @@ class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to True later
     landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to True later
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True) # change to True later
     overall_star_rating = db.Column(db.Integer)
     communication_star_rating = db.Column(db.Integer)
     maintenance_star_rating = db.Column(db.Integer)
@@ -60,7 +61,13 @@ class Review(db.Model):
     def to_json(self):
         json_review = {
             'url': url_for('api.get_review', id=self.id),
+            'author_url': url_for('api.get_user', id=self.author_id),
+            'landlord_url': url_for('api.get_landlord', id=self.landlord_id),
+            'property_url': url_for('api.get_property', id=self.property_id),
             'id': self.id,
+            'author_id': self.author_id,
+            'landlord_id': self.landlord_id,
+            'property_id': self.property_id,
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
@@ -75,9 +82,9 @@ class Review(db.Model):
             raise ValidationError('Review has no body')
         
         review_items = { 'overall_star_rating': '',
-            'communication_star_rating': '',
-            'maintenance_star_rating': '',
-            'text': ''}
+                        'communication_star_rating': '',
+                        'maintenance_star_rating': '',
+                        'text': ''}
         for key, _ in review_items.items():
             review_items[key] = body[key]
         
@@ -94,18 +101,20 @@ class Review(db.Model):
 class Landlord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'))
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     
     def to_json(self):
+        properties  = Property.query.filter_by(landlord_id=self.id)
+        reviews = Review.query.filter_by(landlord_id=self.landlord_id)
         json_landlord = {
             'url': url_for('api.get_landlord', id=self.id),
-            'property_url': url_for('api.get_property', id=self.property_id),
             'user_url': url_for('api.get_user', id=self.user_id),
+            'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'id': self.id}
+            'properties': [property.to_json() for property in properties],
+            'reviews': [review.to_json() for review in reviews] }
         return json_landlord
     
     @staticmethod
@@ -141,6 +150,7 @@ class Landlord(db.Model):
     
 class Property(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
     address_1 = db.Column(db.String(50))
     address_2 = db.Column(db.String(50))
     city = db.Column(db.String(30))
@@ -151,7 +161,9 @@ class Property(db.Model):
     def to_json(self):
         json_property = {
             'url': url_for('api.get_property', id=self.id),
+            'landlord_url': url_for('api.get_landlord', id=self.landlord_id),
             'id': self.id,
+            'landlord_id': self.landlord_id,
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,
