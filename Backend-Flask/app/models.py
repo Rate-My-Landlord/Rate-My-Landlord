@@ -91,14 +91,26 @@ class Review(db.Model):
         if body is None or body == '':
             raise ValidationError('Review has no body')
         
-        review_items = { 'overall_star_rating': '',
+        review_items = {'author_id': '',
+                        'landlord_id': '',
+                        'property_id': '',
+                        'overall_star_rating': '',
                         'communication_star_rating': '',
                         'maintenance_star_rating': '',
                         'text': ''}
         for key, _ in review_items.items():
             review_items[key] = body.get(key)
+            
+        if review_items['landlord_id'] is None:
+            raise ValidationError('Review has not landlord')
         
-        return Review(overall_star_rating=review_items['overall_star_rating'],
+        # if review_items['author_id'] is None:
+        #     raise ValidationError('Review has not author')
+        
+        return Review(landlord_id=review_items['landlord_id'],
+                      property_id=review_items['property_id'],
+                    #   author_id=review_items['author_id'],
+                      overall_star_rating=review_items['overall_star_rating'],
                       communication_star_rating=review_items['communication_star_rating'],
                       maintenance_star_rating=review_items['maintenance_star_rating'],
                       text=review_items['text'])
@@ -113,21 +125,26 @@ class Landlord(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
+    zipcode = db.Column(db.String(5))
     
-    def to_json(self):
-        properties  = Property.query.filter_by(landlord_id=self.id)
-        reviews = Review.query.filter_by(landlord_id=self.id)
+    def to_json(self, brief=False):
         user_url = None
-        # if self.user_id is not None:
-        #     user_url = url_for('api.get_user')
+        if self.user_id is not None:
+            user_url = url_for('api.get_user')
         json_landlord = {
             'url': url_for('api.get_landlord', id=self.id),
             'user_url': user_url,
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'properties': [property.to_json() for property in properties],
-            'reviews': [review.to_json() for review in reviews] }
+            'zip_code': self.zipcode}
+        # if brief, do not include all of the landlords reviews and properties
+        if not brief:
+            properties  = Property.query.filter_by(landlord_id=self.id)
+            reviews = Review.query.filter_by(landlord_id=self.id)
+            json_landlord['properties'] = [property.to_json() for property in properties]
+            json_landlord['reviews'] = [review.to_json() for review in reviews]
+        print(json_landlord)
         return json_landlord
     
     @staticmethod
@@ -137,7 +154,8 @@ class Landlord(db.Model):
             raise ValidationError('review does not have text')
         landlord_items = {'first_name': '',
                           'last_name': '',
-                          'user_id': ''}
+                          'user_id': '',
+                          'zip_code': ''}
         for key, _ in landlord_items.items():
             landlord_items[key] = body.get(key)
         if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
@@ -147,7 +165,8 @@ class Landlord(db.Model):
         
         return Landlord(user_id=landlord_items['user_id'],
                         first_name=landlord_items['first_name'],
-                        last_name=landlord_items['last_name'])
+                        last_name=landlord_items['last_name'],
+                        zip_code=landlord_items['zip_code'])
     
     
     # for debug purposes

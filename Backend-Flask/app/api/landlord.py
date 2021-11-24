@@ -9,7 +9,7 @@ from .errors import forbidden
 @api.route('/landlords/')
 def get_landlords():
     landlords = Landlord.query.all()
-    return jsonify({'landlords': [landlord.to_json() for landlord in landlords]})
+    return jsonify({'landlords': [landlord.to_json(brief=True) for landlord in landlords]})
 
 @api.route('/landlords/<int:id>')
 def get_landlord(id):
