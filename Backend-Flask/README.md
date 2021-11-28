@@ -31,33 +31,42 @@ Now check that it worked
 ## Getting the latest database changes
  `> python -m flask db upgrade`  
 
+---  
 
 # Routes  
 ### Reviews   
-* GET `/reviews/` - returns list of all reviews  
-* GET `/reviews/id` (int) - returns a review or 404  
-* POST `/reviews` - post a review  
-⋅⋅⋅Format for Posting: (example)  
-⋅⋅⋅`{"body": {`  
-    `"author_id": 1, `(not required for now since we have not implemented users)  
-    `"landlord_id": 1, `(required)  
-    `"property_id": 1, `(optional)  
-    `"overall_star_rating": 2, `(optional)  
-    `"communication_star_rating": 2, `(optional)  
-    `"maintenance_star_rating": 2, `(optional)  
-    `"text": "text", (optional)`  
-    `}`  
+| Request Type  | Route               | Description                 |
+|:-------------:|---------------------|-----------------------------|
+| GET           | `/reviews/`         | returns list of all reviews |
+| GET           | `/reviews/id` (int) | returns a review or 404     |
+| POST          | `/reviews`          | post a review               |  
+
+Format for Posting: (example)  
+`{"body":`  
+&emsp;`{`  
+&emsp;&emsp;`"author_id": 1,`(not required for now since we have not implemented users)  
+&emsp;&emsp;`"landlord_id": 1,`(required)  
+&emsp;&emsp;`"property_id": 1,`(optional)  
+&emsp;&emsp;`"overall_star_rating": 2,`(optional)  
+&emsp;&emsp;`"communication_star_rating": 2,`(optional)  
+&emsp;&emsp;`"maintenance_star_rating": 2,`(optional)  
+&emsp;&emsp;`"text": "text",` (optional)  
+&emsp;&emsp;`}`  
 `}`  
 
 
 ### Landlords  
-* GET `/landlords/` - returns list of all landlords  
-* GET `/landlords/id` (int) - returns a landlord with their reviews and properties or 404  
-* POST `/landlords` - post a landlord  
-⋅⋅⋅Format for Posting: (example)  
-⋅⋅⋅`{"body": {`  
-    `"first_name": "first", `(required)  
-    `"last_name": "last", `(required)  
-    `"user_id": 1, `(optional)  
-    `}`  
+| Request Type  | Route                 | Description                                                 |
+|:-------------:|-----------------------|-------------------------------------------------------------|
+| GET           | `/landlords/`         | returns list of all landlords                               |
+| GET           | `/landlords/id` (int) | returns a landlord with their reviews and properties or 404 |
+| POST          | `/landlords`          | post a landlord                                             |  
+
+Format for Posting: (example)  
+`{"body":`  
+&emsp;`{`  
+    &emsp;&emsp;`"first_name": "first",`(required)  
+    &emsp;&emsp;`"last_name": "last",`(required)  
+    &emsp;&emsp;`"user_id": 1,`(optional)  
+    &emsp;&emsp;`}`  
 `}`
