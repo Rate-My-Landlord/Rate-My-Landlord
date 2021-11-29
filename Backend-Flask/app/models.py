@@ -144,7 +144,6 @@ class Landlord(db.Model):
             reviews = Review.query.filter_by(landlord_id=self.id)
             json_landlord['properties'] = [property.to_json() for property in properties]
             json_landlord['reviews'] = [review.to_json() for review in reviews]
-        print(json_landlord)
         return json_landlord
     
     @staticmethod
@@ -161,7 +160,7 @@ class Landlord(db.Model):
         if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
             user = User.query.get(landlord_items['user_id'])
             if user is None:
-                raise ValidationError('user does not exist')    
+                raise ValidationError('user does not exist')
         
         return Landlord(user_id=landlord_items['user_id'],
                         first_name=landlord_items['first_name'],
@@ -206,7 +205,8 @@ class Property(db.Model):
         body = json_property.get('body')
         if body is None or body == '':
             raise ValidationError('Property has no body')
-        property_items = {'address_1': '',
+        property_items = {'landlord_id': '',
+                          'address_1': '',
                           'address_2': '',
                           'city': '',
                           'zip_code': '',
@@ -214,6 +214,13 @@ class Property(db.Model):
                           'country': ''}
         for key, _ in property_items.items():
             property_items[key] = body.get(key)
+        
+        if property_items['landlord_id'] is not None and property_items['landlord_id'] != '':
+            landlord = Landlord.query.get(property_items['landlord_id'])
+            if landlord is None:
+                raise ValidationError('Lanlord does not exist')
+        else:
+            raise ValidationError('No landlord provided')
             
         return Property(address_1=property_items['address_1'],
                         address_2=property_items['address_2'],

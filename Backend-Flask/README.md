@@ -69,4 +69,25 @@ Format for Posting: (example)
     &emsp;&emsp;`"last_name": "last",`(required)  
     &emsp;&emsp;`"user_id": 1,`(optional)  
     &emsp;&emsp;`}`  
+`}`  
+
+
+### Properties
+| Request Type  | Route                  | Description                    |
+|:-------------:|------------------------|--------------------------------|
+| GET           | `/properties/`         | returns list of all properties |
+| GET           | `/reviews/id` (int)    | returns a property or 404      |
+| POST          | `/properties`          | post a property                |  
+
+Format for Posting: (example)  
+`{"body":`  
+&emsp;`{`  
+    &emsp;&emsp;`"landlord_id": 1,`(required)  
+    &emsp;&emsp;`"address_1": "1 main street",`(optional)  
+    &emsp;&emsp;`"address_2": 1,`(optional)  
+    &emsp;&emsp;`"city": "Burlington",`(optional)  
+    &emsp;&emsp;`"zip_code": 05401,`(optional)  
+    &emsp;&emsp;`"state": "VT",`(optional)  
+    &emsp;&emsp;`"country": "US",`(optional)  
+    &emsp;&emsp;`}`  
 `}`
