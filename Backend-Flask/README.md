@@ -67,6 +67,7 @@ Format for Posting: (example)
 &emsp;`{`  
     &emsp;&emsp;`"first_name": "first",`(required)  
     &emsp;&emsp;`"last_name": "last",`(required)  
+    &emsp;&emsp;`"zip_code": "12345",`(required)  
     &emsp;&emsp;`"user_id": 1,`(optional)  
     &emsp;&emsp;`}`  
 `}`  
@@ -84,9 +85,9 @@ Format for Posting: (example)
 &emsp;`{`  
     &emsp;&emsp;`"landlord_id": 1,`(required)  
     &emsp;&emsp;`"address_1": "1 main street",`(optional)  
-    &emsp;&emsp;`"address_2": 1,`(optional)  
+    &emsp;&emsp;`"address_2": "1",`(optional)  
     &emsp;&emsp;`"city": "Burlington",`(optional)  
-    &emsp;&emsp;`"zip_code": 05401,`(optional)  
+    &emsp;&emsp;`"zip_code": "05401",`(optional)  
     &emsp;&emsp;`"state": "VT",`(optional)  
     &emsp;&emsp;`"country": "US",`(optional)  
     &emsp;&emsp;`}`  
