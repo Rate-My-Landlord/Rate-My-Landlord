@@ -32,6 +32,13 @@ Now check that it worked
  `> python -m flask db upgrade`  
 
 ---  
+To insert some dummy data:
+`> python -m flask commands prototype`  
+This command does delete all data in your local database, so be aware.  
+This adds 3 landlords, who each have 2 properties and 3 reviews.  
+
+
+---  
 
 # Routes  
 ### Reviews   
