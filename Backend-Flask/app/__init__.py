@@ -17,6 +17,10 @@ def create_app(config_name):
     db.init_app(app)
     migrate = Migrate(app, db)
     
+    from .commands import commands as commands_blueprint
+    app.register_blueprint(commands_blueprint)
+    
+    
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api/v0')
     
