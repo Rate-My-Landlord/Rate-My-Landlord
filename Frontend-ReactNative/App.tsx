@@ -5,19 +5,21 @@ import React from 'react';
 import { StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RootStackParamList } from './Screens/RootStackParamList';
+import { RootStackParamList } from './screens/RootStackParamList';
 
 // Screen Imports
-import HomeScreen from './Screens/HomeScreen';
-import LandlordScreen from './Screens/LandlordScreen';
+import HomeScreen from './screens/HomeScreen';
+import SearchResultsScreen from './screens/SearchResultsScreen'
+import LandlordScreen from './screens/LandlordScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen}/>
+        <Stack.Screen name="SearchResults" component={SearchResultsScreen}/>
         <Stack.Screen name="Landlord" component={LandlordScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
