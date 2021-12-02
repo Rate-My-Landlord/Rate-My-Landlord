@@ -14,6 +14,7 @@ import{ Octicons, Fontisto } from '@expo/vector-icons'
 // Form Handeler
 import { Formik } from 'formik';
 
+// Styles
 import {
   StyledContainer,
   InnerContainer,
@@ -31,8 +32,10 @@ import {
   Line
 } from '../components/styles';
 
+// Colors
 const { brand, darkLight, primary } = Colors;
 
+// Navigation Prop
 type HomeScreenProp = StackNavigationProp<RootStackParamList, 'Search'>;
 
 /*
@@ -45,10 +48,13 @@ const HomeScreen = () => {
     <StyledContainer>
       <StatusBar style="dark" />
       <InnerContainer>
+        
+        {/* Page Logo, Title, and Subtitle */}
         <PageLogo resizeMode="cover" source={require('../assets/RateMyLandlordIcon.png')} />
         <PageTitle>Rate My Landlord</PageTitle>
         <SubTitle>Search</SubTitle>
 
+        {/* Start of Form */}
         <Formik
           initialValues={{search: ''}}
           onSubmit={(values) => {
@@ -56,29 +62,34 @@ const HomeScreen = () => {
           }}
         >
           {({handleChange, handleBlur, handleSubmit, values}) => (<StyledFormArea>
+            {/* Text Input Parameters for Search Bar */}
             <MyTextInput 
               label="Zip Code"
               icon="search"
               defaultValue=""
               placeholder="Search by Zip Code..."
               placeholderTextColor={ darkLight }
-              onChangeText={handleChange('search')}
-              onBlur={handleBlur('search')}
+              onChangeText={ handleChange('search') }
+              onBlur={ handleBlur('search') }
               value={values.search}
               keyboardType="numeric"
-              maxLength={5}
+              maxLength={ 5 }
               returnKeyType="done"
             />
-            <StyledButton
-              onPress={() => navigation.navigate('Results')}
-            >
+
+            {/* Button for submitting form/search data */}
+            <StyledButton onPress={() => navigation.navigate('Results')}>
               <ButtonText>
                 Search
               </ButtonText>
             </StyledButton>
+
+            {/* Page Break between search and logins */}
             <MsgBox>...</MsgBox>
             <Line />
             <MsgBox>...</MsgBox>
+
+            {/* Login and Google Login Buttons | TO BE IMPLEMENTED */}
             <StyledButton>
               <ButtonText>Login</ButtonText>
             </StyledButton>
@@ -86,6 +97,7 @@ const HomeScreen = () => {
               <Fontisto name="google" color={ primary } size={ 25 } />
               <ButtonText google={true}>Sign in with Google</ButtonText>
             </StyledButton>
+
           </StyledFormArea>)}
         </Formik>
       </InnerContainer>
@@ -93,6 +105,7 @@ const HomeScreen = () => {
   );
 };
 
+// Search Bar Component
 const MyTextInput = ( props:any ) => {
   return (
     <View>
