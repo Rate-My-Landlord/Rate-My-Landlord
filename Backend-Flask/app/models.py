@@ -1,10 +1,8 @@
 from flask.globals import current_app
 from flask.helpers import url_for
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy.orm import query
 from app.exceptions import ValidationError
 from app import db
-from enum import unique
 from datetime import datetime
 
 
