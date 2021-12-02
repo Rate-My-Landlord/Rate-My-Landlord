@@ -1,6 +1,8 @@
 export type RootStackParamList = {
 
-    Home: undefined;
+    Search: undefined;
+
+    Results: undefined;
 
     Landlord: undefined;
 

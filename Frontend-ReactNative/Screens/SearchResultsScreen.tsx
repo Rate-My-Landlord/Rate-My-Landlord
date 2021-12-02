@@ -3,12 +3,8 @@
 */
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Button, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from './RootStackParamList';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-type SearchResultsScreenProp = StackNavigationProp<RootStackParamList, 'SearchResults'>;
+import { StyleSheet, Text, View } from 'react-native';
+import { LandlordComponent } from '../components/LandlordListComponent'
 
 /* 
   Search Results Screen
@@ -19,34 +15,11 @@ function SearchResultsScreen() {
       {/* Page Heading */}
       <Text>Showing all Landlords from '05401'</Text>
       <StatusBar style="auto" />
-
-      {/* List of Landlords */}
-      <LandlordWidget name='Chris' rating='1.7/5 Stars'/>
-      <LandlordWidget name='Mark' rating='4.2/5 Stars'/>
-      <LandlordWidget name='Charlie'rating='4.4/5 Stars'/>
-      <LandlordWidget name='Sarah' rating='2.3/5 Stars'/>
-      <LandlordWidget name='Carlie' rating='4.9/5 Stars'/>
-    </View>
-  );
-};
-
-{/* 
-  Widget added to list for each landlord present in area.
-  Features:
-    - Name
-    - 1-5 Star Rating
-    - Button to go to landlord page
-*/}
-const LandlordWidget = ( props:any ) => {
-  const navigation = useNavigation<SearchResultsScreenProp>();
-  return (
-    <View style={{ backgroundColor: 'rgba(90,90,90,0.14)', padding: 10, margin: 2, width: '80%'}}>
-      <Text>{props.name}</Text>
-      <Text>{props.rating}</Text>
-      <Button
-        title={props.name + "'s Reviews"}
-        onPress={() => navigation.navigate('Landlord')}
-      />
+      
+      <LandlordComponent name="Jim" rating="1.5/10" />
+      <LandlordComponent name="Carl" rating="6.2/10" />
+      <LandlordComponent name="Ellen" rating="4.4/10" />
+      <LandlordComponent name="Hinsdale Properties" rating="9.5/10" />
     </View>
   );
 };
@@ -57,7 +30,7 @@ const LandlordWidget = ( props:any ) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },

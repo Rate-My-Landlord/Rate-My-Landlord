@@ -21,9 +21,9 @@ function LandlordScreen() {
         <StatusBar style="auto" />
 
         <Button
-            title="Home"
+            title="Go Back"
             onPress={() =>
-            navigation.navigate('Home')
+            navigation.navigate('Results')
             }
         />
         </View>
@@ -36,7 +36,7 @@ function LandlordScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
