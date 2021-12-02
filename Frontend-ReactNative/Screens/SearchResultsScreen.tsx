@@ -1,25 +1,36 @@
 /*
   Author: Hayden Stegman
 */
-import React from 'react';
+import React, {useState, useEffect } from 'react';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { LandlordComponent } from '../components/LandlordListComponent'
+import ILandlords from '../interfaces/landlords';
+
+const baseURL = "http://localhost:5000/api/v0";
 
 /* 
   Search Results Screen
 */
 function SearchResultsScreen() {
+  const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
+
+  useEffect(() => {
+    axios.get(`${baseURL}/landlords/`)
+      .then(res => {
+        setLandlords(res.data.landlords);
+      });
+  }, [])
+
   return (
     <View style={styles.container}>
       {/* Page Heading */}
       <Text>Showing all Landlords from '05401'</Text>
       <StatusBar style="auto" />
       
-      <LandlordComponent name="Jim" rating="1.5/10" />
-      <LandlordComponent name="Carl" rating="6.2/10" />
-      <LandlordComponent name="Ellen" rating="4.4/10" />
-      <LandlordComponent name="Hinsdale Properties" rating="9.5/10" />
+      {landlords?.map(landlord => <LandlordComponent name={landlord.first_name} rating={landlord.overall_rating} />)}
+
     </View>
   );
 };
