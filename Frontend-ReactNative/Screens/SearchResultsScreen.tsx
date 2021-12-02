@@ -2,49 +2,43 @@
   Author: Hayden Stegman
 */
 import React, {useState, useEffect } from 'react';
-import axios from 'axios';
+//import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { LandlordComponent } from '../components/LandlordListComponent'
-import ILandlords from '../interfaces/landlords';
+//import ILandlords from '../interfaces/landlords';
+import { InnerContainer, PageLogo, PageTitle, StyledContainer, SubTitle } from '../components/styles';
 
 const baseURL = "http://localhost:5000/api/v0";
+
 
 /* 
   Search Results Screen
 */
 function SearchResultsScreen() {
-  const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
+  const searchEntry = "05401"
+  // const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
 
-  useEffect(() => {
-    axios.get(`${baseURL}/landlords/`)
-      .then(res => {
-        setLandlords(res.data.landlords);
-      });
-  }, [])
+  // useEffect(() => {
+  //   axios.get(`${baseURL}/landlords/`)
+  //     .then(res => {
+  //       setLandlords(res.data.landlords);
+  //     });
+  // }, [])
 
   return (
-    <View style={styles.container}>
-      {/* Page Heading */}
-      <Text>Showing all Landlords from '05401'</Text>
-      <StatusBar style="auto" />
-      
-      {landlords?.map(landlord => <LandlordComponent name={landlord.first_name} rating={landlord.overall_rating} />)}
+    <StyledContainer>
+      <StatusBar style="dark" />
+      <InnerContainer>
+        {/* Page Heading */}
+        <PageTitle>Rate My Landlord</PageTitle>
+        <SubTitle>Showing all Landlords from '{searchEntry}'</SubTitle>
+        <LandlordComponent name="Mark" rating={5} />
 
-    </View>
+        {/* {landlords?.map(landlord => <LandlordComponent name={landlord.first_name} rating={landlord.overall_rating} />)} */}
+      </InnerContainer>
+    </StyledContainer>
   );
 };
-
-/*
-    Style Sheet
-*/
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default SearchResultsScreen;
