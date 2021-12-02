@@ -1,7 +1,8 @@
 # Initial Setup
 ### Prerequisites
 You have Python installed.  
-You have MySQL server installed  
+You have MySQL server installed.  
+MySQL Server is added to System Variables Path. [[Link to Guide](https://dev.mysql.com/doc/refman/8.0/en/mysql-installation-windows-path.html)]  
 Navigate to the `backend` directory  
 1. Create virtual environment  
 `> python -m venv venv`  
