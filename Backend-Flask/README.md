@@ -96,7 +96,7 @@ Format for Posting: (example)
     &emsp;&emsp;`"address_1": "1 main street",`(optional)  
     &emsp;&emsp;`"address_2": "1",`(optional)  
     &emsp;&emsp;`"city": "Burlington",`(optional)  
-    &emsp;&emsp;`"zip_code": "05401",`(optional)  
+    &emsp;&emsp;`"zipcode": "05401",`(optional)  
     &emsp;&emsp;`"state": "VT",`(optional)  
     &emsp;&emsp;`"country": "US",`(optional)  
     &emsp;&emsp;`}`  

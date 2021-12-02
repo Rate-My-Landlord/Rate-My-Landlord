@@ -11,6 +11,11 @@ def get_landlords():
     landlords = Landlord.query.all()
     return jsonify({'landlords': [landlord.to_json(brief=True) for landlord in landlords]})
 
+@api.route('/landlords/z/<int:zip>')
+def get_landlords_by_zip(zip):
+    landlords = Landlord.query.filter_by(zipcode=zip)
+    return jsonify({'zipcode': zip, 'landlords': [landlord.to_json(brief=True) for landlord in landlords]})
+
 @api.route('/landlords/<int:id>')
 def get_landlord(id):
     landlord = Landlord.query.get_or_404(id)

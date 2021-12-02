@@ -136,7 +136,7 @@ class Landlord(db.Model):
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'zip_code': self.zipcode,
+            'zipcode': self.zipcode,
             'overall_rating': self.getOverallRating()}
         # if brief, do not include all of the landlords reviews and properties
         if not brief:
@@ -154,7 +154,7 @@ class Landlord(db.Model):
         landlord_items = {'first_name': '',
                           'last_name': '',
                           'user_id': '',
-                          'zip_code': ''}
+                          'zipcode': ''}
         for key, _ in landlord_items.items():
             landlord_items[key] = body.get(key)
         if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
@@ -165,7 +165,7 @@ class Landlord(db.Model):
         return Landlord(user_id=landlord_items['user_id'],
                         first_name=landlord_items['first_name'],
                         last_name=landlord_items['last_name'],
-                        zip_code=landlord_items['zip_code'])
+                        zipcode=landlord_items['zipcode'])
     
     
     def getOverallRating(self):
@@ -187,7 +187,7 @@ class Property(db.Model):
     address_1 = db.Column(db.String(50))
     address_2 = db.Column(db.String(50))
     city = db.Column(db.String(30))
-    zip_code =  db.Column(db.String(5))
+    zipcode =  db.Column(db.String(5))
     state = db.Column(db.String(2))
     country =  db.Column(db.String(50))
     
@@ -204,7 +204,7 @@ class Property(db.Model):
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,
-            'zip_code': self.zip_code,
+            'zipcode': self.zipcode,
             'state': self.state,
             'country': self.country}
         return json_property
@@ -218,7 +218,7 @@ class Property(db.Model):
                           'address_1': '',
                           'address_2': '',
                           'city': '',
-                          'zip_code': '',
+                          'zipcode': '',
                           'state': '',
                           'country': ''}
         for key, _ in property_items.items():
@@ -234,7 +234,7 @@ class Property(db.Model):
         return Property(address_1=property_items['address_1'],
                         address_2=property_items['address_2'],
                         city=property_items['city'],
-                        zip_code=property_items['zip_code'],
+                        zipcode=property_items['zipcode'],
                         state=property_items['state'],
                         country=property_items['country'])
         
