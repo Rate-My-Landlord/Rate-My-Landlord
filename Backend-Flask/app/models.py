@@ -1,6 +1,7 @@
 from flask.globals import current_app
 from flask.helpers import url_for
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.orm import query
 from app.exceptions import ValidationError
 from app import db
 from enum import unique
@@ -137,7 +138,8 @@ class Landlord(db.Model):
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'zip_code': self.zipcode}
+            'zip_code': self.zipcode,
+            'overall_rating': self.getOverallRating()}
         # if brief, do not include all of the landlords reviews and properties
         if not brief:
             properties  = Property.query.filter_by(landlord_id=self.id)
@@ -167,6 +169,15 @@ class Landlord(db.Model):
                         last_name=landlord_items['last_name'],
                         zip_code=landlord_items['zip_code'])
     
+    
+    def getOverallRating(self):
+        reviews = Review.query.filter(Review.landlord_id==self.id)
+        if reviews.count() == 0:
+            return 0
+        overall_rating = 0
+        for review in reviews:
+            overall_rating += review.overall_star_rating
+        return round(int(overall_rating)/reviews.count(), 1)
     
     # for debug purposes
     def __repr__(self):

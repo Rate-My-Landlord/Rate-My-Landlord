@@ -107,19 +107,19 @@ def prototype():
                         communication_star_rating=3,
                         maintenance_star_rating=3,
                         text='Only landlord I\'ve had. He\'s alright')        
-        review_7 = Review(landlord_id=landlord_2.id,
+        review_7 = Review(landlord_id=landlord_3.id,
                         property_id=property_5.id,
                         overall_star_rating=1,
                         communication_star_rating=1,
                         maintenance_star_rating=1,
                         text='This guy is a slumlord')
-        review_8 = Review(landlord_id=landlord_2.id,
+        review_8 = Review(landlord_id=landlord_3.id,
                         property_id=property_6.id,
                         overall_star_rating=2,
                         communication_star_rating=2,
                         maintenance_star_rating=2,
                         text='Worst landlord I\'ve experienced')
-        review_9 = Review(landlord_id=landlord_2.id,
+        review_9 = Review(landlord_id=landlord_3.id,
                         overall_star_rating=2,
                         communication_star_rating=2,
                         maintenance_star_rating=1,
