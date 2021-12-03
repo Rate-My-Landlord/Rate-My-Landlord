@@ -65,11 +65,12 @@ Format for Posting: (example)
 
 
 ### Landlords  
-| Request Type  | Route                 | Description                                                 |
-|:-------------:|-----------------------|-------------------------------------------------------------|
-| GET           | `/landlords/`         | returns list of all landlords                               |
-| GET           | `/landlords/id` (int) | returns a landlord with their reviews and properties or 404 |
-| POST          | `/landlords`          | post a landlord                                             |  
+| Request Type  | Route                    | Description                                                 |
+|:-------------:|--------------------------|-------------------------------------------------------------|
+| GET           | `/landlords/`            | returns list of all landlords                               |
+| GET           | `/landlords/id` (int)    | returns a landlord with their reviews and properties or 404 |
+| GET           | `/landlords/z/zip` (int) | returns a landlord based on the provided zip             |
+| POST          | `/landlords`             | post a landlord                                             |  
 
 Format for Posting: (example)  
 `{"body":`  
