@@ -37,8 +37,6 @@ function SearchResultsScreen({ navigation, route}) {
   // const navigation = useNavigation();
   const { zipcode } = route.params;
 
-  console.log(zipcode)
-
   const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
 
   useEffect(() => {

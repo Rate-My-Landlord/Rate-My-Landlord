@@ -33,26 +33,23 @@ const { primary } = Colors;
 
 type landlordScreenProp = StackNavigationProp<RootStackParamList, 'Landlord'>;
 
-const baseURL = "http://localhost:5000/api/v0"
+const baseURL = "http://localhost:5000"
 
 /* 
   Landlord Screen
 */
-function LandlordScreen({ navigation, route}) {
-  // const navigation = useNavigation<landlordScreenProp>();
+function LandlordScreen({ navigation, route: {params}}) {
   const [landlord, setLandlord] = useState<ILandlord | undefined>(undefined)
 
-  console.log(route.url)
-
-  // useEffect(() => {
-  //   axios.get(`${baseURL}/landlords/z/${3}`)
-  //     .then(res => { 
-  //       console.log(res.data)
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    axios.get(`${baseURL}${params.url}`)
+      .then(res => { 
+        setLandlord(res.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <StyledContainer>
@@ -60,7 +57,8 @@ function LandlordScreen({ navigation, route}) {
         <InnerContainer>
         {/* Page Heading */}
         <PageTitle>Rate My Landlord</PageTitle>
-        <SubTitle>Showing all Reviews for 'Joe Schmoe'</SubTitle>
+        <SubTitle>Showing all Reviews for {landlord?.first_name}</SubTitle>
+        {landlord?.reviews.map(review => <ReviewComponent name={review.text} />)}
         {/* <ReviewComponent name="Not your average joe!" text="Joe is actually insane! Would NOT rent from him again! But if you have to... His rent price is pretty fair."/>
         <ReviewComponent name="Meh." text="Rented from him cause I was out of options. Not the worst landlord. But the house sucked! Decent price on rent tho."/>
         <ReviewComponent name="~Beware Joe Schmoe~" text="Signed the lease before I met the guy. YIKES! Dude is a mess. The property was run down with broken plumming, doors, and serious electrical issues. Guess thats what you get for $25 a month."/>
