@@ -33,7 +33,7 @@ const { primary } = Colors;
 
 type landlordScreenProp = StackNavigationProp<RootStackParamList, 'Landlord'>;
 
-const baseURL = "http://localhost:5000"
+const baseURL = "http://10.0.0.165:5000"
 
 /* 
   Landlord Screen
@@ -58,12 +58,7 @@ function LandlordScreen({ navigation, route: {params}}) {
         {/* Page Heading */}
         <PageTitle>Rate My Landlord</PageTitle>
         <SubTitle>Showing all Reviews for {landlord?.first_name}</SubTitle>
-        {landlord?.reviews.map(review => <ReviewComponent name={review.text} />)}
-        {/* <ReviewComponent name="Not your average joe!" text="Joe is actually insane! Would NOT rent from him again! But if you have to... His rent price is pretty fair."/>
-        <ReviewComponent name="Meh." text="Rented from him cause I was out of options. Not the worst landlord. But the house sucked! Decent price on rent tho."/>
-        <ReviewComponent name="~Beware Joe Schmoe~" text="Signed the lease before I met the guy. YIKES! Dude is a mess. The property was run down with broken plumming, doors, and serious electrical issues. Guess thats what you get for $25 a month."/>
-        <ReviewComponent name="I'd rather be homeless" text="Need I say more. The dumpster behind the place would make for a better home."/>
-        <ReviewComponent name="BEST LANDLORD EVER!" text="Best landlord ever! We hosted the wildest parties here. Wicked mad ripper parties for days and Joe Schmoe never cared at all. Man even ripped some beers with us. Radical times my dudes."/> */}
+        {landlord?.reviews.map(review => <ReviewComponent name={review.text} overall_star_rating={review.overall_star_rating} />)}
       </InnerContainer>
     </StyledContainer>
   );

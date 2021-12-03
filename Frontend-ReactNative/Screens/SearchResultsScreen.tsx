@@ -28,7 +28,7 @@ const { primary } = Colors;
 import{ FontAwesome } from '@expo/vector-icons'
 
 // const baseURL = "http://10.0.0.20:5000/api/v0";
-const baseURL = "http://localhost:5000/api/v0";
+const baseURL = "http://10.0.0.165:5000/api/v0";
 
 /* 
   Search Results Screen

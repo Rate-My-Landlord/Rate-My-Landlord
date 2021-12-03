@@ -29,6 +29,7 @@ const { brand, darkLight, primary } = Colors;
 
 // Icons
 import{ FontAwesome } from '@expo/vector-icons'
+import { Star } from './Star';
 
 /* 
   Component added to list for each landlord present in area.
@@ -43,13 +44,7 @@ export const ReviewComponent = ( props:any ) => {
     <ListItemContainer>
       <InlineContainter>
         <ListTitle>{props.name}</ListTitle>
-        <StarContainer>
-          <FontAwesome name="star" color={ brand } size={ 20 } />
-          <FontAwesome name="star" color={ brand } size={ 20 } />
-          <FontAwesome name="star-half-empty" color={ brand } size={ 20 } />
-          <FontAwesome name="star-o" color={ brand } size={ 20 } />
-          <FontAwesome name="star-o" color={ brand } size={ 20 } />
-        </StarContainer>
+        <Star rating={props.overall_star_rating} />
       </InlineContainter>
       <ReviewMsgBox>{props.text}</ReviewMsgBox>
     </ListItemContainer>

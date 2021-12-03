@@ -28,6 +28,7 @@ const { brand, darkLight, primary } = Colors;
 
 // Icons
 import{ FontAwesome } from '@expo/vector-icons'
+import { Star } from './Star';
 
 /* 
   Component added to list for each landlord present in area.
@@ -45,13 +46,7 @@ export const LandlordComponent = (props: any) => {
     <ListItemContainer>
       <InlineContainter>
         <ListTitle>{props.name}</ListTitle>
-        <StarContainer>
-          <FontAwesome name="star" color={ brand } size={ 20 } />
-          <FontAwesome name="star" color={ brand } size={ 20 } />
-          <FontAwesome name="star-half-empty" color={ brand } size={ 20 } />
-          <FontAwesome name="star-o" color={ brand } size={ 20 } />
-          <FontAwesome name="star-o" color={ brand } size={ 20 } />
-        </StarContainer>
+        <Star rating={props.rating} />
       </InlineContainter>
       <StyledButton onPress={() => navigation.navigate('Landlord' as never,  {"url": props.url} as never )}>
         <ButtonText>{props.name + "'s Reviews"}</ButtonText>
