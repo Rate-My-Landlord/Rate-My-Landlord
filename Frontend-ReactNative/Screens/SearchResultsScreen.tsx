@@ -59,7 +59,7 @@ function SearchResultsScreen({ navigation, route}) {
         <SubTitle>Showing all Landlords from '{zipcode}'</SubTitle>
 
         {/* Populate the Review list with the data from the search */}
-        {landlords?.map(landlord => <LandlordComponent url={landlord.url} name={`${landlord.first_name} ${landlord.last_name}`} rating={landlord.overall_rating} />)}
+        {landlords?.map(landlord => <LandlordComponent key={landlord.id} url={landlord.url} name={`${landlord.first_name} ${landlord.last_name}`} rating={landlord.overall_rating} />)}
         
       </InnerContainer>
       <ListItemContainer>
