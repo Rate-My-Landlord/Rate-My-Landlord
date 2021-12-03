@@ -41,8 +41,8 @@ type HomeScreenProp = StackNavigationProp<RootStackParamList, 'Search'>;
 /*
   Home Screen
 */
-const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenProp>()
+const HomeScreen = ({ navigation: { navigate }}) => {
+  // const navigation = useNavigation<HomeScreenProp>()
   
   return (
     <StyledContainer>
@@ -62,7 +62,7 @@ const HomeScreen = () => {
           onSubmit={(values) => {
             const ZipCode = values.search;
             console.log(ZipCode);
-            navigation.navigate('Results');
+            navigate('Results', { zipcode: values.search});
           }}
         >
           {({handleChange, handleBlur, handleSubmit, values}) => (<StyledFormArea>

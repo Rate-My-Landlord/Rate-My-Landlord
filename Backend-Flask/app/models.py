@@ -207,6 +207,7 @@ class Property(db.Model):
             'zipcode': self.zipcode,
             'state': self.state,
             'country': self.country}
+        
         return json_property
     
     @staticmethod

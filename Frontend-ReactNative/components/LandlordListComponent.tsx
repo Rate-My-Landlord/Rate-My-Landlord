@@ -36,8 +36,8 @@ import{ FontAwesome } from '@expo/vector-icons'
     - 1-5 Star Rating
     - Button to go to landlord page
 */
-export const LandlordComponent = ( props:any ) => {
-  const navigation = useNavigation<SearchResultsScreenProp>();
+export const LandlordComponent = ( { navigation: { navigate }}, props:any ) => {
+  // const navigation = useNavigation<SearchResultsScreenProp>();
   return (
     <ListItemContainer>
       <InlineContainter>
@@ -50,7 +50,7 @@ export const LandlordComponent = ( props:any ) => {
           <FontAwesome name="star-o" color={ brand } size={ 20 } />
         </StarContainer>
       </InlineContainter>
-      <StyledButton onPress={() => navigation.navigate('Landlord')}>
+      <StyledButton onPress={() => navigate('Landlord', {url: props.url})}>
         <ButtonText>{props.name + "'s Reviews"}</ButtonText>
       </StyledButton>
     </ListItemContainer>
