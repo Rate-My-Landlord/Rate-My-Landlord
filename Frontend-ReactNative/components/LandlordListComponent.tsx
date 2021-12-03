@@ -2,12 +2,32 @@
   Author: Hayden Stegman
 */
 import React from 'react';
-import { Button, Text, View } from 'react-native';
+import { Button, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../screens/RootStackParamList';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type SearchResultsScreenProp = StackNavigationProp<RootStackParamList, 'Results'>;
+
+// Styles
+import {
+  LeftIcon,
+  StyledButton,
+  ButtonText,
+  Colors,
+  MsgBox,
+  Line,
+  ListItemContainer,
+  ListTitle,
+  StarContainer,
+  InlineContainter
+} from './styles';
+
+// Colors
+const { brand, darkLight, primary } = Colors;
+
+// Icons
+import{ FontAwesome } from '@expo/vector-icons'
 
 /* 
   Component added to list for each landlord present in area.
@@ -19,13 +39,20 @@ type SearchResultsScreenProp = StackNavigationProp<RootStackParamList, 'Results'
 export const LandlordComponent = ( props:any ) => {
   const navigation = useNavigation<SearchResultsScreenProp>();
   return (
-    <View style={{ backgroundColor: 'rgba(90,90,90,0.14)', padding: 10, margin: 2, width: '80%'}}>
-      <Text>{props.name}</Text>
-      <Text>{props.rating}</Text>
-      <Button
-        title={props.name + "'s Reviews"}
-        onPress={() => navigation.navigate('Landlord')}
-      />
-    </View>
+    <ListItemContainer>
+      <InlineContainter>
+        <ListTitle>{props.name}</ListTitle>
+        <StarContainer>
+          <FontAwesome name="star" color={ brand } size={ 20 } />
+          <FontAwesome name="star" color={ brand } size={ 20 } />
+          <FontAwesome name="star-half-empty" color={ brand } size={ 20 } />
+          <FontAwesome name="star-o" color={ brand } size={ 20 } />
+          <FontAwesome name="star-o" color={ brand } size={ 20 } />
+        </StarContainer>
+      </InlineContainter>
+      <StyledButton onPress={() => navigation.navigate('Landlord')}>
+        <ButtonText>{props.name + "'s Reviews"}</ButtonText>
+      </StyledButton>
+    </ListItemContainer>
   );
 };

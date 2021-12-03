@@ -2,29 +2,50 @@
   Author: Hayden Stegman
 */
 import React, {useState, useEffect } from 'react';
-//import axios from 'axios';
+import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { LandlordComponent } from '../components/LandlordListComponent'
-//import ILandlords from '../interfaces/landlords';
-import { InnerContainer, PageLogo, PageTitle, StyledContainer, SubTitle } from '../components/styles';
+import ILandlords from '../interfaces/landlords';
 
-const baseURL = "http://localhost:5000/api/v0";
+// Styles
+import { 
+  InnerContainer,
+  ListItemContainer,
+  ListTitle, 
+  PageTitle, 
+  StyledButton, 
+  StyledContainer, 
+  SubTitle,
+  Colors 
+} from '../components/styles';
 
+//Colors
+const { primary } = Colors;
+
+// Icons
+import{ FontAwesome } from '@expo/vector-icons'
+
+const baseURL = "http://10.0.0.20:5000/api/v0";
 
 /* 
   Search Results Screen
 */
 function SearchResultsScreen() {
-  const searchEntry = "05401"
-  // const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
+  const searchInput = '05401'
 
-  // useEffect(() => {
-  //   axios.get(`${baseURL}/landlords/`)
-  //     .then(res => {
-  //       setLandlords(res.data.landlords);
-  //     });
-  // }, [])
+  const [landlords, setLandlords] = useState<ILandlords[] | undefined>(undefined);
+
+  useEffect(() => {
+    axios
+      .get(`${baseURL}/landlords/z/${searchInput}`)
+      .then(res => { 
+        setLandlords(res.data.landlords); 
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
 
   return (
     <StyledContainer>
@@ -32,11 +53,18 @@ function SearchResultsScreen() {
       <InnerContainer>
         {/* Page Heading */}
         <PageTitle>Rate My Landlord</PageTitle>
-        <SubTitle>Showing all Landlords from '{searchEntry}'</SubTitle>
-        <LandlordComponent name="Mark" rating={5} />
+        <SubTitle>Showing all Landlords from '{searchInput}'</SubTitle>
 
-        {/* {landlords?.map(landlord => <LandlordComponent name={landlord.first_name} rating={landlord.overall_rating} />)} */}
+        {/* Populate the Review list with the data from the search */}
+        {landlords?.map(landlord => <LandlordComponent key={landlord.id} name={`${landlord.first_name} ${landlord.last_name}`} rating={landlord.overall_rating} />)}
+        
       </InnerContainer>
+      <ListItemContainer>
+        <ListTitle center={true}>Landlord Missing - Add them</ListTitle>
+        <StyledButton>
+          <FontAwesome name="plus" size={ 30 } color={primary} />
+        </StyledButton>
+      </ListItemContainer>
     </StyledContainer>
   );
 };

@@ -56,9 +56,13 @@ const HomeScreen = () => {
 
         {/* Start of Form */}
         <Formik
-          initialValues={{search: ''}}
+          initialValues={{
+            search: ''
+          }}
           onSubmit={(values) => {
-            console.log(values);
+            const ZipCode = values.search;
+            console.log(ZipCode);
+            navigation.navigate('Results');
           }}
         >
           {({handleChange, handleBlur, handleSubmit, values}) => (<StyledFormArea>
@@ -78,7 +82,7 @@ const HomeScreen = () => {
             />
 
             {/* Button for submitting form/search data */}
-            <StyledButton onPress={() => navigation.navigate('Results')}>
+            <StyledButton onPress={handleSubmit} type="submit">
               <ButtonText>
                 Search
               </ButtonText>

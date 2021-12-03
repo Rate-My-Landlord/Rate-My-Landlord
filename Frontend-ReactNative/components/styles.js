@@ -1,7 +1,10 @@
+/*
+  Author: Hayden Stegman
+*/
 import { View, Text, Image, TextInput, TouchableOpacity } from 'react-native';
 import styled from 'styled-components';
 
-// colors
+// Colors
 export const Colors = {
     primary: "#ffffff",
     secondary: "#E5E7EB",
@@ -17,7 +20,7 @@ const {primary, secondary, tertiary, darkLight, brand, green, red } = Colors;
 export const StyledContainer = styled(View)`
     flex: 1;
     padding: 25px;
-    padding-top: 25px;
+    padding-top: 65px;
     background-color: ${primary};
 `;
 
@@ -78,13 +81,6 @@ export const LeftIcon = styled(View)`
     z-index: 1;
 `;
 
-export const RightIcon = styled(TouchableOpacity)`
-    left: 15px;
-    top: 38px;
-    position: absolute;
-    z-index: 1;
-`;
-
 export const StyledButton = styled(TouchableOpacity)`
     padding: 15px;
     background-color: ${brand};
@@ -120,4 +116,38 @@ export const Line = styled(View)`
     width: 100%;
     background-color: ${darkLight};
     margin-vertical: 10px;
+`;
+
+export const ListItemContainer = styled(View)`
+    width: 100%;
+    background-color: ${secondary};
+    border-radius: 10px;
+    margin-vertical: 5px;
+    padding: 10px;
+`;
+
+export const InlineContainter = styled(View)`
+    flex-direction: row;
+`
+
+export const ListTitle = styled(Text)`
+    font-size: 18px;
+    margin-bottom: 0px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: ${tertiary};
+    
+    ${(props) => props.center == true && `
+        text-align: center;
+    `}
+`;
+
+export const StarContainer = styled(View)`
+    flex-direction: row;
+    position: absolute;
+    right: 0px;
+`;
+
+export const ReviewMsgBox = styled(Text)`
+    font-size: 13px;
 `;
