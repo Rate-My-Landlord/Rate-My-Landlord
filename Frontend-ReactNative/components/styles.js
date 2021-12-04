@@ -128,7 +128,7 @@ export const ListItemContainer = styled(View)`
 
 export const InlineContainter = styled(View)`
     flex-direction: row;
-`
+`;
 
 export const ListTitle = styled(Text)`
     font-size: 18px;
