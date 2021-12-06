@@ -65,7 +65,8 @@ const HomeScreen = ({ navigation: { navigate }}) => {
             navigate('Results', { zipcode: values.search});
           }}
         >
-          {({handleChange, handleBlur, handleSubmit, values}) => (<StyledFormArea>
+          {({handleChange, handleBlur, handleSubmit, values}) => (
+          <StyledFormArea>
             {/* Text Input Parameters for Search Bar */}
             <MyTextInput 
               label="Zip Code"

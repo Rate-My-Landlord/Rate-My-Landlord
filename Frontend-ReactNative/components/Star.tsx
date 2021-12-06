@@ -1,7 +1,7 @@
 import React from "react";
 import { Colors, StarContainer } from "./styles";
 import{ FontAwesome } from '@expo/vector-icons'
-const { brand, darkLight, primary } = Colors;
+const { brand } = Colors;
 
 
 export const Star = ( props:any ) => {

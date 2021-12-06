@@ -32,42 +32,42 @@ def prototype():
         property_1 = Property(landlord_id=landlord_1.id,
                               address_1='1 Main Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_1)
         property_2 = Property(landlord_id=landlord_1.id,
                               address_1='1 North Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_2)
         property_3 = Property(landlord_id=landlord_2.id,
                               address_1='1 North Willard Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_3)
         property_4 = Property(landlord_id=landlord_2.id,
                               address_1='1 South Willard Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_4)
         property_5 = Property(landlord_id=landlord_3.id,
                               address_1='1 Pine Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_5)
         property_6 = Property(landlord_id=landlord_3.id,
                               address_1='1 Maple Street',
                               city='Burlington',
-                              zip_code='05401',
+                              zipcode='05401',
                               state='VT',
                               country='US')
         db.session.add(property_6)        

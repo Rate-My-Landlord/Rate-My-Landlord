@@ -11,9 +11,9 @@ import { Colors } from './components/styles'
 const { tertiary } = Colors;
 
 // Screen Imports
-import HomeScreen from './Screens/HomeScreen';
-import SearchResultsScreen from './Screens/SearchResultsScreen'
-import LandlordScreen from './Screens/LandlordScreen';
+import HomeScreen from './screens/HomeScreen';
+import SearchResultsScreen from './screens/SearchResultsScreen'
+import LandlordScreen from './screens/LandlordScreen';
 import { LandlordComponent } from './components/LandlordListComponent';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

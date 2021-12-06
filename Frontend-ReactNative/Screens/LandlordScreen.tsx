@@ -33,12 +33,13 @@ const { primary } = Colors;
 
 type landlordScreenProp = StackNavigationProp<RootStackParamList, 'Landlord'>;
 
-const baseURL = "http://10.0.0.165:5000"
+//const baseURL = "http://10.0.0.165:5000"
+const baseURL = "http://10.0.0.20:5000"
 
 /* 
   Landlord Screen
 */
-function LandlordScreen({ navigation, route: {params}}) {
+function LandlordScreen({ navigation, route: {params} }) {
   const [landlord, setLandlord] = useState<ILandlord | undefined>(undefined)
 
   useEffect(() => {
@@ -55,10 +56,11 @@ function LandlordScreen({ navigation, route: {params}}) {
     <StyledContainer>
       <StatusBar style="dark" />
         <InnerContainer>
+        
         {/* Page Heading */}
         <PageTitle>Rate My Landlord</PageTitle>
         <SubTitle>Showing all Reviews for {landlord?.first_name}</SubTitle>
-        {landlord?.reviews.map(review => <ReviewComponent name={review.text} overall_star_rating={review.overall_star_rating} />)}
+        {landlord?.reviews.map(review => <ReviewComponent key={review.id} name={"-"} text={review.text} overall_star_rating={review.overall_star_rating} />)}
       </InnerContainer>
     </StyledContainer>
   );

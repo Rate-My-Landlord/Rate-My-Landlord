@@ -27,13 +27,13 @@ const { primary } = Colors;
 // Icons
 import{ FontAwesome } from '@expo/vector-icons'
 
-// const baseURL = "http://10.0.0.20:5000/api/v0";
-const baseURL = "http://10.0.0.165:5000/api/v0";
+const baseURL = "http://10.0.0.20:5000/api/v0";
+//const baseURL = "http://10.0.0.165:5000/api/v0";
 
 /* 
   Search Results Screen
 */
-function SearchResultsScreen({ navigation, route}) {
+function SearchResultsScreen({ navigation, route }) {
   // const navigation = useNavigation();
   const { zipcode } = route.params;
 
