@@ -4,10 +4,7 @@ from ..models import Review, Permission
 from . import api
 from .decorators import permission_required
 from .errors import forbidden
-
-@api.route('/test/')
-def test():
-    return jsonify({ 'hello': 'world'})
+from flask_jwt_extended import jwt_required
 
 @api.route('/reviews/')
 def get_reviews():
@@ -21,6 +18,7 @@ def get_review(id):
 
 @api.route('/reviews', methods=['POST'])
 # @permission_required(Permission.WRITE)
+@jwt_required()
 def new_review():
     review = Review.from_json(request.json)
     
@@ -33,6 +31,7 @@ def new_review():
 # editing review
 @api.route('/reviews/<int:id>', methods=['PUT'])
 # @permission_required(Permission.WRITE)
+@jwt_required()
 def edit_review(id):
     review = Review.query.get_or_404(id)
     # if g.current_user != review.author_id and \

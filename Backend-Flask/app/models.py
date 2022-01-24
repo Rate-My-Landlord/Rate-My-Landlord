@@ -4,6 +4,7 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.exceptions import ValidationError
 from app import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Permission:
@@ -18,7 +19,17 @@ class User(db.Model):
     phone = db.Column(db.String(15), unique=True, nullable=False)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
+    email = db.Column(db.String(128))
+    password = db.Column(db.String(128)) # hash
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
     
     def generate_auth_token(self, expiration):
         s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
@@ -32,6 +43,36 @@ class User(db.Model):
         except:
             return None
         return User.query.get(data['id'])
+    
+    @staticmethod
+    def from_json(json_user):
+        body = json_user.get('body')
+        if body is None or body == '':
+            raise ValidationError('User has no body')
+        
+        user_items = {'phone': '',
+                'first_name': '',
+                'last_name': '',
+                'email': ''}
+        
+        for key, _ in user_items.items():
+            user_items[key] = body.get(key)
+            if user_items[key] is None or user_items[key] == '':
+                raise ValidationError('User has no {}'.format(key))
+        
+        new_user = User(phone=user_items['phone'],
+                        first_name=user_items['first_name'],
+                        last_name=user_items['last_name'],
+                        email=user_items['email'])
+        
+        pw = body.get('password')
+        if pw is None or pw == '':
+            raise ValidationError('User has no password')
+        
+        new_user.set_password(pw)
+        
+        return new_user
+    
     
     def to_json(self):
         json_user = {

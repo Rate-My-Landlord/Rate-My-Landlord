@@ -1,8 +1,10 @@
-from flask import g, jsonify
+from flask import g, jsonify, request
 from . import api
 from ..models import User
 from flask_httpauth import HTTPBasicAuth
-from .errors import unauthorized, forbidden
+from .errors import unauthorized, bad_request
+import datetime
+from flask_jwt_extended import create_access_token
 
 auth = HTTPBasicAuth()
 
@@ -38,3 +40,20 @@ def get_token():
         return unauthorized('Invalid credentials')
     return jsonify({'token': g.current_user.generate_auth_token(
         expiration=3600), 'expiration': 3600})
+    
+    
+
+@api.route('/auth/login', methods=['POST'])
+def login():
+    body = request.json
+    if not body:
+        return bad_request('Request has no body')
+    
+    user = User.query.get(phone=body.get('phone'))
+    if not user.check_password(body.get('password')):
+        return bad_request('Phone number or password is invalid')
+    
+    expire_date = datetime.timedelta(days=7)
+    access_token = create_access_token(identity=str(user.id), expires_delta=expire_date)
+    
+    return jsonify({'token': access_token}), 200
