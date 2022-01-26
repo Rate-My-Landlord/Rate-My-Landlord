@@ -1,0 +1,71 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type User {
+    id: ID!
+    phone: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+    created_at: String!
+}
+
+
+type Review {
+    id: ID!
+    author: User
+    landlord: Landlord!
+    property: Property
+    overallStarRating: Int!
+    communicationStarRating: Int!
+    maintenanceStarRating: Int!
+    text: String!
+    created_at: String!
+}
+
+type Landlord {
+    id: ID!
+    user: User
+    first_name: String!
+    last_name: String!
+    zipcode: String!
+}
+
+type Property {
+    id: ID!
+    landlord: Landlord!
+    address_1: String!
+    address_2: String
+    city: String!
+    zipcode: String!
+    state: String!
+    country: String!
+}
+
+type ReviewsResult {
+    success: Boolean!
+    errors: [String]
+    reviews: [Review]
+}
+
+type ReviewResult {
+    success: Boolean!
+    errors: [String]
+    review: Review
+}
+
+
+type Query {
+    allReviews: ReviewsResult!
+    reviewById(reviewId: ID!): ReviewResult!
+    landlords: [Landlord]!
+}
+
+type Mutation {
+    newReview(authorId: ID, landlordId: ID!, propertyId: ID, 
+    overallStarRating: Int!, communicationStarRating: Int,
+    maintenanceStarRating: Int, text: String): ReviewResult!
+    updateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
+}

@@ -113,6 +113,7 @@ class Review(db.Model):
     maintenance_star_rating = db.Column(db.Integer)
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    landlord = db.relationship('Landlord', backref='review', uselist=False, lazy=True)
     
     def to_json(self):
         author_url = None
@@ -138,7 +139,8 @@ class Review(db.Model):
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'created_at': self.created_at}
+            'created_at': self.created_at,
+            'landlord': self.landlord.to_json(brief=True)}
         return json_review
     
     @staticmethod

@@ -21,7 +21,6 @@ def create_app(config_name):
     
     app.config.from_envvar('ENV_FILE_LOCATION')
     
-    
     jwt = JWTManager(app)
     
     db.init_app(app)
