@@ -14,4 +14,4 @@ def register():
     db.session.add(new_user)
     db.session.commit()
     
-    return None
+    return {'stauts': 'success'}

@@ -1,11 +1,9 @@
-from flask.globals import current_app
 from flask.helpers import url_for
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.exceptions import ValidationError
 from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import phonenumbers, re
 
 class Permission:
     FOLLOW = 1
@@ -19,7 +17,7 @@ class User(db.Model):
     phone = db.Column(db.String(15), unique=True, nullable=False)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
-    email = db.Column(db.String(128))
+    email = db.Column(db.String(128), unique=True)
     password = db.Column(db.String(128)) # hash
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -30,19 +28,6 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    
-    def generate_auth_token(self, expiration):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.id}).decode('utf-8')
-    
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        return User.query.get(data['id'])
     
     @staticmethod
     def from_json(json_user):
@@ -59,19 +44,50 @@ class User(db.Model):
             user_items[key] = body.get(key)
             if user_items[key] is None or user_items[key] == '':
                 raise ValidationError('User has no {}'.format(key))
+
+        # Formatting phone to E.164 format
+        user_items['phone'] = '+1{}'.format(re.sub('[^0-9]', '', user_items['phone']))
+        # Validating phone
+        User.validate_phone(user_items['phone'])
+        # Validating email
+        User.validate_email(user_items['email'])
+        
+        pw = body.get('password')
+        if pw is None or pw == '':
+            raise ValidationError('User has no password')
         
         new_user = User(phone=user_items['phone'],
                         first_name=user_items['first_name'],
                         last_name=user_items['last_name'],
                         email=user_items['email'])
         
-        pw = body.get('password')
-        if pw is None or pw == '':
-            raise ValidationError('User has no password')
-        
+        # Setting password
         new_user.set_password(pw)
         
         return new_user
+    
+    
+    @staticmethod
+    def validate_email(email):
+        user = User.query.filter(User.email==email).first()
+        if user is not None:
+            raise ValidationError('Email already in use')
+    
+    @staticmethod
+    def validate_phone(phone):
+        # https://stackoverflow.com/questions/36251149/validating-us-phone-number-in-wtforms
+        # Phone too long
+        if len(phone) > 16:
+                raise ValidationError('Invalid phone number')
+        # Checking if phone already exist
+        user = User.query.filter(User.phone == phone).first()
+        if user is not None:
+            raise ValidationError('Phone Number already in use')
+        
+        # Checking if it is a valid phone number
+        input_number = phonenumbers.parse(phone)
+        if not (phonenumbers.is_valid_number(input_number)):
+            raise ValidationError('Invalid phone number')
     
     
     def to_json(self):

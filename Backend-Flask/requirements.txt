@@ -16,6 +16,7 @@ click==7.1.2
 click-didyoumean==0.0.3
 click-plugins==1.1.1
 click-repl==0.1.6
+colorama==0.4.4
 cryptography==35.0.0
 drf-writable-nested==0.6.2
 ecdsa==0.14.1
@@ -29,6 +30,8 @@ Flask-SQLAlchemy==2.5.1
 future==0.18.2
 greenlet==1.1.2
 idna==2.10
+importlib-metadata==4.10.1
+importlib-resources==5.4.0
 intuit-oauth==1.2.3
 itsdangerous==2.0.1
 Jinja2==3.0.3
@@ -41,6 +44,7 @@ numpy==1.19.5
 oauthlib==3.1.0
 pandas==1.2.0
 pgeocode==0.3.0
+phonenumbers==8.12.41
 Pillow==8.1.0
 prompt-toolkit==3.0.10
 pyasn1==0.4.8
@@ -72,3 +76,4 @@ vine==5.0.0
 wcwidth==0.2.5
 Werkzeug==2.0.2
 yarl==1.6.3
+zipp==3.7.0

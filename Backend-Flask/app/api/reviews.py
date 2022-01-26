@@ -2,8 +2,6 @@ from flask import json, jsonify, request, g, url_for
 from .. import db
 from ..models import Review, Permission
 from . import api
-from .decorators import permission_required
-from .errors import forbidden
 from flask_jwt_extended import jwt_required
 
 @api.route('/reviews/')
