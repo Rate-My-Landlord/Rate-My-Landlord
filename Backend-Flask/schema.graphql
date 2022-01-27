@@ -3,15 +3,18 @@ schema {
     mutation: Mutation
 }
 
+##########################
+#       Data types       #
+##########################
+
 type User {
     id: ID!
     phone: String!
     firstName: String!
     lastName: String!
     email: String!
-    created_at: String!
+    createdAt: String!
 }
-
 
 type Review {
     id: ID!
@@ -19,30 +22,38 @@ type Review {
     landlord: Landlord!
     property: Property
     overallStarRating: Int!
-    communicationStarRating: Int!
-    maintenanceStarRating: Int!
-    text: String!
-    created_at: String!
+    communicationStarRating: Int
+    maintenanceStarRating: Int
+    text: String
+    createdAt: String!
 }
 
 type Landlord {
     id: ID!
     user: User
-    first_name: String!
-    last_name: String!
-    zipcode: String!
+    firstName: String!
+    lastName: String!
+    zipCode: String!,
+    overallRating: Float!,
+    properties: [Property]
+    reviews: [Review]
 }
 
 type Property {
     id: ID!
     landlord: Landlord!
-    address_1: String!
-    address_2: String
+    address1: String!
+    address2: String
     city: String!
-    zipcode: String!
+    zipCode: String!
     state: String!
     country: String!
 }
+
+
+##########################
+#      Result types      #
+##########################
 
 type ReviewsResult {
     success: Boolean!
@@ -56,16 +67,46 @@ type ReviewResult {
     review: Review
 }
 
-
-type Query {
-    allReviews: ReviewsResult!
-    reviewById(reviewId: ID!): ReviewResult!
-    landlords: [Landlord]!
+type LandlordsResult {
+    success: Boolean!
+    errors: [String]
+    landlords: [Landlord]
 }
 
+type LandlordResult {
+    success: Boolean!
+    errors: [String]
+    landlord: Landlord
+}
+
+
+##########################
+#      Query types       #
+##########################
+
+
+type Query {
+    """Get all reviews"""
+    AllReviews: ReviewsResult!
+    """Get a review by the reviewId"""
+    ReviewById(reviewId: ID!): ReviewResult!
+    """Get all reviews for a landlord with landlordId"""
+    ReviewsByLandlordId(landlordId: ID!): ReviewsResult!
+    """Get all landlords"""
+    AllLandlords: LandlordsResult!
+    """Get all landlords by zip code"""
+    LandlordsByZipCode(zipCode: String!): LandlordsResult!
+}
+
+
+##########################
+#     Mutation types     #
+##########################
+
 type Mutation {
-    newReview(authorId: ID, landlordId: ID!, propertyId: ID, 
-    overallStarRating: Int!, communicationStarRating: Int,
-    maintenanceStarRating: Int, text: String): ReviewResult!
-    updateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
+    NewReview(authorId: ID, landlordId: ID!, propertyId: ID, 
+                OverallStarRating: Int!, communicationStarRating: Int,
+                MaintenanceStarRating: Int, text: String): ReviewResult!
+    NewLandlord(firstName: String!, lastName: String!, zipCode: String!, userId: ID): LandlordResult
+    UpdateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
 }

@@ -1,3 +1,4 @@
+from turtle import backward
 from flask.helpers import url_for
 from app.exceptions import ValidationError
 from app import db
@@ -112,25 +113,9 @@ class Review(db.Model):
     communication_star_rating = db.Column(db.Integer)
     maintenance_star_rating = db.Column(db.Integer)
     text = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    landlord = db.relationship('Landlord', backref='review', uselist=False, lazy=True)
-    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)    
     def to_json(self):
-        author_url = None
-        if self.author_id is not None:
-            author_url = url_for('api.get_user', id=self.author_id)
-        landlord_url = None
-        if self.landlord_id is not None:
-            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
-        property_url = None
-        if self.property_id is not None:
-            property_url = url_for('api.get_property', id=self.property_id)
-        
         json_review = {
-            'url': url_for('api.get_review', id=self.id),
-            'author_url': author_url,
-            'landlord_url': landlord_url,
-            'property_url': property_url,
             'id': self.id,
             'author_id': self.author_id,
             'landlord_id': self.landlord_id,
@@ -139,8 +124,7 @@ class Review(db.Model):
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'created_at': self.created_at,
-            'landlord': self.landlord.to_json(brief=True)}
+            'created_at': self.created_at}
         return json_review
     
     @staticmethod
@@ -184,25 +168,20 @@ class Landlord(db.Model):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     zipcode = db.Column(db.String(5))
+    properties = db.relationship('Property', backref='landlord') # one to many relationship
+    reviews = db.relationship('Review', backref='landlord') # one to many relationship
+
     
-    def to_json(self, brief=False):
-        user_url = None
-        if self.user_id is not None:
-            user_url = url_for('api.get_user')
+    def to_json(self):
         json_landlord = {
-            'url': url_for('api.get_landlord', id=self.id),
-            'user_url': user_url,
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'zipcode': self.zipcode,
-            'overall_rating': self.getOverallRating()}
-        # if brief, do not include all of the landlords reviews and properties
-        if not brief:
-            properties  = Property.query.filter_by(landlord_id=self.id)
-            reviews = Review.query.filter_by(landlord_id=self.id)
-            json_landlord['properties'] = [property.to_json() for property in properties]
-            json_landlord['reviews'] = [review.to_json() for review in reviews]
+            'zip_code': self.zipcode,
+            'overall_rating': self.getOverallRating(),
+            'properties': [property.to_json() for property in self.properties],
+            'reviews': [review.to_json() for review in self.reviews]
+            }
         return json_landlord
     
     @staticmethod
@@ -228,13 +207,17 @@ class Landlord(db.Model):
     
     
     def getOverallRating(self):
-        reviews = Review.query.filter(Review.landlord_id==self.id)
-        if reviews.count() == 0:
+        if len(self.reviews) == 0:
             return 0
         overall_rating = 0
-        for review in reviews:
+        for review in self.reviews:
             overall_rating += review.overall_star_rating
-        return round(int(overall_rating)/reviews.count(), 1)
+        return round(int(overall_rating)/len(self.reviews), 1)
+    
+    
+    @staticmethod
+    def landlord_exists(landlord_id):
+        return Landlord.query.get(landlord_id) is not None
     
     # for debug purposes
     def __repr__(self):
@@ -251,19 +234,13 @@ class Property(db.Model):
     country =  db.Column(db.String(50))
     
     def to_json(self):
-        landlord_url = ''
-        if self.landlord_id is not None:
-            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
-            
         json_property = {
-            'url': url_for('api.get_property', id=self.id),
-            'landlord_url': landlord_url,
             'id': self.id,
             'landlord_id': self.landlord_id,
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,
-            'zipcode': self.zipcode,
+            'zip_code': self.zipcode,
             'state': self.state,
             'country': self.country}
         
