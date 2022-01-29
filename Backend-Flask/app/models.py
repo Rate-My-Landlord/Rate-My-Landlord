@@ -1,4 +1,3 @@
-from turtle import backward
 from flask.helpers import url_for
 from app.exceptions import ValidationError
 from app import db
@@ -274,6 +273,16 @@ class Property(db.Model):
                         zipcode=property_items['zipcode'],
                         state=property_items['state'],
                         country=property_items['country'])
+        
+    @staticmethod
+    def property_exists(address_1, city, state, zip_code, country):
+        property = Property.query.filter(Property.address_1==address_1,
+                                         Property.city==city,
+                                         Property.state==state,
+                                         Property.zipcode==zip_code,
+                                         Property.country==country).all()
+
+        return len(property) > 0
         
     # for debug purposes
     def __repr__(self):

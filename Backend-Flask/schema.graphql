@@ -79,6 +79,12 @@ type LandlordResult {
     landlord: Landlord
 }
 
+type PropertyResult {
+    success: Boolean!,
+    errors: [String]
+    property: Property
+}
+
 
 ##########################
 #      Query types       #
@@ -92,10 +98,18 @@ type Query {
     ReviewById(reviewId: ID!): ReviewResult!
     """Get all reviews for a landlord with landlordId"""
     ReviewsByLandlordId(landlordId: ID!): ReviewsResult!
+    """Get all reviews for a property with propertyId"""
+    ReviewsByPropertyId(propertyId: ID!): ReviewsResult!
+    """Get all reviews by landlord zip code"""
+    ReviewsByZipCode(zipCode: String!): ReviewsResult!
     """Get all landlords"""
     AllLandlords: LandlordsResult!
+    """Get a landlord by ID"""
+    LandlordById(landlordId: ID!): LandlordResult!
     """Get all landlords by zip code"""
     LandlordsByZipCode(zipCode: String!): LandlordsResult!
+    """Get the landlord of the property with propertyId"""
+    LandlordByPropertyId(propertyId: ID!): LandlordResult!
 }
 
 
@@ -104,9 +118,14 @@ type Query {
 ##########################
 
 type Mutation {
+    """Create a new review"""
     NewReview(authorId: ID, landlordId: ID!, propertyId: ID, 
                 OverallStarRating: Int!, communicationStarRating: Int,
                 MaintenanceStarRating: Int, text: String): ReviewResult!
+    """Create a new landlord"""
     NewLandlord(firstName: String!, lastName: String!, zipCode: String!, userId: ID): LandlordResult
-    UpdateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
+    """Create a new property"""
+    NewProperty(landlordId: ID!, address1: String!, address2: String, city: String!, zipCode: String!, state: String!, country: String!): PropertyResult!
+
+    # UpdateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
 }

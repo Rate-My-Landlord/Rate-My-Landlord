@@ -1,4 +1,3 @@
-from distutils.log import error
 from ... import db
 from ...models import Landlord
 from ariadne import convert_kwargs_to_snake_case

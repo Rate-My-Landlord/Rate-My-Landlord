@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from ariadne.constants import PLAYGROUND_HTML
-from ariadne import MutationType, graphql_sync, make_executable_schema, load_schema_from_path, ObjectType, QueryType, gql, snake_case_fallback_resolvers
+from ariadne import MutationType, graphql_sync, make_executable_schema, load_schema_from_path, QueryType, gql, snake_case_fallback_resolvers
 # Importing our resolvers
 # Review
 from .review.review_resolvers import *
@@ -8,6 +8,8 @@ from .review.review_mutations import *
 # Landlord
 from .landlord.landlord_resolvers import *
 from .landlord.landlords_mutations import *
+# Property
+from .property.property_mutations import *
 
 api = Blueprint('api', __name__)
 
@@ -26,13 +28,19 @@ mutation = MutationType()
 # Reviews
 query.set_field('AllReviews', resolve_reviews)
 query.set_field('ReviewById', resolve_review_by_id)
-query.set_field('ReviewsByLandlordId', resolver_review_by_landlord_id)
-mutation.set_field('UpdateReview', resolve_update_review)
+query.set_field('ReviewsByPropertyId', resolve_reviews_by_property_id)
+query.set_field('ReviewsByLandlordId', resolver_reviews_by_landlord_id)
+query.set_field('ReviewsByZipCode', resolver_reviews_by_zip_code)
+# mutation.set_field('UpdateReview', resolve_update_review)
 mutation.set_field('NewReview', resolve_new_review)
 # Landlords
 query.set_field('AllLandlords', resolve_landlords)
+query.set_field('LandlordById', resolve_landlord_by_id)
 query.set_field('LandlordsByZipCode', resolve_landlords_by_zip)
+query.set_field('LandlordByPropertyId', resolve_landlord_by_property_id)
 mutation.set_field('NewLandlord', resolve_new_landlord)
+# Properties
+mutation.set_field('NewProperty', resolve_new_property)
 
 
 # Creating schema
