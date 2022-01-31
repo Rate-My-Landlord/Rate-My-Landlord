@@ -1,3 +1,6 @@
+## Want to know how to use the API? - [Read the docs](/docs/graphql.md)
+
+
 # Initial Setup
 ### Prerequisites
 You have Python installed.  
@@ -39,66 +42,3 @@ To insert some dummy data:
 This command does **delete all data in your local database**, so be aware.  
 This adds 3 landlords, who each have 2 properties and 3 reviews.  
 
-
----  
-
-# Routes  
-### Reviews   
-| Request Type  | Route               | Description                 |
-|:-------------:|---------------------|-----------------------------|
-| GET           | `/reviews/`         | returns list of all reviews |
-| GET           | `/reviews/id` (int) | returns a review or 404     |
-| POST          | `/reviews`          | post a review               |  
-
-Format for Posting: (example)  
-`{"body":`  
-&emsp;`{`  
-&emsp;&emsp;`"author_id": 1,`(not required for now since we have not implemented users)  
-&emsp;&emsp;`"landlord_id": 1,`(required)  
-&emsp;&emsp;`"property_id": 1,`(optional)  
-&emsp;&emsp;`"overall_star_rating": 2,`(optional)  
-&emsp;&emsp;`"communication_star_rating": 2,`(optional)  
-&emsp;&emsp;`"maintenance_star_rating": 2,`(optional)  
-&emsp;&emsp;`"text": "text",` (optional)  
-&emsp;&emsp;`}`  
-`}`  
-
-
-### Landlords  
-| Request Type  | Route                    | Description                                                 |
-|:-------------:|--------------------------|-------------------------------------------------------------|
-| GET           | `/landlords/`            | returns list of all landlords                               |
-| GET           | `/landlords/id` (int)    | returns a landlord with their reviews and properties or 404 |
-| GET           | `/landlords/z/zip` (int) | returns a landlord based on the provided zip             |
-| POST          | `/landlords`             | post a landlord                                             |  
-
-Format for Posting: (example)  
-`{"body":`  
-&emsp;`{`  
-    &emsp;&emsp;`"first_name": "first",`(required)  
-    &emsp;&emsp;`"last_name": "last",`(required)  
-    &emsp;&emsp;`"zip_code": "12345",`(required)  
-    &emsp;&emsp;`"user_id": 1,`(optional)  
-    &emsp;&emsp;`}`  
-`}`  
-
-
-### Properties
-| Request Type  | Route                  | Description                    |
-|:-------------:|------------------------|--------------------------------|
-| GET           | `/properties/`         | returns list of all properties |
-| GET           | `/reviews/id` (int)    | returns a property or 404      |
-| POST          | `/properties`          | post a property                |  
-
-Format for Posting: (example)  
-`{"body":`  
-&emsp;`{`  
-    &emsp;&emsp;`"landlord_id": 1,`(required)  
-    &emsp;&emsp;`"address_1": "1 main street",`(optional)  
-    &emsp;&emsp;`"address_2": "1",`(optional)  
-    &emsp;&emsp;`"city": "Burlington",`(optional)  
-    &emsp;&emsp;`"zipcode": "05401",`(optional)  
-    &emsp;&emsp;`"state": "VT",`(optional)  
-    &emsp;&emsp;`"country": "US",`(optional)  
-    &emsp;&emsp;`}`  
-`}`

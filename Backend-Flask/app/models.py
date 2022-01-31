@@ -114,11 +114,10 @@ class Review(db.Model):
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)    
     def to_json(self):
+        landlord = Landlord.query.get(self.landlord_id)
         json_review = {
             'id': self.id,
-            'author_id': self.author_id,
-            'landlord_id': self.landlord_id,
-            'property_id': self.property_id,
+            'landlord': landlord.to_json_brief(),
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
@@ -170,6 +169,15 @@ class Landlord(db.Model):
     properties = db.relationship('Property', backref='landlord') # one to many relationship
     reviews = db.relationship('Review', backref='landlord') # one to many relationship
 
+    def to_json_brief(self):
+        json_landlord = {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'zip_code': self.zipcode,
+            'overall_rating': self.getOverallRating(),
+        }
+        return json_landlord
     
     def to_json(self):
         json_landlord = {

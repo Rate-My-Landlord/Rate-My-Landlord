@@ -1,6 +1,8 @@
 aiohttp==3.7.3
 alembic==1.7.5
 amqp==5.0.2
+anyio==3.5.0
+ariadne==0.14.1
 asgiref==3.3.1
 async-timeout==3.0.1
 attrs==20.3.0
@@ -28,6 +30,7 @@ Flask-JWT-Extended==4.3.1
 Flask-Migrate==3.1.0
 Flask-SQLAlchemy==2.5.1
 future==0.18.2
+graphql-core==3.1.7
 greenlet==1.1.2
 idna==2.10
 importlib-metadata==4.10.1
@@ -67,8 +70,10 @@ schedule==0.6.0
 sendgrid==6.2.1
 simplejson==3.17.2
 six==1.15.0
+sniffio==1.2.0
 SQLAlchemy==1.4.27
 sqlparse==0.4.1
+starlette==0.17.1
 twilio==6.38.0
 typing-extensions==3.7.4.3
 urllib3==1.26.2
