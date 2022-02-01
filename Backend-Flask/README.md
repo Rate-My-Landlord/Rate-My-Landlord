@@ -1,4 +1,4 @@
-# Want to know how to use the API? - [Read the docs](/docs/graphql.md)
+# Want to know how to use the API? - [Read the docs](docs/graphql.md)
 
 
 # Initial Setup
