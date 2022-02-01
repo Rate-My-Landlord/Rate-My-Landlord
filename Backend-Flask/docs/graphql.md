@@ -3,9 +3,12 @@ This is a GraphQL API. If you're not familiar with GraphQL, go check out this [i
 
 If you want to explore the API, just start the server and navigate to http://127.0.0.1:5000/api/graphql
 
+## Reporting Issues
+If you find an issue with an API, please open an issue on GitHub and tag me or [email me](mailto:jacob.capra@mymail.champlain.edu) at jacob.capra@mymail.champlain.edu
+
 ## Making API calls
 All API calls can be sent to a single endpoint: **http://127.0.0.1:5000/api/graphql**  
-#### All API calls **MUST** be **POST** requests
+### All API calls **MUST** be **POST** requests
 
 ## [Query Docs](query.md)  
 ## [Mutation Docs](mutation.md)
@@ -58,7 +61,7 @@ All API calls can be sent to a single endpoint: **http://127.0.0.1:5000/api/grap
 ## Result Types
 Result types will be what is returned to you with any call you make
 
-*IMPORTANT NOTE: for ReviewsResult and ReviewResult the landlord type will not include reviews or properties*
+*IMPORTANT NOTE: for ReviewsResult and ReviewResult the landlord type will not include reviews or properties due to recursion an the way relationships are setup*
 
 ### ReviewsResult:
 &emsp; success: Boolean  
