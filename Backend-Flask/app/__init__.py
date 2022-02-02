@@ -18,7 +18,8 @@ def create_app(config_name):
     
     app.config.from_object(config['development'])
     config['development'].init_app(app)
-    
+
+    # Loading environment variables
     app.config.from_envvar('ENV_FILE_LOCATION')
     
     jwt = JWTManager(app)

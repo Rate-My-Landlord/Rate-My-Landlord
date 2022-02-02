@@ -20,6 +20,7 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=True)
     password = db.Column(db.String(128)) # hash
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviews = db.relationship('Review', backref='user') # one to many relationship
     
     
     def set_password(self, password):
@@ -28,6 +29,20 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
+        
+    def to_json(self, brief=False):
+        json_user = {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'reviews': [review.to_json for review in self.reviews],
+            'created_at': self.created_at
+        }
+        # If not brief, include personal info
+        if not brief:
+            json_user['phone'] = self.phone
+            json_user['email'] = self.email
+        return json_user
     
     @staticmethod
     def from_json(json_user):
@@ -74,6 +89,10 @@ class User(db.Model):
             raise ValidationError('Email already in use')
     
     @staticmethod
+    def format_phone(phone):
+        return '+1{}'.format(re.sub('[^0-9]', '', phone))
+    
+    @staticmethod
     def validate_phone(phone):
         # https://stackoverflow.com/questions/36251149/validating-us-phone-number-in-wtforms
         # Phone too long
@@ -89,15 +108,6 @@ class User(db.Model):
         if not (phonenumbers.is_valid_number(input_number)):
             raise ValidationError('Invalid phone number')
     
-    
-    def to_json(self):
-        json_user = {
-            'url': url_for('api.get_user', id=self.id),
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-        }
-        return json_user
-    
     # for debug purposes
     def __repr__(self):
         return '<User {}>'.format(self.id)
@@ -105,24 +115,27 @@ class User(db.Model):
     
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to True later
-    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to True later
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True) # change to True later
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to False later
+    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to False later
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True) # change to False later
     overall_star_rating = db.Column(db.Integer)
     communication_star_rating = db.Column(db.Integer)
     maintenance_star_rating = db.Column(db.Integer)
     text = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.relationship('User', backref='review', uselist=False, lazy=True, viewonly=True)
+    
     def to_json(self):
         landlord = Landlord.query.get(self.landlord_id)
         json_review = {
             'id': self.id,
-            'landlord': landlord.to_json_brief(),
+            'landlord': landlord.to_json_(brief=True),
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'created_at': self.created_at}
+            'author': self.author.to_json(brief=True),
+            'created_at': self.created_at }
         return json_review
     
     @staticmethod
@@ -168,27 +181,19 @@ class Landlord(db.Model):
     zipcode = db.Column(db.String(5))
     properties = db.relationship('Property', backref='landlord') # one to many relationship
     reviews = db.relationship('Review', backref='landlord') # one to many relationship
-
-    def to_json_brief(self):
-        json_landlord = {
-            'id': self.id,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'zip_code': self.zipcode,
-            'overall_rating': self.getOverallRating(),
-        }
-        return json_landlord
     
-    def to_json(self):
+    def to_json(self, brief=False):
         json_landlord = {
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'zip_code': self.zipcode,
             'overall_rating': self.getOverallRating(),
-            'properties': [property.to_json() for property in self.properties],
-            'reviews': [review.to_json() for review in self.reviews]
             }
+        if not brief:
+            json_landlord['properties'] = [property.to_json() for property in self.properties]
+            json_landlord['reviews'] = [review.to_json() for review in self.reviews]
+            
         return json_landlord
     
     @staticmethod

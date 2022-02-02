@@ -9,10 +9,11 @@ schema {
 
 type User {
     id: ID!
-    phone: String!
+    phone: String
     firstName: String!
     lastName: String!
-    email: String!
+    email: String
+    reviews: [Review]
     createdAt: String!
 }
 
@@ -80,9 +81,16 @@ type LandlordResult {
 }
 
 type PropertyResult {
-    success: Boolean!,
+    success: Boolean!
     errors: [String]
     property: Property
+}
+
+type UserResult {
+    success: Boolean!
+    errors: [String]
+    user: User
+    token: String
 }
 
 
@@ -110,6 +118,8 @@ type Query {
     LandlordsByZipCode(zipCode: String!): LandlordsResult!
     """Get the landlord of the property with propertyId"""
     LandlordByPropertyId(propertyId: ID!): LandlordResult!
+    """Get a user by userId"""
+    UserByUserId(userId: ID!): UserResult!
 }
 
 
@@ -119,7 +129,7 @@ type Query {
 
 type Mutation {
     """Create a new review"""
-    NewReview(authorId: ID, landlordId: ID!, propertyId: ID, 
+    NewReview(authorId: ID!, landlordId: ID!, propertyId: ID, 
                 overallStarRating: Int!, communicationStarRating: Int,
                 maintenanceStarRating: Int, text: String): ReviewResult!
     """Create a new landlord"""
@@ -128,4 +138,12 @@ type Mutation {
     NewProperty(landlordId: ID!, address1: String!, address2: String, city: String!, zipCode: String!, state: String!, country: String!): PropertyResult!
 
     # UpdateReview(reviewId: ID!, newOverallStarRating: Int!): ReviewResult!
+
+    """Create a new user"""
+    NewUser(phone: String!, firstName: String!, lastName: String!, email: String!, password: String!): UserResult!
+    """Login a user"""
+    Login(phone: String!, password: String!): UserResult!
+    """Update user info"""
+    UpdateUser(firstName: String, lastName: String, email: String): UserResult!
+
 }

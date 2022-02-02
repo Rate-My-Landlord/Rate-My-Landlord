@@ -13,9 +13,12 @@
 | LandlordById        | landlordId: ID!     | get the landlord with landlordId                              |LandlordResult |
 | LandlordByZipCode   | zipCode: String!    | get all landlords matching the provided zipCode               |LandlordsResult|
 | LandlordByPropertyId| propertyId: ID!     | get the landlord who owns the property with propertyId        |LandlordResult |
+| UserByUserId        | userId: ID!         | get the user associated with userId                           | UserResult*   |  
+
+\* This will not return a user's phone or email  
 
 
-### Sample Queries:
+## Sample Queries:
 #### Query with no argument
 ```
 query {

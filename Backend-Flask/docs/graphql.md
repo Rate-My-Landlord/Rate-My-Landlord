@@ -10,6 +10,9 @@ If you find an issue with an API, please open an issue on GitHub and tag me or [
 All API calls can be sent to a single endpoint: **http://127.0.0.1:5000/api/graphql**  
 ### All API calls **MUST** be **POST** requests
 
+### Authentication
+For all queries, you do no have to worry about authentication. However, there are a few mutations that do require authentication. Authentication is outlined in the [authentication docs](authentication.md).
+
 ## [Query Docs](query.md)  
 ## [Mutation Docs](mutation.md)
 
@@ -23,6 +26,7 @@ All API calls can be sent to a single endpoint: **http://127.0.0.1:5000/api/grap
 &emsp; firstName: String  
 &emsp; lastName: String  
 &emsp; email: String  
+&emsp; reviews: [Review]  
 &emsp; createdAt: String (in [UTC format](https://en.wikipedia.org/wiki/Coordinated_Universal_Time))
 
 ### Review:
@@ -87,3 +91,9 @@ Result types will be what is returned to you with any call you make
 &emsp; success: Boolean  
 &emsp; errors: [String]  
 &emsp; property: Property  
+
+### UserResult:
+&emsp; success: Boolean  
+&emsp; errors: [String]  
+&emsp; user: User  
+&emsp; token: String  (A [JWT](https://en.wikipedia.org/wiki/JSON_Web_Token))

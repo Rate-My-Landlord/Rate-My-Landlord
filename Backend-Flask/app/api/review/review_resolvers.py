@@ -1,6 +1,8 @@
 from ...models import Landlord, Review
 from ariadne import convert_kwargs_to_snake_case
+from ..decorators import test_decorator
 
+@test_decorator
 @convert_kwargs_to_snake_case
 def resolve_reviews(*_):
     """Get all reviews"""
