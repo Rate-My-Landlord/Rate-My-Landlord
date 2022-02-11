@@ -1,10 +1,9 @@
-from flask.globals import current_app
 from flask.helpers import url_for
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app.exceptions import ValidationError
 from app import db
 from datetime import datetime
-
+from werkzeug.security import generate_password_hash, check_password_hash
+import phonenumbers, re
 
 class Permission:
     FOLLOW = 1
@@ -18,28 +17,96 @@ class User(db.Model):
     phone = db.Column(db.String(15), unique=True, nullable=False)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
+    email = db.Column(db.String(128), unique=True)
+    password = db.Column(db.String(128)) # hash
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    reviews = db.relationship('Review', backref='user') # one to many relationship
     
-    def generate_auth_token(self, expiration):
-        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'id': self.id}).decode('utf-8')
     
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(current_app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except:
-            return None
-        return User.query.get(data['id'])
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
     
-    def to_json(self):
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+        
+    def to_json(self, brief=False):
         json_user = {
-            'url': url_for('api.get_user', id=self.id),
+            'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
+            'reviews': [review.to_json for review in self.reviews],
+            'created_at': self.created_at
         }
+        # If not brief, include personal info
+        if not brief:
+            json_user['phone'] = self.phone
+            json_user['email'] = self.email
         return json_user
+    
+    @staticmethod
+    def from_json(json_user):
+        body = json_user.get('body')
+        if body is None or body == '':
+            raise ValidationError('User has no body')
+        
+        user_items = {'phone': '',
+                'first_name': '',
+                'last_name': '',
+                'email': ''}
+        
+        for key, _ in user_items.items():
+            user_items[key] = body.get(key)
+            if user_items[key] is None or user_items[key] == '':
+                raise ValidationError('User has no {}'.format(key))
+
+        # Formatting phone to E.164 format
+        user_items['phone'] = '+1{}'.format(re.sub('[^0-9]', '', user_items['phone']))
+        # Validating phone
+        User.validate_phone(user_items['phone'])
+        # Validating email
+        User.validate_email(user_items['email'])
+        
+        pw = body.get('password')
+        if pw is None or pw == '':
+            raise ValidationError('User has no password')
+        
+        new_user = User(phone=user_items['phone'],
+                        first_name=user_items['first_name'],
+                        last_name=user_items['last_name'],
+                        email=user_items['email'])
+        
+        # Setting password
+        new_user.set_password(pw)
+        
+        return new_user
+    
+    
+    @staticmethod
+    def validate_email(email):
+        user = User.query.filter(User.email==email).first()
+        if user is not None:
+            raise ValidationError('Email already in use')
+    
+    @staticmethod
+    def format_phone(phone):
+        return '+1{}'.format(re.sub('[^0-9]', '', phone))
+    
+    @staticmethod
+    def validate_phone(phone):
+        # https://stackoverflow.com/questions/36251149/validating-us-phone-number-in-wtforms
+        # Phone too long
+        if len(phone) > 16:
+                raise ValidationError('Invalid phone number')
+        # Checking if phone already exist
+        user = User.query.filter(User.phone == phone).first()
+        if user is not None:
+            raise ValidationError('Phone Number already in use')
+        
+        # Checking if it is a valid phone number
+        input_number = phonenumbers.parse(phone)
+        if not (phonenumbers.is_valid_number(input_number)):
+            raise ValidationError('Invalid phone number')
     
     # for debug purposes
     def __repr__(self):
@@ -48,40 +115,27 @@ class User(db.Model):
     
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to True later
-    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to True later
-    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True) # change to True later
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True) # change to False later
+    landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'), nullable=True) # change to False later
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=True) # change to False later
     overall_star_rating = db.Column(db.Integer)
     communication_star_rating = db.Column(db.Integer)
     maintenance_star_rating = db.Column(db.Integer)
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.relationship('User', backref='review', uselist=False, lazy=True, viewonly=True)
     
     def to_json(self):
-        author_url = None
-        if self.author_id is not None:
-            author_url = url_for('api.get_user', id=self.author_id)
-        landlord_url = None
-        if self.landlord_id is not None:
-            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
-        property_url = None
-        if self.property_id is not None:
-            property_url = url_for('api.get_property', id=self.property_id)
-        
+        landlord = Landlord.query.get(self.landlord_id)
         json_review = {
-            'url': url_for('api.get_review', id=self.id),
-            'author_url': author_url,
-            'landlord_url': landlord_url,
-            'property_url': property_url,
             'id': self.id,
-            'author_id': self.author_id,
-            'landlord_id': self.landlord_id,
-            'property_id': self.property_id,
+            'landlord': landlord.to_json_(brief=True),
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'created_at': self.created_at}
+            'author': self.author.to_json(brief=True),
+            'created_at': self.created_at }
         return json_review
     
     @staticmethod
@@ -125,25 +179,21 @@ class Landlord(db.Model):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     zipcode = db.Column(db.String(5))
+    properties = db.relationship('Property', backref='landlord') # one to many relationship
+    reviews = db.relationship('Review', backref='landlord') # one to many relationship
     
     def to_json(self, brief=False):
-        user_url = None
-        if self.user_id is not None:
-            user_url = url_for('api.get_user')
         json_landlord = {
-            'url': url_for('api.get_landlord', id=self.id),
-            'user_url': user_url,
             'id': self.id,
             'first_name': self.first_name,
             'last_name': self.last_name,
-            'zipcode': self.zipcode,
-            'overall_rating': self.getOverallRating()}
-        # if brief, do not include all of the landlords reviews and properties
+            'zip_code': self.zipcode,
+            'overall_rating': self.getOverallRating(),
+            }
         if not brief:
-            properties  = Property.query.filter_by(landlord_id=self.id)
-            reviews = Review.query.filter_by(landlord_id=self.id)
-            json_landlord['properties'] = [property.to_json() for property in properties]
-            json_landlord['reviews'] = [review.to_json() for review in reviews]
+            json_landlord['properties'] = [property.to_json() for property in self.properties]
+            json_landlord['reviews'] = [review.to_json() for review in self.reviews]
+            
         return json_landlord
     
     @staticmethod
@@ -169,13 +219,17 @@ class Landlord(db.Model):
     
     
     def getOverallRating(self):
-        reviews = Review.query.filter(Review.landlord_id==self.id)
-        if reviews.count() == 0:
+        if len(self.reviews) == 0:
             return 0
         overall_rating = 0
-        for review in reviews:
+        for review in self.reviews:
             overall_rating += review.overall_star_rating
-        return round(int(overall_rating)/reviews.count(), 1)
+        return round(int(overall_rating)/len(self.reviews), 1)
+    
+    
+    @staticmethod
+    def landlord_exists(landlord_id):
+        return Landlord.query.get(landlord_id) is not None
     
     # for debug purposes
     def __repr__(self):
@@ -192,19 +246,13 @@ class Property(db.Model):
     country =  db.Column(db.String(50))
     
     def to_json(self):
-        landlord_url = ''
-        if self.landlord_id is not None:
-            landlord_url = url_for('api.get_landlord', id=self.landlord_id)
-            
         json_property = {
-            'url': url_for('api.get_property', id=self.id),
-            'landlord_url': landlord_url,
             'id': self.id,
             'landlord_id': self.landlord_id,
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,
-            'zipcode': self.zipcode,
+            'zip_code': self.zipcode,
             'state': self.state,
             'country': self.country}
         
@@ -238,6 +286,16 @@ class Property(db.Model):
                         zipcode=property_items['zipcode'],
                         state=property_items['state'],
                         country=property_items['country'])
+        
+    @staticmethod
+    def property_exists(address_1, city, state, zip_code, country):
+        property = Property.query.filter(Property.address_1==address_1,
+                                         Property.city==city,
+                                         Property.state==state,
+                                         Property.zipcode==zip_code,
+                                         Property.country==country).all()
+
+        return len(property) > 0
         
     # for debug purposes
     def __repr__(self):

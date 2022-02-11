@@ -1,1 +1,0 @@
-{"ast":null,"code":"","map":{"version":3,"sources":[],"names":[],"mappings":"","sourcesContent":["export default interface ILandlords {\r\n    landlords: {\r\n        id: number,\r\n        first_name: string,\r\n        last_name: string,\r\n        zip_code: string,\r\n        url: string,\r\n        user_url: string\r\n    }[]\r\n}"]},"metadata":{},"sourceType":"module"}

@@ -33,3 +33,5 @@ The goal of this project is to create a platform for tenants to share reviews an
 
 ### - Why Does This Matter? -
 The communities that embrace this site will be able to hold those in control of the housing accountable for the ways in which they treat their properties and the tenants living in them. This could lead to a higher standard of living for tenants across the board as there will be a newly created incentive for landlords to go above and beyond to maintain, develop, and cater to the needs of their properties. Bad landlords will have a new light on them that, if not addressed, could directly affect their wallets and desirability of their properties, while conversely helping the best amongst them to flourish with every great review that rolls their way as the sites pushes their reviews to the front page making their hard work, work for them.
+
+For Regular Blog Post updates on development progress head over to our [Wiki.](https://github.com/Hayden-Stegman/Rate-My-Landlord/wiki)
