@@ -35,10 +35,7 @@ function SearchFlow() {
           headerTitle: ''
       }}
       >
-        <Stack.Screen 
-          name="Search Screen" 
-          component={HomeScreen} 
-          />
+        <Stack.Screen name="Search Screen" component={HomeScreen} />
         <Stack.Screen name="Landlord Screen" component={LandlordScreen} />
       </Stack.Navigator>
   );
@@ -53,13 +50,9 @@ export default function App() {
       { Platform.OS === 'ios' || Platform.OS === 'android' ? (
         // Phone Navigation
         <BottomTab.Navigator 
-          initialRouteName="Home"
+          initialRouteName="IOS Home"
           screenOptions={{
-            headerStyle: {
-              backgroundColor: 'transparent'
-            },
-            headerTransparent: true,
-            headerTitle: ''
+            headerShown: false
           }}
         >
         { isSignedIn == true ? (
@@ -81,7 +74,10 @@ export default function App() {
       // Web Navigation
       ) : (
         <BottomTab.Navigator 
-          initialRouteName="Home"
+          initialRouteName="Web Home"
+          screenOptions={{
+            headerShown: false
+          }}
         >
         { isSignedIn == true ? (
           <>
