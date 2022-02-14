@@ -1,6 +1,6 @@
 <p align=center>
   <br />
-  <img src="Images/RateMyLandlord2.png">
+  <img src="Repo-Images/RateMyLandlord2.png">
 </p>
 
 <p align=center>
@@ -16,7 +16,7 @@
     COMPUTER SCIENCE and INNOVATION
   </strong>
   <br /> <br />
-  <img src="Images/ChamplainCollege.png" width=100>
+  <img src="Repo-Images/ChamplainCollege.png" width=100>
   <br />
   Champlain College 
   <br /> <br />
