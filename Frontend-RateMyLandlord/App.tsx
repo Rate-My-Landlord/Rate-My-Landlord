@@ -15,11 +15,12 @@ import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import LoginScreen from './screens/LoginScreen';
 // Searching
-import SearchScreen from './screens/SearchScreenFlow/SearchScreen';
 import LandlordScreen from './screens/SearchScreenFlow/LandlordScreen';
+import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-ionicons';
 
 // Create the Tab Bottom Navigator
-const BottomTab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 // User Search Flow Stack Navigation
@@ -49,52 +50,67 @@ export default function App() {
     <NavigationContainer>
       { Platform.OS === 'ios' || Platform.OS === 'android' ? (
         // Phone Navigation
-        <BottomTab.Navigator 
-          initialRouteName="IOS Home"
-          screenOptions={{
-            headerShown: false
-          }}
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName : any = "";
+
+              if (route.name === 'IOS Home') {
+                iconName = 'home';
+              } else if (route.name === 'Settings') {
+                iconName = 'settings';
+              } else if (route.name === 'Profile') {
+                iconName = 'person';
+              } else if (route.name === 'Login') {
+                iconName = 'person-add';
+              }
+
+              // You can return any component that you like here!
+              return <Ionicons name={iconName} color={color} size={size}/>;
+            },
+            // Icon Colors
+            tabBarActiveTintColor: 'tomato',
+            tabBarInactiveTintColor: 'gray',
+
+            headerShown: false,
+            tabBarShowLabel: false,
+          })}
         >
         { isSignedIn == true ? (
           <>
-            <BottomTab.Screen name="IOS Home" component={HomeScreen} />
-            <BottomTab.Screen name="Search" component={SearchFlow} />
-            <BottomTab.Screen name="Profile" component={ProfileScreen} />
-            <BottomTab.Screen name="Settings" component={SettingsScreen} />
+            <Tab.Screen name="IOS Home" component={HomeScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
           </>
         ) : (
           <>
-            <BottomTab.Screen name="IOS Home" component={HomeScreen} />
-            <BottomTab.Screen name="Search" component={SearchFlow} />
-            <BottomTab.Screen name="Login" component={LoginScreen} />
-            <BottomTab.Screen name="Settings" component={SettingsScreen} />
+            <Tab.Screen name="IOS Home" component={HomeScreen} />
+            <Tab.Screen name="Login" component={LoginScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
           </>
         )}
-        </BottomTab.Navigator>
+        </Tab.Navigator>
       // Web Navigation
       ) : (
-        <BottomTab.Navigator 
-          initialRouteName="Web Home"
-          screenOptions={{
-            headerShown: false
-          }}
+        <Stack.Navigator
+          screenOptions={({
+            headerShown: false,
+          })}
         >
         { isSignedIn == true ? (
           <>
-            <BottomTab.Screen name="Web Home" component={HomeScreen} />
-            <BottomTab.Screen name="Search" component={SearchFlow} />
-            <BottomTab.Screen name="Profile" component={ProfileScreen} />
-            <BottomTab.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Web Home" component={HomeScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
           </>
         ) : (
           <>
-            <BottomTab.Screen name="Web Home" component={HomeScreen} />
-            <BottomTab.Screen name="Search" component={SearchFlow} />
-            <BottomTab.Screen name="Login" component={LoginScreen} />
-            <BottomTab.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Web Home" component={HomeScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
           </>
         )}
-        </BottomTab.Navigator>
+        </Stack.Navigator>
       )}
     </NavigationContainer>
   ); 
