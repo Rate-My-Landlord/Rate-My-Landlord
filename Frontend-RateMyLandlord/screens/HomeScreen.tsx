@@ -1,28 +1,33 @@
 /*
-  Author: Hayden Stegman
+  Author: Hayden Stegman 
 */
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, Platform, useWindowDimensions } from 'react-native'
+
+// The point at which style changes
+const screenChangePoint  = 1250;
 
 /*
   Home Screen
 */
 const HomeScreen = () => {
-  // const navigation = useNavigation<HomeScreenProp>()
-  
+  const windowWidth = useWindowDimensions().width;
+
   return (
     <>
-      <View style={styles.headerScreen}><Text style={styles.textColor}>HEADER</Text></View>
-      <View style={styles.bodyScreen}>
-        <View style={styles.leftContainer}>
-          <Text style={styles.textColor}>LEFT</Text>
+      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>HEADER</Text></View>
+      <View style={styles(windowWidth).bodyScreen}>
+        <View style={styles(windowWidth).mainContainer}>
+          <Text style={styles(windowWidth).textColor}>CENTER</Text>
         </View>
-        <View style={styles.middleContainer}>
-          <Text style={styles.textColor}>CENTER</Text>
-        </View>
-        <View style={styles.rightContainer}>
-          <Text style={styles.textColor}>RIGHT</Text>
-        </View>
+        
+        { // Right Container Only on Web
+          Platform.OS !== 'ios' && Platform.OS !== 'android' ? (
+            <View style={styles(windowWidth).rightContainer}>
+              <Text style={styles(windowWidth).textColor}>RIGHT</Text>
+            </View>
+          ):(<></>)
+        }
       </View>
     </>
   );
@@ -30,28 +35,24 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
+const styles = (windowWidth : any) => StyleSheet.create({
+  
+  // Main Dividers of the Screen (Header from Body)
   headerScreen: {
     flex: 1,
     backgroundColor: '#1f2937',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 30 : 0,
   },
   bodyScreen: {
     flex: 10,
-    flexDirection: "row",
-    padding: 20,
+    flexDirection: windowWidth >= screenChangePoint ? "row" : "column",
+    padding: Platform.OS === 'ios' || Platform.OS === 'android' ? 5 : 20,
     backgroundColor: '#ffffff',
   },
   
   // Body Containers
-  leftContainer: {
-    flex: 1,
-    backgroundColor: '#60acdb',
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   rightContainer: {
     flex: 1,
     backgroundColor: 'red',
@@ -59,13 +60,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  middleContainer: {
+  mainContainer: {
     backgroundColor: '#9ca3af',
-    flex:2,
+    flex: windowWidth >= screenChangePoint ? 2 : 6,
     margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  // Temp
   textColor: {
     color: '#ffffff',
   }
