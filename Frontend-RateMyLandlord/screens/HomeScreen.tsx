@@ -1,8 +1,8 @@
 /*
   Author: Hayden Stegman 
 */
-import React from 'react';
-import { StyleSheet, View, Text, Platform, useWindowDimensions } from 'react-native'
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
 
 // The point at which style changes
 const screenChangePoint  = 1250;
@@ -13,6 +13,19 @@ const screenChangePoint  = 1250;
 const HomeScreen = () => {
   const windowWidth = useWindowDimensions().width;
 
+  // Temp DATA for testing!
+  const [landlords, setLandlords] = useState([
+    { name: "John Harple", key: "1" },
+    { name: "Quiggly Jim", key: "2" },
+    { name: "Sarah Lark", key: "3" },
+    { name: "Tommy Name", key: "4" },
+    { name: "That Guy", key: "5" },
+    { name: "A Sheep", key: "6" },
+    { name: "A Cow", key: "7" },
+    { name: "A Duck", key: "8" },
+    { name: "A Dog", key: "9" },
+  ]);
+
   return (
     <View style={styles(windowWidth).backgroundScreen}>
       <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>HEADER</Text></View>
@@ -21,7 +34,15 @@ const HomeScreen = () => {
         {/* Main Content Container */}
         <View style={styles(windowWidth).mainContainer}>
           <View style={styles(windowWidth).listContainer}>
-            <Text style={styles(windowWidth).textColor}>List Container</Text>
+            <FlatList style={styles(windowWidth).flatList}
+              data={landlords}
+              renderItem={({ item }) => (
+                <View style={styles(windowWidth).listItemContainer}>
+                  <Text style={styles(windowWidth).listTextColor}>{item.name}</Text>
+                </View>
+              )}
+              showsVerticalScrollIndicator={false}
+            />
           </View>
 
           <View style={styles(windowWidth).listControlContainer}>
@@ -127,5 +148,20 @@ const styles = (windowWidth : any) => StyleSheet.create({
   // Temp
   textColor: {
     color: '#1F2937',
+  },
+  listTextColor: {
+    color: '#ffffff',
+  },
+  listItemContainer: {
+    width: '100%',
+    paddingHorizontal: 50,
+    paddingVertical: 75,
+    marginVertical: 10,
+    backgroundColor: "#1f2937",
+    borderRadius: 15,
+  },
+  flatList: {
+    width: '100%',
+    padding: 15,
   }
 })
