@@ -3,6 +3,7 @@
 */
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
+import { useQuery, gql } from '@apollo/client';
 
 // The point at which style changes
 const screenChangePoint  = 1250;
@@ -10,8 +11,31 @@ const screenChangePoint  = 1250;
 /*
   Home Screen
 */
+
+const ALLREVIEWS = gql`
+query {
+    AllReviews {
+        success,
+        errors,
+        reviews {
+          id,
+          overallStarRating,
+          landlord {
+              id,
+              firstName
+          }  
+        }
+    }
+}
+`
+
+
 const HomeScreen = () => {
   const windowWidth = useWindowDimensions().width;
+
+  const { loading, error, data } = useQuery(ALLREVIEWS);
+
+  console.log(loading, error, data);
 
   // Temp DATA for testing!
   const [landlords, setLandlords] = useState([
