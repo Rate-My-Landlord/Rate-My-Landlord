@@ -129,13 +129,14 @@ class Review(db.Model):
         landlord = Landlord.query.get(self.landlord_id)
         json_review = {
             'id': self.id,
-            'landlord': landlord.to_json_(brief=True),
+            'landlord': landlord.to_json(brief=True),
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
             'text': self.text,
-            'author': self.author.to_json(brief=True),
             'created_at': self.created_at }
+        if (self.author_id):
+            json_review['author']= self.author.to_json(brief=True),
         return json_review
     
     @staticmethod

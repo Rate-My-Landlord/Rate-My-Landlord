@@ -6,17 +6,22 @@ from ..decorators import test_decorator
 @convert_kwargs_to_snake_case
 def resolve_reviews(*_):
     """Get all reviews"""
-    try:
-        reviews = [review.to_json() for review in Review.query.all()]
-        payload = {
-            'success': True,
-            'reviews': reviews
-        }
-    except Exception as e:
-        payload = {
-            'success': False,
-            'errors': [str(e)]
-        }
+    # try:
+    #     reviews = [review.to_json() for review in Review.query.all()]
+    #     payload = {
+    #         'success': True,
+    #         'reviews': reviews
+    #     }
+    # except Exception as e:
+    #     payload = {
+    #         'success': False,
+    #         'errors': [str(e)]
+    #     }
+    reviews = [review.to_json() for review in Review.query.all()]
+    payload = {
+        'success': True,
+        'reviews': reviews
+    }
     return payload  
 
 @convert_kwargs_to_snake_case
