@@ -17,7 +17,6 @@ import LoginScreen from './screens/LoginScreen';
 // Searching
 import LandlordScreen from './screens/SearchScreenFlow/LandlordScreen';
 import { Ionicons } from '@expo/vector-icons';
-import Icon from 'react-native-ionicons';
 
 
 import {
@@ -30,8 +29,6 @@ const client = new ApolloClient({
   uri: 'http://127.0.0.1:5000/api/graphql',
   cache: new InMemoryCache()
 });
-
-
 
 // Create the Tab Bottom Navigator
 const Tab = createBottomTabNavigator();

@@ -5,6 +5,9 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 
+// Landlord List Component
+import { LandlordComponent } from '../components/LandlordListComponent';
+
 // The point at which style changes
 const screenChangePoint  = 1250;
 
@@ -29,30 +32,27 @@ query {
 }
 `
 
-
 const HomeScreen = () => {
   const windowWidth = useWindowDimensions().width;
 
   const { loading, error, data } = useQuery(ALLREVIEWS);
 
-  console.log(loading, error, data);
-
   // Temp DATA for testing!
   const [landlords, setLandlords] = useState([
-    { name: "John Harple", key: "1" },
-    { name: "Quiggly Jim", key: "2" },
-    { name: "Sarah Lark", key: "3" },
-    { name: "Tommy Name", key: "4" },
-    { name: "That Guy", key: "5" },
-    { name: "A Sheep", key: "6" },
-    { name: "A Cow", key: "7" },
-    { name: "A Duck", key: "8" },
-    { name: "A Dog", key: "9" },
+    { name: "John Harple", key: "1", rating: 5 },
+    { name: "Quiggly Jim", key: "2", rating: 3 },
+    { name: "Sarah Lark", key: "3", rating: 5 },
+    { name: "Tommy Name", key: "4", rating: 1 },
+    { name: "That Guy", key: "5", rating: 4 },
+    { name: "A Sheep", key: "6", rating: 2 },
+    { name: "A Cow", key: "7", rating: 5 },
+    { name: "A Duck", key: "8", rating: 3 },
+    { name: "A Dog", key: "9", rating: 1 },
   ]);
 
   return (
     <View style={styles(windowWidth).backgroundScreen}>
-      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>HEADER</Text></View>
+      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text></View>
       <View style={styles(windowWidth).bodyScreen}>
         
         {/* Main Content Container */}
@@ -61,9 +61,7 @@ const HomeScreen = () => {
             <FlatList style={styles(windowWidth).flatList}
               data={landlords}
               renderItem={({ item }) => (
-                <View style={styles(windowWidth).listItemContainer}>
-                  <Text style={styles(windowWidth).listTextColor}>{item.name}</Text>
-                </View>
+                <LandlordComponent name={item.name} rating={item.rating}/>
               )}
               showsVerticalScrollIndicator={false}
             />
@@ -176,16 +174,9 @@ const styles = (windowWidth : any) => StyleSheet.create({
   listTextColor: {
     color: '#ffffff',
   },
-  listItemContainer: {
-    width: '100%',
-    paddingHorizontal: 50,
-    paddingVertical: 75,
-    marginVertical: 10,
-    backgroundColor: "#1f2937",
-    borderRadius: 15,
-  },
   flatList: {
     width: '100%',
+    height: '100%',
     padding: 15,
   }
 })
