@@ -8,6 +8,7 @@ import { NavParamList } from '../App';
 // Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import WebHeader from '../components/WebHeader';
 
 // The point at which style changes
 const screenChangePoint = 1250;
@@ -43,7 +44,19 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
   return (
     <View style={styles(windowWidth).backgroundScreen}>
-      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text><TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={openNewReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity></View>
+      {
+        (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
+          <WebHeader navigation={navigation}/>
+        ) : (
+          // Prop should move this to a component
+          <View style={styles(windowWidth).headerScreen}>
+            <Text style={styles(windowWidth).textColor}>Rate My Landlord</Text>
+            <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={openNewReview}>
+              <Text style={{ color: 'white' }}>New Review</Text>
+            </TouchableOpacity>
+          </View>
+        )
+      }
       <View style={styles(windowWidth).bodyScreen}>
 
         {/* Main Content Container */}
