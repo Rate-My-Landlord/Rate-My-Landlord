@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 @convert_kwargs_to_snake_case
 # @jwt_required()
 def resolve_new_review(obj, info, landlord_id, overall_star_rating,
-                        author_id, property_id=None,
+                        author_id=None, property_id=None,
                         communication_star_rating=None, maintenance_star_rating=None,
                         text=None):
     """Write a new review"""

@@ -2,14 +2,34 @@
   Author: Hayden Stegman 
 */
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TouchableOpacity } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 
 // Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
 
 // The point at which style changes
-const screenChangePoint  = 1250;
+const screenChangePoint = 1250;
+
+interface ILandlord {
+  id: Number,
+  firstName: string,
+  lastName: string,
+  zipCode: string,
+  overallRating: string,
+}
+
+interface ILandlordQ {
+  success: boolean,
+  errors?: string[]
+  landlords?: ILandlord[]
+}
+
+
+// firstName: string,
+//   lastName: string,
+//   zipCode: string,
+//   overallRating: string,
 
 /*
   Home Screen
@@ -17,51 +37,43 @@ const screenChangePoint  = 1250;
 
 const ALLREVIEWS = gql`
 query {
-    AllReviews {
+    AllLandlords {
         success,
         errors,
-        reviews {
+        landlords {
           id,
-          overallStarRating,
-          landlord {
-              id,
-              firstName
-          }  
+          overallRating,
+          firstName,
+          lastName,
+          zipCode
         }
     }
 }
 `
 
-const HomeScreen = () => {
+const HomeScreen = ({ route, navigation }: any) => {
   const windowWidth = useWindowDimensions().width;
 
+  const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery(ALLREVIEWS);
 
+  const openNewReview = () => navigation.navigate('New_Review', { landlordId: data?.AllLandlords.landlords[0].id });
+
   // Temp DATA for testing!
-  const [landlords, setLandlords] = useState([
-    { name: "John Harple", key: "1", rating: 5 },
-    { name: "Quiggly Jim", key: "2", rating: 3 },
-    { name: "Sarah Lark", key: "3", rating: 5 },
-    { name: "Tommy Name", key: "4", rating: 1 },
-    { name: "That Guy", key: "5", rating: 4 },
-    { name: "A Sheep", key: "6", rating: 2 },
-    { name: "A Cow", key: "7", rating: 5 },
-    { name: "A Duck", key: "8", rating: 3 },
-    { name: "A Dog", key: "9", rating: 1 },
-  ]);
 
   return (
     <View style={styles(windowWidth).backgroundScreen}>
-      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text></View>
+      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text><TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={openNewReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity></View>
       <View style={styles(windowWidth).bodyScreen}>
-        
+
         {/* Main Content Container */}
         <View style={styles(windowWidth).mainContainer}>
           <View style={styles(windowWidth).listContainer}>
             <FlatList style={styles(windowWidth).flatList}
-              data={landlords}
+              data={data?.AllLandlords.landlords}
+              keyExtractor={item => item.id}
               renderItem={({ item }) => (
-                <LandlordComponent name={item.name} rating={item.rating}/>
+                <LandlordComponent name={item.firstName} rating={item.overallRating} />
               )}
               showsVerticalScrollIndicator={false}
             />
@@ -71,13 +83,13 @@ const HomeScreen = () => {
             <Text style={styles(windowWidth).textColor}>List Controler</Text>
           </View>
         </View>
-        
+
         { // Right Container Only on Web and when screen is big
           (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
             <View style={styles(windowWidth).rightContainer}>
               <Text style={styles(windowWidth).textColor}>Ad Space?</Text>
             </View>
-          ):(<></>)
+          ) : (<></>)
         }
       </View>
     </View>
@@ -88,13 +100,13 @@ export default HomeScreen;
 
 
 // Page Styles
-const styles = (windowWidth : any) => StyleSheet.create({
+const styles = (windowWidth: any) => StyleSheet.create({
   // Back Ground Contain
   backgroundScreen: {
     backgroundColor: "#ffffff",
     flex: 1,
   },
-  
+
   // Main Dividers of the Screen (Header from Body)
   headerScreen: {
     flex: 1,
@@ -120,13 +132,13 @@ const styles = (windowWidth : any) => StyleSheet.create({
     paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
     backgroundColor: '#ffffff',
   },
-  
+
   // Body Containers (Right Ad Space (Web Only) and Main Container)
   rightContainer: {
     flex: 1,
     marginHorizontal: 10,
     marginBottom: 10,
-    
+
     //Temp for Visibility
     backgroundColor: '#E5E7EB',
 
@@ -139,7 +151,7 @@ const styles = (windowWidth : any) => StyleSheet.create({
   mainContainer: {
     // Change FlexBox valuse based on screen size
     marginHorizontal: 10,
-    
+
     // Flex Settings
     flex: 3,
     flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',

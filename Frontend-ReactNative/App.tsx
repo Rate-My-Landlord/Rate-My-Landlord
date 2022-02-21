@@ -16,6 +16,7 @@ import SettingsScreen from './screens/SettingsScreen';
 import LoginScreen from './screens/LoginScreen';
 // Searching
 import LandlordScreen from './screens/SearchScreenFlow/LandlordScreen';
+import WriteReviewScreen from './screens/WriteReviewScreen';
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -29,6 +30,14 @@ const client = new ApolloClient({
   uri: 'http://127.0.0.1:5000/api/graphql',
   cache: new InMemoryCache()
 });
+
+
+type StackParamList = {
+  Web_Home: undefined,
+  Profile: undefined,
+  New_Review: undefined,
+  Settings: undefined
+}
 
 // Create the Tab Bottom Navigator
 const Tab = createBottomTabNavigator();
@@ -111,14 +120,16 @@ export default function App() {
           >
             {isSignedIn == true ? (
               <>
-                <Stack.Screen name="Web Home" component={HomeScreen} />
+                <Stack.Screen name="Web_Home" component={HomeScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="New_Review" component={WriteReviewScreen} />
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </>
             ) : (
               <>
-                <Stack.Screen name="Web Home" component={HomeScreen} />
-                <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="Web_Home" component={HomeScreen} />
+                <Stack.Screen name="Profile" component={LoginScreen} />
+                <Stack.Screen name="New_Review" component={WriteReviewScreen} />
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </>
             )}

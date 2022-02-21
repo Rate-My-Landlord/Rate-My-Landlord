@@ -1,42 +1,65 @@
 /*
   Author: Hayden Stegman 
 */
+import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TextInput, TouchableOpacity } from 'react-native';
 
 // The point at which style changes
-const screenChangePoint  = 1250;
+const screenChangePoint = 1250;
 
 /*
   Write Review Screen
 */
 
-const HomeScreen = () => {
+
+const PostReview = gql`
+  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
+    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
+      success
+    }
+  }
+`
+
+const HomeScreen = ({ route, navigation }: any) => {
+  const landlordId = route.params.landlordId;
+
+  const [newReview, { data, loading, error}] = useMutation(PostReview);
+
+  const [rating, onRatingText] = useState('1');
+  const [comments, onCommentsText] = useState("");
+
+  const postReview = () => {
+    newReview({variables: {
+      landlordId: landlordId,
+      overallStarRating: parseInt(rating),
+      text: comments
+    }}).then(res => navigation.navigate('Web_Home'));
+  }
+
+
   const windowWidth = useWindowDimensions().width;
 
   return (
     <View style={styles(windowWidth).backgroundScreen}>
       <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text></View>
       <View style={styles(windowWidth).bodyScreen}>
-        
+
         {/* Main Content Container */}
         <View style={styles(windowWidth).mainContainer}>
           <View style={styles(windowWidth).FormContainer}>
-            {
-              // FORM IMPLEMENTATION GOES HERE
-              //
-              //
-              // -----------------------------
-            }
+            <TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+            <TextInput style={textStyles.input} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
+            <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={postReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
           </View>
         </View>
-        
+
         { // Right Container Only on Web and when screen is big
           (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
             <View style={styles(windowWidth).rightContainer}>
               <Text style={styles(windowWidth).textColor}>Ad Space?</Text>
             </View>
-          ):(<></>)
+          ) : (<></>)
         }
       </View>
     </View>
@@ -46,14 +69,26 @@ const HomeScreen = () => {
 export default HomeScreen;
 
 
+const textStyles = StyleSheet.create({
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+  },
+});
+
+
+
+
 // Page Styles
-const styles = (windowWidth : any) => StyleSheet.create({
+const styles = (windowWidth: any) => StyleSheet.create({
   // Back Ground Contain
   backgroundScreen: {
     backgroundColor: "#ffffff",
     flex: 1,
   },
-  
+
   // Main Dividers of the Screen (Header from Body)
   headerScreen: {
     flex: 1,
@@ -79,13 +114,13 @@ const styles = (windowWidth : any) => StyleSheet.create({
     paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
     backgroundColor: '#ffffff',
   },
-  
+
   // Body Containers (Right Ad Space (Web Only) and Main Container)
   rightContainer: {
     flex: 1,
     marginHorizontal: 10,
     marginBottom: 10,
-    
+
     //Temp for Visibility
     backgroundColor: '#E5E7EB',
 
@@ -98,7 +133,7 @@ const styles = (windowWidth : any) => StyleSheet.create({
   mainContainer: {
     // Change FlexBox valuse based on screen size
     marginHorizontal: 10,
-    
+
     // Flex Settings
     flex: 3,
     flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',

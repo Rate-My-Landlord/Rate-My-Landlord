@@ -30,6 +30,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+
+
 // Create the Tab Bottom Navigator
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
