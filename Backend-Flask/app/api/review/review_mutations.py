@@ -5,9 +5,9 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @convert_kwargs_to_snake_case
-# @jwt_required()
+@jwt_required()
 def resolve_new_review(obj, info, landlord_id, overall_star_rating,
-                        author_id=None, property_id=None,
+                        author_id, property_id=None,
                         communication_star_rating=None, maintenance_star_rating=None,
                         text=None):
     """Write a new review"""
@@ -16,12 +16,12 @@ def resolve_new_review(obj, info, landlord_id, overall_star_rating,
             raise Exception('No landlord found with id of {}'.format(landlord_id))
         
         # Getting the user id based on the JWT
-        # user_id = get_jwt_identity()
-        # # Getting the user based on the user id from the JWT
-        # user = User.query.get(user_id)
-        # # If the user id from the token does not match to provided author_id
-        # if user.id != int(author_id):
-        #     raise Exception('User id of token does not match provided author id')
+        user_id = get_jwt_identity()
+        # Getting the user based on the user id from the JWT
+        user = User.query.get(user_id)
+        # If the user id from the token does not match to provided author_id
+        if user.id != int(author_id):
+            raise Exception('User id of token does not match provided author id')
         
         new_review = Review(landlord_id=landlord_id, 
                             # author_id=user.id,

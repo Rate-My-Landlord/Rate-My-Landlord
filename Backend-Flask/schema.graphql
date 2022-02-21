@@ -129,7 +129,7 @@ type Query {
 
 type Mutation {
     """Create a new review"""
-    NewReview(authorId: ID, landlordId: ID!, propertyId: ID, 
+    NewReview(authorId: ID!, landlordId: ID!, propertyId: ID, 
                 overallStarRating: Int!, communicationStarRating: Int,
                 maintenanceStarRating: Int, text: String): ReviewResult!
     """Create a new landlord"""
