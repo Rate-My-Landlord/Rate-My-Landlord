@@ -2,12 +2,14 @@
   Author: Hayden Stegman
 */
 import React from 'react';
-import { Platform, AppRegistry } from 'react-native';
+import { Platform, AppRegistry, Text } from 'react-native';
 
 //Navigation Imports
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Linking from 'expo-linking';
+import { registerRootComponent } from 'expo';
 
 // Screen Imports
 import HomeScreen from './screens/HomeScreen'
@@ -18,8 +20,6 @@ import LoginScreen from './screens/LoginScreen';
 import LandlordScreen from './screens/SearchScreenFlow/LandlordScreen';
 import WriteReviewScreen from './screens/WriteReviewScreen';
 import { Ionicons } from '@expo/vector-icons';
-
-
 import {
   ApolloClient,
   InMemoryCache,
@@ -31,22 +31,41 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const prefix = Linking.createURL('/');
 
-type StackParamList = {
-  Web_Home: undefined,
+const linking = {
+  prefixes: [prefix],
+  config: {
+    screens: {
+      Home: '',
+      Profile: 'profile',
+      NewReview: ':landlordId/newReview',
+      Setting: 'settings',
+      NotFound: '*'
+    }
+  }
+}
+
+
+export type NavParamList = {
+  Home: undefined,
   Profile: undefined,
-  New_Review: undefined,
+  // New_Review: undefined,
   Settings: undefined
 }
 
-// Create the Tab Bottom Navigator
-const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+// Mobile
+const Tab = createBottomTabNavigator<NavParamList>();
+// Web
+const Stack = createNativeStackNavigator<NavParamList>();
+// For Search ???
+const StackSearch = createNativeStackNavigator();
+
 
 // User Search Flow Stack Navigation
 function SearchFlow() {
   return (
-    <Stack.Navigator
+    <StackSearch.Navigator
       initialRouteName="SearchScreen"
       screenOptions={{
         headerStyle: {
@@ -56,9 +75,9 @@ function SearchFlow() {
         headerTitle: ''
       }}
     >
-      <Stack.Screen name="Search Screen" component={HomeScreen} />
-      <Stack.Screen name="Landlord Screen" component={LandlordScreen} />
-    </Stack.Navigator>
+      <StackSearch.Screen name="Search Screen" component={HomeScreen} />
+      <StackSearch.Screen name="Landlord Screen" component={LandlordScreen} />
+    </StackSearch.Navigator>
   );
 }
 
@@ -68,7 +87,7 @@ let isSignedIn = false;
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
         {Platform.OS === 'ios' || Platform.OS === 'android' ? (
           // Phone Navigation
           <Tab.Navigator
@@ -76,7 +95,7 @@ export default function App() {
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName: any = "";
 
-                if (route.name === 'IOS Home') {
+                if (route.name === 'Home') {
                   iconName = 'home';
                 } else if (route.name === 'Settings') {
                   iconName = 'settings';
@@ -99,14 +118,14 @@ export default function App() {
           >
             {isSignedIn == true ? (
               <>
-                <Tab.Screen name="IOS Home" component={HomeScreen} />
+                <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Profile" component={ProfileScreen} />
                 <Tab.Screen name="Settings" component={SettingsScreen} />
               </>
             ) : (
               <>
-                <Tab.Screen name="IOS Home" component={HomeScreen} />
-                <Tab.Screen name="Login" component={LoginScreen} />
+                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name="Profile" component={LoginScreen} />
                 <Tab.Screen name="Settings" component={SettingsScreen} />
               </>
             )}
@@ -120,16 +139,16 @@ export default function App() {
           >
             {isSignedIn == true ? (
               <>
-                <Stack.Screen name="Web_Home" component={HomeScreen} />
+                <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
-                <Stack.Screen name="New_Review" component={WriteReviewScreen} />
+                {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </>
             ) : (
               <>
-                <Stack.Screen name="Web_Home" component={HomeScreen} />
+                <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Profile" component={LoginScreen} />
-                <Stack.Screen name="New_Review" component={WriteReviewScreen} />
+                {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </>
             )}
@@ -140,4 +159,5 @@ export default function App() {
   );
 }
 
-AppRegistry.registerComponent('RateMyLandlord', () => App);
+// AppRegistry.registerComponent('RateMyLandlord', () => App);
+registerRootComponent(App);

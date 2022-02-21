@@ -4,36 +4,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TouchableOpacity } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-
+import { NavParamList } from '../App';
 // Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // The point at which style changes
 const screenChangePoint = 1250;
 
-interface ILandlord {
-  id: Number,
-  firstName: string,
-  lastName: string,
-  zipCode: string,
-  overallRating: string,
-}
-
-interface ILandlordQ {
-  success: boolean,
-  errors?: string[]
-  landlords?: ILandlord[]
-}
-
-
-// firstName: string,
-//   lastName: string,
-//   zipCode: string,
-//   overallRating: string,
-
-/*
-  Home Screen
-*/
+type Props = NativeStackScreenProps<NavParamList, "Home">;
 
 const ALLREVIEWS = gql`
 query {
@@ -51,13 +30,14 @@ query {
 }
 `
 
-const HomeScreen = ({ route, navigation }: any) => {
+const HomeScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
 
-  const [landlords, setLandlords] = useState<ILandlord[]>([]);
+  // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery(ALLREVIEWS);
 
-  const openNewReview = () => navigation.navigate('New_Review', { landlordId: data?.AllLandlords.landlords[0].id });
+  const openNewReview = () => navigation.navigate('Settings');
+
 
   // Temp DATA for testing!
 

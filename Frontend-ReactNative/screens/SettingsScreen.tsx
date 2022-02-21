@@ -1,14 +1,14 @@
 /*
   Author: Hayden Stegman
 */
-import React from 'react';
+import { Text } from 'react-native'
 
 /*
   Settings Screen
 */
 const SettingsScreen = () => {
   return (
-    <></>
+    <Text>Hi</Text>
   );
 };
 
