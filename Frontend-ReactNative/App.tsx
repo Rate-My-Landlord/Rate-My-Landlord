@@ -92,7 +92,7 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <UserContext.Provider value={{user, setUser}}>
+      <UserContext.Provider value={{ user, setUser }}>
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
           {Platform.OS === 'ios' || Platform.OS === 'android' ? (
             // Phone Navigation
@@ -122,19 +122,9 @@ export default function App() {
                 tabBarShowLabel: false,
               })}
             >
-              {isSignedIn == true ? (
-                <>
-                  <Tab.Screen name="Home" component={HomeScreen} />
-                  <Tab.Screen name="Profile" component={ProfileScreen} />
-                  <Tab.Screen name="Settings" component={SettingsScreen} />
-                </>
-              ) : (
-                <>
-                  <Tab.Screen name="Home" component={HomeScreen} />
-                  <Tab.Screen name="Profile" component={LoginScreen} />
-                  <Tab.Screen name="Settings" component={SettingsScreen} />
-                </>
-              )}
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Tab.Screen name="Profile" component={ProfileScreen} />
+              <Tab.Screen name="Settings" component={SettingsScreen} />
             </Tab.Navigator>
             // Web Navigation
           ) : (

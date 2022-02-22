@@ -1,5 +1,6 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform, Text } from 'react-native';
 import Header from './headers/header';
+import { screenChangePoint } from '../constants/Layout';
 
 type Props = {
     windowWidth: number,
@@ -7,17 +8,64 @@ type Props = {
 }
 
 export default ({ windowWidth, children }: Props) => (
-    <View style={styles.backgroundScreen}>
+    <View style={styles(windowWidth).backgroundScreen}>
         <Header windowWidth={windowWidth} />
-        {children}
+        <View style={styles(windowWidth).bodyScreen}>
+            {/* Main Content Container */}
+            <View style={styles(windowWidth).mainContainer}>
+                {children}
+            </View>
+            { // Right Container Only on Web and when screen is big
+                (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint && (
+                    <View style={styles(windowWidth).rightContainer}>
+                        <Text style={styles(windowWidth).textColor}>Ad Space?</Text>
+                    </View>
+                )
+            }
+        </View>
     </View>
 )
 
 
-const styles = StyleSheet.create({
+const styles = (windowWidth: number) => StyleSheet.create({
     // Back Ground Contain
     backgroundScreen: {
         backgroundColor: "#ffffff",
         flex: 1,
     },
+    mainContainer: {
+        // Change FlexBox valuse based on screen size
+        marginHorizontal: 10,
+
+        // Flex Settings
+        flex: 3,
+        flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
+        justifyContent: 'center'
+    },
+    bodyScreen: {
+        flex: 10,
+        flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
+        paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
+        paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
+        backgroundColor: '#ffffff',
+    },
+    // Body Containers (Right Ad Space (Web Only) and Main Container)
+    rightContainer: {
+        flex: 1,
+        marginHorizontal: 10,
+        marginBottom: 10,
+
+        //Temp for Visibility
+        backgroundColor: '#E5E7EB',
+
+        // Temp for Text Viewing
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        borderRadius: 15,
+    },
+    textColor: {
+        color: '#1F2937',
+    },
+
 })

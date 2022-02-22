@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
 import MainContainer from '../components/mainContainer';
 import UserContext from '../global/userContext';
+import CreateAccount from '../components/createAccount';
 
 const ProfileScreen = () => {
   const windowWidth = useWindowDimensions().width;
@@ -9,7 +10,7 @@ const ProfileScreen = () => {
 
   return (
     <MainContainer windowWidth={windowWidth}>
-      {user === undefined ? <Text>Not logged in/ no account</Text> : <Text>Logged in</Text>}
+      {user === undefined ? <CreateAccount /> : <Text>Logged in</Text>}
     </MainContainer>
   )
 };

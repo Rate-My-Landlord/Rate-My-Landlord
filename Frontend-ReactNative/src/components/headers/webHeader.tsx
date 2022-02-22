@@ -10,15 +10,17 @@ type Props = {
     windowWidth: number
 }
 
-export default ({windowWidth}: Props) => {
+export default ({ windowWidth }: Props) => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
 
     return (
         <View style={styles.navBar}>
-            <View style={styles.logoContainer}>
-                <Image style={styles.logo} source={logo} />
-                <Text>Rate My Landlord </Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+                <View style={styles.logoContainer}>
+                    <Image style={styles.logo} source={logo} />
+                    <Text>Rate My Landlord </Text>
+                </View>
+            </TouchableOpacity>
             <View style={styles.searchContainer}><Text>Search</Text></View>
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>

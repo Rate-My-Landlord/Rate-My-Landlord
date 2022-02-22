@@ -38,33 +38,21 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
   return (
     <MainContainer windowWidth={windowWidth} >
-      <View style={styles(windowWidth).bodyScreen}>
-        {/* Main Content Container */}
-        <View style={styles(windowWidth).mainContainer}>
-          <View style={styles(windowWidth).listContainer}>
-            <FlatList style={styles(windowWidth).flatList}
-              data={data?.AllLandlords.landlords}
-              keyExtractor={item => item.id}
-              renderItem={({ item }) => (
-                <LandlordComponent name={item.firstName} rating={item.overallRating} />
-              )}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-
-          <View style={styles(windowWidth).listControlContainer}>
-            <Text style={styles(windowWidth).textColor}>List Controler</Text>
-          </View>
+      <>
+        <View style={styles(windowWidth).listContainer}>
+          <FlatList style={styles(windowWidth).flatList}
+            data={data?.AllLandlords.landlords}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+              <LandlordComponent name={item.firstName} rating={item.overallRating} />
+            )}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
-
-        { // Right Container Only on Web and when screen is big
-          (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
-            <View style={styles(windowWidth).rightContainer}>
-              <Text style={styles(windowWidth).textColor}>Ad Space?</Text>
-            </View>
-          ) : (<></>)
-        }
-      </View>
+        <View style={styles(windowWidth).listControlContainer}>
+          <Text style={styles(windowWidth).textColor}>List Controler</Text>
+        </View>
+      </>
     </MainContainer>
   );
 };
@@ -74,38 +62,6 @@ export default HomeScreen;
 
 // Page Styles
 const styles = (windowWidth: any) => StyleSheet.create({
-  bodyScreen: {
-    flex: 10,
-    flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
-    paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
-    backgroundColor: '#ffffff',
-  },
-
-  // Body Containers (Right Ad Space (Web Only) and Main Container)
-  rightContainer: {
-    flex: 1,
-    marginHorizontal: 10,
-    marginBottom: 10,
-
-    //Temp for Visibility
-    backgroundColor: '#E5E7EB',
-
-    // Temp for Text Viewing
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    borderRadius: 15,
-  },
-  mainContainer: {
-    // Change FlexBox valuse based on screen size
-    marginHorizontal: 10,
-
-    // Flex Settings
-    flex: 3,
-    flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
-  },
-
   // Content Containers
   listContainer: {
     flex: windowWidth >= screenChangePoint ? 2 : 5,
