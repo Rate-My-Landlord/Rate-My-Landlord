@@ -1,7 +1,7 @@
 /*
   Author: Hayden Stegman
 */
-import React from 'react';
+import { createContext, useState } from 'react';
 import { Platform, AppRegistry, Text } from 'react-native';
 
 //Navigation Imports
@@ -10,6 +10,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
+import UserContext from './src/global/userContext';
 
 // Screen Imports
 import HomeScreen from './src/screens/HomeScreen'
@@ -18,13 +19,13 @@ import SettingsScreen from './src/screens/SettingsScreen';
 import LoginScreen from './src/screens/LoginScreen';
 // Searching
 import LandlordScreen from './src/screens/SearchScreenFlow/LandlordScreen';
-import WriteReviewScreen from './src/screens/WriteReviewScreen';
 import { Ionicons } from '@expo/vector-icons';
 import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
 } from "@apollo/client";
+import { IAuthUser } from './src/types';
 
 const client = new ApolloClient({
   uri: 'http://127.0.0.1:5000/api/graphql',
@@ -85,76 +86,71 @@ let isSignedIn = false;
 
 // Main App Tab Navigation
 export default function App() {
+  // TODO: use AsyncStorage to get token and userId
+  // For now, we will just not sve user state when they close the app
+  const [user, setUser] = useState<IAuthUser | undefined>();
+
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        {Platform.OS === 'ios' || Platform.OS === 'android' ? (
-          // Phone Navigation
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName: any = "";
+      <UserContext.Provider value={{user, setUser}}>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+          {Platform.OS === 'ios' || Platform.OS === 'android' ? (
+            // Phone Navigation
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName: any = "";
 
-                if (route.name === 'Home') {
-                  iconName = 'home';
-                } else if (route.name === 'Settings') {
-                  iconName = 'settings';
-                } else if (route.name === 'Profile') {
-                  iconName = 'person';
-                } else if (route.name === 'Login') {
-                  iconName = 'person-add';
-                }
+                  if (route.name === 'Home') {
+                    iconName = 'home';
+                  } else if (route.name === 'Settings') {
+                    iconName = 'settings';
+                  } else if (route.name === 'Profile') {
+                    iconName = 'person';
+                  } else if (route.name === 'Login') {
+                    iconName = 'person-add';
+                  }
 
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} color={color} size={size} />;
-              },
-              // Icon Colors
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
+                  // You can return any component that you like here!
+                  return <Ionicons name={iconName} color={color} size={size} />;
+                },
+                // Icon Colors
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
 
-              headerShown: false,
-              tabBarShowLabel: false,
-            })}
-          >
-            {isSignedIn == true ? (
-              <>
-                <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="Profile" component={ProfileScreen} />
-                <Tab.Screen name="Settings" component={SettingsScreen} />
-              </>
-            ) : (
-              <>
-                <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="Profile" component={LoginScreen} />
-                <Tab.Screen name="Settings" component={SettingsScreen} />
-              </>
-            )}
-          </Tab.Navigator>
-          // Web Navigation
-        ) : (
-          <Stack.Navigator
-            screenOptions={({
-              headerShown: false,
-            })}
-          >
-            {isSignedIn == true ? (
-              <>
-                <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="Profile" component={ProfileScreen} />
-                {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
-                <Stack.Screen name="Settings" component={SettingsScreen} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="Home" component={HomeScreen} />
-                <Stack.Screen name="Profile" component={LoginScreen} />
-                {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
-                <Stack.Screen name="Settings" component={SettingsScreen} />
-              </>
-            )}
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+                headerShown: false,
+                tabBarShowLabel: false,
+              })}
+            >
+              {isSignedIn == true ? (
+                <>
+                  <Tab.Screen name="Home" component={HomeScreen} />
+                  <Tab.Screen name="Profile" component={ProfileScreen} />
+                  <Tab.Screen name="Settings" component={SettingsScreen} />
+                </>
+              ) : (
+                <>
+                  <Tab.Screen name="Home" component={HomeScreen} />
+                  <Tab.Screen name="Profile" component={LoginScreen} />
+                  <Tab.Screen name="Settings" component={SettingsScreen} />
+                </>
+              )}
+            </Tab.Navigator>
+            // Web Navigation
+          ) : (
+            <Stack.Navigator
+              screenOptions={({
+                headerShown: false,
+              })}
+            >
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
+              <Stack.Screen name="Settings" component={SettingsScreen} />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </UserContext.Provider>
     </ApolloProvider>
   );
 }

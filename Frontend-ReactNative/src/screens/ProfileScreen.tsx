@@ -1,12 +1,17 @@
-import {View, Text, StyleSheet} from 'react-native';
-import Header from '../components/headers/header';
+import { useContext } from 'react';
+import {View, Text, StyleSheet, useWindowDimensions} from 'react-native';
+import MainContainer from '../components/mainContainer';
+import UserContext from '../global/userContext';
 
 const ProfileScreen = () => {
-  // const navigation = useNavigation<HomeScreenProp>()
-  
+  const windowWidth = useWindowDimensions().width;
+  const { user, setUser } = useContext(UserContext);
+
   return (
-    <View></View>
-  );
+    <MainContainer windowWidth={windowWidth}>
+      {user === undefined ? <Text>Not logged in/ no account</Text> : <Text>Logged in</Text>}
+    </MainContainer>
+  )
 };
 
 export default ProfileScreen;
