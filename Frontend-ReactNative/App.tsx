@@ -12,13 +12,13 @@ import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
 
 // Screen Imports
-import HomeScreen from './screens/HomeScreen'
-import ProfileScreen from './screens/ProfileScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './src/screens/HomeScreen'
+import ProfileScreen from './src/screens/ProfileScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import LoginScreen from './src/screens/LoginScreen';
 // Searching
-import LandlordScreen from './screens/SearchScreenFlow/LandlordScreen';
-import WriteReviewScreen from './screens/WriteReviewScreen';
+import LandlordScreen from './src/screens/SearchScreenFlow/LandlordScreen';
+import WriteReviewScreen from './src/screens/WriteReviewScreen';
 import { Ionicons } from '@expo/vector-icons';
 import {
   ApolloClient,

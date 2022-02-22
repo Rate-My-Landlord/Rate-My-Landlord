@@ -1,8 +1,8 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native'
-import { NavParamList } from '../App'
+import { NavParamList } from '../../App'
 
-const logo = require('../assets/images/RateMyLandlordIcon.png');
+const logo = require('../../assets/images/RateMyLandlordIcon.png');
 
 type Props = {
     navigation: NativeStackNavigationProp<NavParamList, 'Home'> // this is not really correct

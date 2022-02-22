@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TouchableOpacity } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import { NavParamList } from '../App';
+import { NavParamList } from '../../App';
 // Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
