@@ -8,10 +8,9 @@ import { NavParamList } from '../../App';
 // Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import WebHeader from '../components/WebHeader';
-
-// The point at which style changes
-const screenChangePoint = 1250;
+import Header from '../components/headers/webHeader';
+import { screenChangePoint } from '../constants/Layout';
+import MainContainer from '../components/mainContainer';
 
 type Props = NativeStackScreenProps<NavParamList, "Home">;
 
@@ -33,32 +32,15 @@ query {
 
 const HomeScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
-
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery(ALLREVIEWS);
-
-  const openNewReview = () => navigation.navigate('Settings');
 
 
   // Temp DATA for testing!
 
   return (
-    <View style={styles(windowWidth).backgroundScreen}>
-      {
-        (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
-          <WebHeader navigation={navigation}/>
-        ) : (
-          // Prop should move this to a component
-          <View style={styles(windowWidth).headerScreen}>
-            <Text style={styles(windowWidth).textColor}>Rate My Landlord</Text>
-            <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={openNewReview}>
-              <Text style={{ color: 'white' }}>New Review</Text>
-            </TouchableOpacity>
-          </View>
-        )
-      }
+    <MainContainer windowWidth={windowWidth} >
       <View style={styles(windowWidth).bodyScreen}>
-
         {/* Main Content Container */}
         <View style={styles(windowWidth).mainContainer}>
           <View style={styles(windowWidth).listContainer}>
@@ -85,7 +67,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
           ) : (<></>)
         }
       </View>
-    </View>
+    </MainContainer>
   );
 };
 
@@ -94,30 +76,6 @@ export default HomeScreen;
 
 // Page Styles
 const styles = (windowWidth: any) => StyleSheet.create({
-  // Back Ground Contain
-  backgroundScreen: {
-    backgroundColor: "#ffffff",
-    flex: 1,
-  },
-
-  // Main Dividers of the Screen (Header from Body)
-  headerScreen: {
-    flex: 1,
-    backgroundColor: '#E5E7EB',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 40 : 0,
-
-    // Header Gap - Only on Web
-    margin: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 5,
-
-    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    borderRadius: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 15,
-
-    // Shadow
-  },
   bodyScreen: {
     flex: 10,
     flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",

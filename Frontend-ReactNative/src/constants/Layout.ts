@@ -1,7 +1,10 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, useWindowDimensions } from 'react-native';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
+
+// The point at which style changes
+export const screenChangePoint: number = 1250;
 
 export default {
   window: {

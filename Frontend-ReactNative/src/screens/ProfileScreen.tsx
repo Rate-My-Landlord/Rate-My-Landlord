@@ -1,16 +1,11 @@
-/*
-  Author: Hayden Stegman
-*/
-import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import Header from '../components/headers/header';
 
-/*
-  Home Screen
-*/
 const ProfileScreen = () => {
   // const navigation = useNavigation<HomeScreenProp>()
   
   return (
-    <></>
+    <View></View>
   );
 };
 

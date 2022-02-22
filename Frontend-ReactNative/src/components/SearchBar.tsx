@@ -11,7 +11,7 @@ type Props = {
   setClicked: any,
 }
 
-const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setClicked}: Props) => {
+const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: Props) => {
   return (
     <View style={styles.container}>
       <View
@@ -41,8 +41,8 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setClicked}: Props) 
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
           <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-              setSearchPhrase("")
-          }}/>
+            setSearchPhrase("")
+          }} />
         )}
       </View>
       {/* cancel button, depending on whether the search bar is clicked or not */}
