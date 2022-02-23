@@ -1,14 +1,11 @@
-/*
-  Author: Hayden Stegman 
-*/
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { NavParamList } from '../../App';
-// Landlord List Component
 import { LandlordComponent } from '../components/LandlordListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { screenChangePoint } from '../constants/Layout';
 import MainContainer from '../components/mainContainer';
+import { ThemeColors } from '../constants/Colors';
 
 type Props = NativeStackScreenProps<NavParamList, "Home">;
 
@@ -65,7 +62,7 @@ const styles = (windowWidth: any) => StyleSheet.create({
   // Content Containers
   listContainer: {
     flex: windowWidth >= screenChangePoint ? 2 : 5,
-    backgroundColor: "#D4D4D4",
+    backgroundColor: ThemeColors.darkGrey,
     justifyContent: 'center',
     alignItems: 'center',
 
@@ -75,7 +72,7 @@ const styles = (windowWidth: any) => StyleSheet.create({
   // Contains Filter box, buttons, ect.
   listControlContainer: {
     flex: 1,
-    backgroundColor: "#E5E7EB",
+    backgroundColor: ThemeColors.grey,
     justifyContent: 'center',
     alignItems: 'center',
 
@@ -86,10 +83,10 @@ const styles = (windowWidth: any) => StyleSheet.create({
 
   // Temp
   textColor: {
-    color: '#1F2937',
+    color: ThemeColors.darkBlue,
   },
   listTextColor: {
-    color: '#ffffff',
+    color: ThemeColors.white,
   },
   flatList: {
     width: '100%',

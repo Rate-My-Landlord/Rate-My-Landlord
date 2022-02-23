@@ -1,6 +1,7 @@
 import { View, StyleSheet, Platform, Text } from 'react-native';
 import Header from './headers/header';
 import { screenChangePoint } from '../constants/Layout';
+import { ThemeColors } from '../constants/Colors';
 
 type Props = {
     windowWidth: number,
@@ -30,7 +31,7 @@ export default ({ windowWidth, children }: Props) => (
 const styles = (windowWidth: number) => StyleSheet.create({
     // Back Ground Contain
     backgroundScreen: {
-        backgroundColor: "#ffffff",
+        backgroundColor: ThemeColors.white,
         flex: 1,
     },
     mainContainer: {
@@ -47,7 +48,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
         flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
         paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
         paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
-        backgroundColor: '#ffffff',
+        backgroundColor: ThemeColors.white,
     },
     // Body Containers (Right Ad Space (Web Only) and Main Container)
     rightContainer: {
@@ -56,7 +57,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
         marginBottom: 10,
 
         //Temp for Visibility
-        backgroundColor: '#E5E7EB',
+        backgroundColor: ThemeColors.grey,
 
         // Temp for Text Viewing
         justifyContent: 'center',
@@ -65,7 +66,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
         borderRadius: 15,
     },
     textColor: {
-        color: '#1F2937',
+        color: ThemeColors.darkBlue,
     },
 
 })

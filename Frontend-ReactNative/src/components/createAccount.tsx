@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableHighlight, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import { useForm, SubmitHandler, Controller, Control, FieldError } from 'react-hook-form';
+import { ThemeColors } from '../constants/Colors';
 
 type TextProps = {
     label: string,
@@ -87,16 +88,18 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
         // flex: 1,
         borderWidth: 2,
-        padding: 10,
         marginVertical: 5,
+        width: 250,
         borderRadius: 5,
+        backgroundColor: ThemeColors.white,
     },
     label: {
     },
     container: {
         flex: 3,
-        backgroundColor: "#D4D4D4",
+        backgroundColor: ThemeColors.grey,
         justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
         // Top Right rounded only on Web when screen is big.
         borderRadius: 15,

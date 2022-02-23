@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Platform } from 'react-native';
+import { ThemeColors } from '../../constants/Colors';
 
 type Props = {
     windowWidth: number
@@ -15,7 +16,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
     // Main Dividers of the Screen (Header from Body)
     headerScreen: {
         flex: 1,
-        backgroundColor: '#E5E7EB',
+        backgroundColor: ThemeColors.grey,
         justifyContent: 'center',
         alignItems: 'center',
         paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 40 : 0,
@@ -31,6 +32,6 @@ const styles = (windowWidth: number) => StyleSheet.create({
         // Shadow
     },
     textColor: {
-        color: '#1F2937',
+        color: ThemeColors.darkBlue,
     },
 })

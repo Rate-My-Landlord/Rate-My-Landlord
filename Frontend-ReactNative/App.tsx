@@ -47,7 +47,6 @@ const linking = {
   }
 }
 
-
 export type NavParamList = {
   Home: undefined,
   Profile: undefined,
