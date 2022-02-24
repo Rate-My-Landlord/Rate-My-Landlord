@@ -87,8 +87,10 @@ export interface IPropertyResult {
 
 
 export interface IUserResult {
-    success: boolean,
-    errors?: string[],
-    user?: IUser,
-    token?: string
+    NewUser: {
+        success: boolean,
+        errors?: string[],
+        user?: IUser,
+        token?: string,
+    }
 }

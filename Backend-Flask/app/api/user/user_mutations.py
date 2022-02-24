@@ -43,14 +43,18 @@ def resolve_new_user(info, obj, phone, first_name, last_name, email, password):
         phone = User.format_phone(phone)
         if phone is None or password is None:
             raise Exception('Phone or password not provided')
+        User.validate_phone(phone)
         new_user = User(phone=phone,
                         first_name=first_name,
                         last_name=last_name,
                         email=email)
         new_user.set_password(password)
         
+        
         db.session.add(new_user)
-        db.session.commit()
+        db.session.flush();
+        # Not adding user for testing purposes
+        # db.session.commit()
         
         # Creating a JWT that is valid for 7 days
         access_token = generate_token(new_user.id)

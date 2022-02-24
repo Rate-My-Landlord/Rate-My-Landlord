@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableHighlight, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import { useForm, SubmitHandler, Controller, Control, FieldError, RegisterOptions, SubmitErrorHandler } from 'react-hook-form';
 import { ThemeColors } from '../constants/Colors';
+import { gql, useMutation } from '@apollo/client';
+import { IUserResult, IUser } from '../types';
 
 type TextProps = {
     label: string,
@@ -46,32 +48,81 @@ type Inputs = {
     confirmPassword: string
 }
 
+const ADD_USER = gql`
+    mutation AddUser(
+        $phone: String!,
+        $firstName: String!,
+        $lastName: String!,
+        $email: String!,
+        $password: String!) {
+            NewUser(phone: $phone, firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+                success,
+                errors,
+                user {
+                    id
+                },
+                token
+            }
+        }
+`
+
+
+
 export default () => {
+    const [addUser, { data, loading, error }] = useMutation(ADD_USER);
+
+
+    const saveUserToDevice = (token: string, id: string) => {
+        console.log(token, id);
+    }
+
+    // Form stuff
     const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            email: '',
-            firstName: '',
-            lastName: '',
-            password: '',
-            confirmPassword: ''
+            phone: '5089880446',
+            email: 'em',
+            firstName: 'fn',
+            lastName: 'ln',
+            password: 'pw',
+            confirmPassword: 'pw'
         }
     }
     );
 
+    // Watching the value of password. We use this to make sure that the two password fields match
     const password = useRef({});
     password.current = watch('password', '');
 
-    const onSubmit: SubmitHandler<Inputs> = data => console.log(data);
-
+    // Form event handlers
+    const onSubmit: SubmitHandler<Inputs> = data => {
+        console.log(data.phone, data.firstName, data.lastName, data.email, data.password);
+        addUser({
+            variables: {
+                phone: data.phone,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                password: data.password
+            },
+            onCompleted({ addUser }) {console.log(addUser.token)}//{saveUserToDevice(addUser.token, addUser.user.id)}
+        });
+    };
     const onError: SubmitErrorHandler<Inputs> = data => console.log(data);
 
+    // For dismissing the keyboard in mobile when they touch anywhere but the text box
     const dismissKeyboard = () => {
         if (Platform.OS === 'ios' || Platform.OS === 'android') Keyboard.dismiss()
     }
 
+    console.log(data?.NewUser);
+
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
             <View style={styles.container}>
+                {loading && <Text>Submitting...</Text>}
+                {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
+                {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: string) => e)} </Text> /* Errors from our API */}
+                <Text style={[styles.error, styles.errorTop]}>Phone number already in use</Text>
                 <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} />
                 <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} />
                 <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
@@ -93,11 +144,11 @@ const styles = StyleSheet.create({
     input: {
         height: 40,
         alignItems: 'stretch',
-        // flex: 1,
         borderWidth: 2,
         marginVertical: 5,
         width: 250,
         borderRadius: 5,
+        padding: 10,
         backgroundColor: ThemeColors.white,
     },
     label: {
@@ -112,7 +163,11 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     error: {
-        color: 'red'
+        color: 'red',
+    },
+    errorTop: {
+        marginBottom: 3,
+        fontSize: 18
     },
     submit: {
         borderRadius: 5,
