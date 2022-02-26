@@ -95,7 +95,7 @@ export default function App() {
     async function fetUserCreds() {
       try {
         const json_value = await AsyncStorage.getItem('@user_cred');
-        if (json_value != null) setUser(json_value as unknown as IAuthUser);
+        if (json_value != null) setUser(JSON.parse(json_value) as IAuthUser);
       } catch (e) {
         console.log(e);
       }

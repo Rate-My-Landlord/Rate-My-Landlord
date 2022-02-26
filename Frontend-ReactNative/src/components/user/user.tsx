@@ -25,16 +25,11 @@ export default () => {
     const { user, setUser } = useContext(UserContext);
 
 
-    if (user) {
-        // console.log('' + user!.user_id);
-        console.log(user);
-        console.log(user['user_id']);
-        console.log(user.user_id)
-        // console.log(user);
-        // getUser({ variables: { userId: user.user_id.toString() } })
-    }
+    // if (!data && user) {
+    //     getUser({ variables: { userId: user.user_id.toString() } });
+    // }
 
-    // console.log(data?.UserByUserId);
+    console.log(data?.UserByUserId);
 
     if (loading || !user) return <Text>Loading...</Text>
 
