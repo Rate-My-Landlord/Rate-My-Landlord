@@ -1,9 +1,11 @@
-import { useState, createContext } from 'react';
+import { useState, createContext, Dispatch, SetStateAction } from 'react';
 import { IAuthUser } from '../types';
 
-const UserContext = createContext({
-    user:{token: undefined, id: undefined} as IAuthUser | undefined,
-    setUser: (user: IAuthUser) => { }
-});
+interface IUserContextProps {
+    user: IAuthUser | undefined,
+    setUser: Dispatch<SetStateAction<IAuthUser | undefined>>
+}
+
+const UserContext = createContext({} as IUserContextProps);
 
 export default UserContext;

@@ -1,7 +1,7 @@
 /*
   Author: Hayden Stegman
 */
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { Platform, AppRegistry, Text } from 'react-native';
 
 //Navigation Imports
@@ -24,13 +24,16 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  createHttpLink,
 } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 import { IAuthUser } from './src/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const client = new ApolloClient({
-  uri: 'http://127.0.0.1:5000/api/graphql',
-  cache: new InMemoryCache()
-});
+
+const apolloHttpLink = createHttpLink({
+  uri: 'http://127.0.0.1:5000/api/graphql'
+})
 
 const prefix = Linking.createURL('/');
 
@@ -81,13 +84,40 @@ function SearchFlow() {
   );
 }
 
-let isSignedIn = false;
-
 // Main App Tab Navigation
 export default function App() {
-  // TODO: use AsyncStorage to get token and userId
-  // For now, we will just not sve user state when they close the app
-  const [user, setUser] = useState<IAuthUser | undefined>();
+  const [user, setUser] = useState<IAuthUser | undefined>(undefined);
+
+  useEffect(() => {
+    // mounted is to make sure that we are not generating a warning
+    // read more here: https://www.debuggr.io/react-update-unmounted-component/
+    let mounted = true;
+    async function fetUserCreds() {
+      try {
+        const json_value = await AsyncStorage.getItem('@user_cred');
+        if (json_value != null) setUser(json_value as unknown as IAuthUser);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    if (!user) fetUserCreds();
+    return () => {mounted = false};
+  }, [])
+
+  const apolloAuthLink = setContext((_, {headers}) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: user?.token ? `Bearer ${user.token}` : '',
+      }
+    }
+  })
+
+  const client = new ApolloClient({
+    link: apolloAuthLink.concat(apolloHttpLink),
+    cache: new InMemoryCache()
+  })
+
 
   return (
     <ApolloProvider client={client}>

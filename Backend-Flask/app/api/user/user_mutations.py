@@ -52,9 +52,7 @@ def resolve_new_user(info, obj, phone, first_name, last_name, email, password):
         
         
         db.session.add(new_user)
-        db.session.flush();
-        # Not adding user for testing purposes
-        # db.session.commit()
+        db.session.commit()
         
         # Creating a JWT that is valid for 7 days
         access_token = generate_token(new_user.id)

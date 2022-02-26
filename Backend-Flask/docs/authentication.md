@@ -9,6 +9,9 @@ Currently, there are only 2 mutations that return a token (NewUser & Login), so 
 Read more about HTTP authorization [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization)  
 Read more about Bearer Authentication [here](https://swagger.io/docs/specification/authentication/bearer-authentication/)  
 Read more about Axios authorization [here](https://flaviocopes.com/axios-send-authorization-header/)
+### Apollo Client
+Since our uses [Apollo Client](https://www.apollographql.com/docs/react/), the header is automatically setup to include to users JWT.  
+If you want to read more about how it is setup, check out [this article](https://www.apollographql.com/docs/react/networking/authentication/)
 ### Axios example:
 ```
 axios.post(url, data, {

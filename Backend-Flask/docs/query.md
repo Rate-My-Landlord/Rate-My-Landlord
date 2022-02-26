@@ -15,7 +15,7 @@
 | LandlordByPropertyId| propertyId: ID!     | get the landlord who owns the property with propertyId        |LandlordResult |
 | UserByUserId        | userId: ID!         | get the user associated with userId                           | UserResult*   |  
 
-\* This will not return a user's phone or email  
+\* This will not return a user's phone or email unless the users JWT is provided. Refer to the [authentication](authentication.md) docs.
 
 
 ## Sample Queries:

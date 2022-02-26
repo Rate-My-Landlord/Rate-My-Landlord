@@ -1,9 +1,11 @@
 import { useRef } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableHighlight, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
 import { useForm, SubmitHandler, Controller, Control, FieldError, RegisterOptions, SubmitErrorHandler } from 'react-hook-form';
-import { ThemeColors } from '../constants/Colors';
+import { ThemeColors } from '../../constants/Colors';
 import { gql, useMutation } from '@apollo/client';
-import { IUserResult, IUser } from '../types';
+import { Mutation, MutationNewUserArgs } from '../../../graphql/generated';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IAuthUser } from '../../types';
 
 type TextProps = {
     label: string,
@@ -66,14 +68,23 @@ const ADD_USER = gql`
         }
 `
 
+type Props = {
+    setUser: (user: IAuthUser) => void
+}
+
+export default ({setUser}: Props) => {
+    const [addUser, { data, loading, error }] = useMutation<Mutation, MutationNewUserArgs>(ADD_USER);
 
 
-export default () => {
-    const [addUser, { data, loading, error }] = useMutation(ADD_USER);
-
-
-    const saveUserToDevice = (token: string, id: string) => {
-        console.log(token, id);
+    const saveUserToDevice = async (token: any, id: any) => {
+        const user_obj = {token: token, user_id: id} as IAuthUser;
+        setUser(user_obj);
+        try {
+            const json_value = JSON.stringify(user_obj);
+            await AsyncStorage.setItem('@user_cred', json_value);
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     // Form stuff
@@ -98,13 +109,13 @@ export default () => {
         console.log(data.phone, data.firstName, data.lastName, data.email, data.password);
         addUser({
             variables: {
-                phone: data.phone,
+                phone: data.phone.toString(),
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
                 password: data.password
             },
-            onCompleted({ addUser }) {console.log(addUser.token)}//{saveUserToDevice(addUser.token, addUser.user.id)}
+            onCompleted({ NewUser }) { if (NewUser) { saveUserToDevice(NewUser.token, NewUser.user?.id) } }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.log(data);
@@ -114,15 +125,12 @@ export default () => {
         if (Platform.OS === 'ios' || Platform.OS === 'android') Keyboard.dismiss()
     }
 
-    console.log(data?.NewUser);
-
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
             <View style={styles.container}>
                 {loading && <Text>Submitting...</Text>}
                 {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
-                {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: string) => e)} </Text> /* Errors from our API */}
-                <Text style={[styles.error, styles.errorTop]}>Phone number already in use</Text>
+                {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
                 <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} />
                 <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} />
                 <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />

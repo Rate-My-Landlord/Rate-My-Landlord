@@ -6,6 +6,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { screenChangePoint } from '../constants/Layout';
 import MainContainer from '../components/mainContainer';
 import { ThemeColors } from '../constants/Colors';
+import { Query } from '../../graphql/generated';
 
 type Props = NativeStackScreenProps<NavParamList, "Home">;
 
@@ -28,8 +29,7 @@ query {
 const HomeScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
-  const { loading, error, data } = useQuery(ALLREVIEWS);
-
+  const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
 
   // Temp DATA for testing!
 
@@ -39,9 +39,9 @@ const HomeScreen = ({ route, navigation }: Props) => {
         <View style={styles(windowWidth).listContainer}>
           <FlatList style={styles(windowWidth).flatList}
             data={data?.AllLandlords.landlords}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <LandlordComponent name={item.firstName} rating={item.overallRating} />
+              <LandlordComponent name={item?.firstName} rating={item?.overallRating} />
             )}
             showsVerticalScrollIndicator={false}
           />
