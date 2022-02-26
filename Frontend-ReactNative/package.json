@@ -8,7 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "generate": "graphql-codegen"
   },
   "jest": {
     "preset": "jest-expo"
@@ -16,6 +17,9 @@
   "dependencies": {
     "@apollo/client": "^3.5.9",
     "@expo/vector-icons": "^12.0.0",
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/typescript": "^2.4.5",
+    "@graphql-codegen/typescript-operations": "^2.3.2",
     "@react-navigation/bottom-tabs": "^6.0.5",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",

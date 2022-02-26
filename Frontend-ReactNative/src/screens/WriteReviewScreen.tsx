@@ -13,13 +13,7 @@ const screenChangePoint = 1250;
 */
 
 
-const PostReview = gql`
-  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
-    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
-      success
-    }
-  }
-`
+const PostReview = gql``
 
 const HomeScreen = ({ route, navigation }: any) => {
   const landlordId = route.params.landlordId;

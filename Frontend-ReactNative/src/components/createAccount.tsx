@@ -79,7 +79,7 @@ export default () => {
     // Form stuff
     const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            phone: '5089880446',
+            // phone: '5089880446',
             email: 'em',
             firstName: 'fn',
             lastName: 'ln',
