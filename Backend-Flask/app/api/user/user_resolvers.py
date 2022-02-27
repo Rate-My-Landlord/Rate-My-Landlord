@@ -2,6 +2,7 @@ from ... import db
 from ...models import User
 from ariadne import convert_kwargs_to_snake_case
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from .user_mutations import generate_token
 
 
 @convert_kwargs_to_snake_case
@@ -14,12 +15,13 @@ def resolve_user_by_id(info, obj, user_id):
         if (secure_request):
             payload ={
                 'success': True,
-                'user': user.to_json()
+                'user': user.to_json(),
+                'token': generate_token(user.id)
             }
         else:
             payload = {
                 'success': True,
-                'user': user.to_json(brief=True)
+                'user': user.to_json(brief=True),
             }
     except Exception as e:
         payload = {

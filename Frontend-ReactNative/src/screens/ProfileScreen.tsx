@@ -11,7 +11,7 @@ const ProfileScreen = () => {
 
   return (
     <MainContainer windowWidth={windowWidth}>
-      {user === undefined ? <CreateAccount setUser={setUser} /> : <User />}
+      {user?.user_id === undefined ? <CreateAccount setUser={setUser} /> : <User user={user!}/>}
     </MainContainer>
   )
 };

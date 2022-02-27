@@ -29,6 +29,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { IAuthUser } from './src/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import loadUserCredsFromLocal from './src/global/localStorage';
 
 
 const apolloHttpLink = createHttpLink({
@@ -86,7 +87,7 @@ function SearchFlow() {
 
 // Main App Tab Navigation
 export default function App() {
-  const [user, setUser] = useState<IAuthUser | undefined>(undefined);
+  const [user, setUser] = useState<IAuthUser | null>(null);
 
   useEffect(() => {
     // mounted is to make sure that we are not generating a warning
@@ -94,17 +95,17 @@ export default function App() {
     let mounted = true;
     async function fetUserCreds() {
       try {
-        const json_value = await AsyncStorage.getItem('@user_cred');
+        const json_value = await loadUserCredsFromLocal();
         if (json_value != null) setUser(JSON.parse(json_value) as IAuthUser);
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
     if (!user) fetUserCreds();
-    return () => {mounted = false};
+    return () => { mounted = false };
   }, [])
 
-  const apolloAuthLink = setContext((_, {headers}) => {
+  const apolloAuthLink = setContext((_, { headers }) => {
     return {
       headers: {
         ...headers,

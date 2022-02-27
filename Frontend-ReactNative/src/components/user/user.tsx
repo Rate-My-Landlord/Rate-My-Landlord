@@ -1,9 +1,8 @@
 import { View, Text, StyleSheet } from 'react-native';
-import { gql, useLazyQuery, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { Query, QueryUserByUserIdArgs } from '../../../graphql/generated';
 import { IAuthUser } from '../../types';
-import { useContext } from 'react';
-import UserContext from '../../global/userContext';
+import { saveUserCredsToLocal } from '../../global/localStorage';
 
 const GET_USER_BY_ID = gql`
     query GetUserById($userId: ID!) {
@@ -14,27 +13,39 @@ const GET_USER_BY_ID = gql`
                 id,
                 firstName,
                 lastName,
+                email,
+                phone
             },
             token,
         }
     }
 `
-export default () => {
-    const [getUser, { loading, data }] = useLazyQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID);
 
-    const { user, setUser } = useContext(UserContext);
+type Props ={
+    user: IAuthUser
+}
 
+export default ({user}: Props) => {
+    const { loading, data } = useQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID, { variables: { userId: user.user_id.toString() } });
 
-    // if (!data && user) {
-    //     getUser({ variables: { userId: user.user_id.toString() } });
-    // }
+    if (data?.UserByUserId.token !== undefined) {
+        if (data?.UserByUserId.user?.id! !== user.user_id) {
+            throw new Error('User ids do not match');
+        } else {
+            // Not using setUser from UserCOntext because then it will infinitely rerender 
+            saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.token!)
+        }
 
-    console.log(data?.UserByUserId);
+    }
+
 
     if (loading || !user) return <Text>Loading...</Text>
 
     return (
-        <Text>Hello</Text>
+        <View>
+            <Text>Hello</Text>
+            <Text>{data?.UserByUserId.user?.firstName}</Text>
+        </View>
     )
 
 
