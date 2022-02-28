@@ -1,8 +1,7 @@
 /*
   Author: Hayden Stegman
 */
-import { createContext, useEffect, useState } from 'react';
-import { Platform, AppRegistry, Text } from 'react-native';
+import { Platform, Text } from 'react-native';
 
 //Navigation Imports
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,13 +9,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
-import UserContext from './src/global/userContext';
 
 // Screen Imports
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-import LoginScreen from './src/screens/LoginScreen';
 // Searching
 import LandlordScreen from './src/screens/SearchScreenFlow/LandlordScreen';
 import { Ionicons } from '@expo/vector-icons';
@@ -27,15 +24,31 @@ import {
   createHttpLink,
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
-import { IAuthUser } from './src/types';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import loadUserCredsFromLocal from './src/global/localStorage';
 
 
+/* Apollo Config */
 const apolloHttpLink = createHttpLink({
   uri: 'http://127.0.0.1:5000/api/graphql'
 })
 
+const apolloAuthLink = setContext(async (_, { headers }) => {
+  let userCreds = await loadUserCredsFromLocal();
+  return {
+    headers: {
+      ...headers,
+      authorization: userCreds ? `Bearer ${userCreds.token}` : '',
+    }
+  }
+})
+
+const client = new ApolloClient({
+  link: apolloAuthLink.concat(apolloHttpLink),
+  cache: new InMemoryCache()
+})
+
+
+/* For displaying URLs on desktop */
 const prefix = Linking.createURL('/');
 
 const linking = {
@@ -87,90 +100,56 @@ function SearchFlow() {
 
 // Main App Tab Navigation
 export default function App() {
-  const [user, setUser] = useState<IAuthUser | null>(null);
-
-  useEffect(() => {
-    // mounted is to make sure that we are not generating a warning
-    // read more here: https://www.debuggr.io/react-update-unmounted-component/
-    let mounted = true;
-    async function fetUserCreds() {
-      try {
-        const json_value = await loadUserCredsFromLocal();
-        if (json_value != null) setUser(JSON.parse(json_value) as IAuthUser);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    if (!user) fetUserCreds();
-    return () => { mounted = false };
-  }, [])
-
-  const apolloAuthLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: user?.token ? `Bearer ${user.token}` : '',
-      }
-    }
-  })
-
-  const client = new ApolloClient({
-    link: apolloAuthLink.concat(apolloHttpLink),
-    cache: new InMemoryCache()
-  })
-
 
   return (
     <ApolloProvider client={client}>
-      <UserContext.Provider value={{ user, setUser }}>
-        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-          {Platform.OS === 'ios' || Platform.OS === 'android' ? (
-            // Phone Navigation
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName: any = "";
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+        {Platform.OS === 'ios' || Platform.OS === 'android' ? (
+          // Phone Navigation
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName: any = "";
 
-                  if (route.name === 'Home') {
-                    iconName = 'home';
-                  } else if (route.name === 'Settings') {
-                    iconName = 'settings';
-                  } else if (route.name === 'Profile') {
-                    iconName = 'person';
-                  } else if (route.name === 'Login') {
-                    iconName = 'person-add';
-                  }
+                if (route.name === 'Home') {
+                  iconName = 'home';
+                } else if (route.name === 'Settings') {
+                  iconName = 'settings';
+                } else if (route.name === 'Profile') {
+                  iconName = 'person';
+                } else if (route.name === 'Login') {
+                  iconName = 'person-add';
+                }
 
-                  // You can return any component that you like here!
-                  return <Ionicons name={iconName} color={color} size={size} />;
-                },
-                // Icon Colors
-                tabBarActiveTintColor: 'tomato',
-                tabBarInactiveTintColor: 'gray',
+                // You can return any component that you like here!
+                return <Ionicons name={iconName} color={color} size={size} />;
+              },
+              // Icon Colors
+              tabBarActiveTintColor: 'tomato',
+              tabBarInactiveTintColor: 'gray',
 
-                headerShown: false,
-                tabBarShowLabel: false,
-              })}
-            >
-              <Tab.Screen name="Home" component={HomeScreen} />
-              <Tab.Screen name="Profile" component={ProfileScreen} />
-              <Tab.Screen name="Settings" component={SettingsScreen} />
-            </Tab.Navigator>
-            // Web Navigation
-          ) : (
-            <Stack.Navigator
-              screenOptions={({
-                headerShown: false,
-              })}
-            >
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
-              <Stack.Screen name="Settings" component={SettingsScreen} />
-            </Stack.Navigator>
-          )}
-        </NavigationContainer>
-      </UserContext.Provider>
+              headerShown: false,
+              tabBarShowLabel: false,
+            })}
+          >
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
+          </Tab.Navigator>
+          // Web Navigation
+        ) : (
+          <Stack.Navigator
+            screenOptions={({
+              headerShown: false,
+            })}
+          >
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </Stack.Navigator>
+        )}
+      </NavigationContainer>
     </ApolloProvider>
   );
 }

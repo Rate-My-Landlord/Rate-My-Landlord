@@ -22,14 +22,14 @@ const GET_USER_BY_ID = gql`
 `
 
 type Props ={
-    user: IAuthUser
+    userId: string
 }
 
-export default ({user}: Props) => {
-    const { loading, data } = useQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID, { variables: { userId: user.user_id.toString() } });
+export default ({userId}: Props) => {
+    const { loading, data } = useQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID, { variables: { userId: userId } });
 
     if (data?.UserByUserId.token !== undefined) {
-        if (data?.UserByUserId.user?.id! !== user.user_id) {
+        if (data?.UserByUserId.user?.id! !== userId) {
             throw new Error('User ids do not match');
         } else {
             // Not using setUser from UserCOntext because then it will infinitely rerender 
@@ -39,7 +39,7 @@ export default ({user}: Props) => {
     }
 
 
-    if (loading || !user) return <Text>Loading...</Text>
+    if (loading) return <Text>Loading...</Text>
 
     return (
         <View>

@@ -12,5 +12,7 @@ export async function saveUserCredsToLocal(user_id: string, token: string) {
 }
 
 export default async function loadUserCredsFromLocal() {
-    return AsyncStorage.getItem('@user_cred');
+    const json_value = await AsyncStorage.getItem('@user_cred');
+    if (json_value) return JSON.parse(json_value) as IAuthUser;
+    return null;
 }
