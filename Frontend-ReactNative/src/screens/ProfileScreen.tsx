@@ -1,49 +1,45 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import MainContainer from '../components/mainContainer';
-import UserContext from '../global/userContext';
 import CreateAccount from '../components/user/createAccount';
+import Login from '../components/user/login';
 import User from '../components/user/user';
-import loadUserCredsFromLocal from '../global/localStorage';
+import loadUserCredsFromLocal, { resetCreds } from '../global/localStorage';
 import { IAuthUser } from '../types';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { NavParamList } from '../../App';
 
-const ProfileScreen = () => {
+type Props = NativeStackScreenProps<NavParamList, "Profile">;
+
+const ProfileScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   const [user, setUser] = useState<IAuthUser | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
 
+  // Fetching User from local storage
   // useEffect(() => {
-  //   // mounted is to make sure that we are not generating a warning
-  //   // read more here: https://www.debuggr.io/react-update-unmounted-component/
-  //   let mounted = true;
-  //   async function fetUserCreds() {
-  //     try {
-  //       const json_value = await loadUserCredsFromLocal();
-  //       if (json_value != null) setUser(JSON.parse(json_value) as IAuthUser);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
+  //   async function fetchUserCreds() {
+  //     const creds = await loadUserCredsFromLocal();
+  //     if (creds) setUser(creds);
+  //     setLoading(false);
   //   }
-  //   if (!user) fetUserCreds();
-  //   return () => { mounted = false };
+  //   fetchUserCreds();
+  //   return () => { };
   // }, [])
 
+  // resetCreds();
 
-  useEffect(() => {
-
-    async function fetchUserCreds() {
-      const creds = await loadUserCredsFromLocal();
-      if (creds) setUser(creds);
-    }
-
-    fetchUserCreds();
-
-    return () => {};
-  }, [])
-  console.log(user);
+  // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
+  // if (loading) return <Text>Loading...</Text>
 
   return (
     <MainContainer windowWidth={windowWidth}>
-      {user === undefined ? <CreateAccount setUser={setUser} /> : <User userId={user!.user_id} />}
+      {user === undefined ?
+        <View style={{width: '100%'}}>
+          <Login setUser={setUser} />
+          <CreateAccount setUser={setUser} />
+        </View>
+        : <User userId={user!.user_id} />}
     </MainContainer>
   )
 };

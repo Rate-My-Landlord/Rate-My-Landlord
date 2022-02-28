@@ -1,45 +1,13 @@
 import { useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableHighlight, Keyboard, TouchableWithoutFeedback, Platform } from 'react-native';
-import { useForm, SubmitHandler, Controller, Control, FieldError, RegisterOptions, SubmitErrorHandler } from 'react-hook-form';
+import { View, Text, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import { gql, useMutation } from '@apollo/client';
 import { Mutation, MutationNewUserArgs } from '../../../graphql/generated';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IAuthUser } from '../../types';
-
-type TextProps = {
-    label: string,
-    name: 'phone' | 'email' | 'firstName' | 'lastName' | 'password' | 'confirmPassword',
-    error: FieldError | undefined,
-    control: Control<Inputs, any>
-    rules: any,
-    secureTextEntry?: boolean
-}
-
-const TextField = ({ label, name, error, control, rules, secureTextEntry = false }: TextProps) => (
-    <View>
-        <Text style={styles.label}>{label}</Text>
-        <Controller
-            control={control}
-            rules={rules}
-            render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                    style={styles.input}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    secureTextEntry={secureTextEntry}
-                    value={value ? String(value) : ''}
-                    keyboardType={name == 'phone' ? 'number-pad' : 'default'}
-                />
-            )}
-            name={name}
-        />
-        {error?.type === 'required' && <Text style={styles.error}>{label} is required</Text>}
-        {error?.type === 'validate' && <Text style={styles.error}>{error.message}</Text>}
-    </View>
-)
-
-
+import { saveUserCredsToLocal } from '../../global/localStorage';
+import TextField from './TextField';
+import dismissKeyboard from '../../global/dismissKeyboard';
 
 type Inputs = {
     phone: number,
@@ -69,22 +37,16 @@ const ADD_USER = gql`
 `
 
 type Props = {
-    setUser: (user: IAuthUser) => void
+    setUser: (user: IAuthUser) => void,
 }
 
-export default ({setUser}: Props) => {
+export default ({ setUser }: Props) => {
     const [addUser, { data, loading, error }] = useMutation<Mutation, MutationNewUserArgs>(ADD_USER);
 
 
-    const saveUserToDevice = async (token: any, id: any) => {
-        const user_obj = {token: token, user_id: id} as IAuthUser;
-        setUser(user_obj);
-        try {
-            const json_value = JSON.stringify(user_obj);
-            await AsyncStorage.setItem('@user_cred', json_value);
-        } catch (e) {
-            console.log(e);
-        }
+    const saveUser = async (token: any, id: any) => {
+        await saveUserCredsToLocal(id, token)
+            .then(() => setUser({ token: token, user_id: id } as IAuthUser));
     }
 
     // Form stuff
@@ -106,7 +68,6 @@ export default ({setUser}: Props) => {
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
-        console.log(data.phone, data.firstName, data.lastName, data.email, data.password);
         addUser({
             variables: {
                 phone: data.phone.toString(),
@@ -115,24 +76,19 @@ export default ({setUser}: Props) => {
                 email: data.email,
                 password: data.password
             },
-            onCompleted({ NewUser }) { if (NewUser) { saveUserToDevice(NewUser.token, NewUser.user?.id) } }
+            onCompleted({ NewUser }) { if (NewUser) { saveUser(NewUser.token, NewUser.user?.id) } }
         });
     };
-    const onError: SubmitErrorHandler<Inputs> = data => console.log(data);
-
-    // For dismissing the keyboard in mobile when they touch anywhere but the text box
-    const dismissKeyboard = () => {
-        if (Platform.OS === 'ios' || Platform.OS === 'android') Keyboard.dismiss()
-    }
+    const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
     return (
-        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
             <View style={styles.container}>
                 {loading && <Text>Submitting...</Text>}
                 {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
                 {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
-                <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} />
-                <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} />
+                <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
                 <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
                 <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
                 <TextField label='Password' name='password' error={errors.password} control={control} secureTextEntry={true} rules={{ required: true }} />
@@ -149,18 +105,6 @@ export default ({setUser}: Props) => {
 }
 
 const styles = StyleSheet.create({
-    input: {
-        height: 40,
-        alignItems: 'stretch',
-        borderWidth: 2,
-        marginVertical: 5,
-        width: 250,
-        borderRadius: 5,
-        padding: 10,
-        backgroundColor: ThemeColors.white,
-    },
-    label: {
-    },
     container: {
         flex: 3,
         backgroundColor: ThemeColors.grey,
