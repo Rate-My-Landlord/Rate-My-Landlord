@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { NavParamList } from '../../App';
-import { LandlordComponent } from '../components/LandlordListComponent';
+import { ReviewComponent } from '../components/ListComponents/ReviewListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { screenChangePoint } from '../constants/Layout';
 import MainContainer from '../components/mainContainer';
@@ -11,14 +11,14 @@ import { Query } from '../../graphql/generated';
 type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
 const ALLREVIEWS = gql`
-query {
-    ReviewsByLandlordId {
+query ReviewsByLandlordId($landlordId: ID = 13){
+    ReviewsByLandlordId(landlordId: $landlordId) {
         success,
         errors,
-        review {
+        reviews {
           id,
           overallStarRating,
-          author,
+          text,
         }
     }
 }
@@ -29,15 +29,17 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
 
+  console.log(data?.ReviewsByLandlordId.reviews)
+
   return (
     <MainContainer windowWidth={windowWidth} >
       <>
         <View style={styles(windowWidth).listContainer}>
           <FlatList style={styles(windowWidth).flatList}
-            data={data?.AllLandlords.landlords}
+            data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <LandlordComponent name={item?.firstName} rating={item?.overallRating} />
+              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text}/>
             )}
             showsVerticalScrollIndicator={false}
           />

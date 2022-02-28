@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { NavParamList } from '../../App';
-import { LandlordComponent } from '../components/LandlordListComponent';
+import { LandlordComponent } from '../components/ListComponents/LandlordListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { screenChangePoint } from '../constants/Layout';
 import MainContainer from '../components/mainContainer';
@@ -39,7 +39,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
             data={data?.AllLandlords.landlords}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <LandlordComponent name={item?.firstName} rating={item?.overallRating} />
+              <LandlordComponent name={item?.firstName + " " + item?.lastName} rating={item?.overallRating} />
             )}
             showsVerticalScrollIndicator={false}
           />
