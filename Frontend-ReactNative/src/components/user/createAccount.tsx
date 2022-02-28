@@ -107,12 +107,10 @@ export default ({ setUser }: Props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 3,
-        backgroundColor: ThemeColors.grey,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
         // Top Right rounded only on Web when screen is big.
-        borderRadius: 15,
     },
     error: {
         color: 'red',

@@ -36,6 +36,11 @@ const styles = (windowWidth: number) => StyleSheet.create({
     },
     mainContainer: {
         marginHorizontal: 0,
+        backgroundColor: ThemeColors.grey,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // Top Right rounded only on Web when screen is big.
+        borderRadius: 15,
 
         // Flex Settings
         flex: 3,

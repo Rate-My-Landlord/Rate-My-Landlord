@@ -17,20 +17,20 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Fetching User from local storage
-  // useEffect(() => {
-  //   async function fetchUserCreds() {
-  //     const creds = await loadUserCredsFromLocal();
-  //     if (creds) setUser(creds);
-  //     setLoading(false);
-  //   }
-  //   fetchUserCreds();
-  //   return () => { };
-  // }, [])
+  useEffect(() => {
+    async function fetchUserCreds() {
+      const creds = await loadUserCredsFromLocal();
+      if (creds) setUser(creds);
+      setLoading(false);
+    }
+    fetchUserCreds();
+    return () => { };
+  }, [])
 
   // resetCreds();
 
   // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
-  // if (loading) return <Text>Loading...</Text>
+  if (loading) return <Text>Loading...</Text>
 
   return (
     <MainContainer windowWidth={windowWidth}>
