@@ -37,7 +37,6 @@ const HomeScreen = ({ route, navigation }: any) => {
     }}).then(res => navigation.navigate('Web_Home'));
   }
 
-
   const windowWidth = useWindowDimensions().width;
 
   return (
@@ -68,7 +67,6 @@ const HomeScreen = ({ route, navigation }: any) => {
 
 export default HomeScreen;
 
-
 const textStyles = StyleSheet.create({
   input: {
     height: 40,
@@ -77,9 +75,6 @@ const textStyles = StyleSheet.create({
     padding: 10,
   },
 });
-
-
-
 
 // Page Styles
 const styles = (windowWidth: any) => StyleSheet.create({

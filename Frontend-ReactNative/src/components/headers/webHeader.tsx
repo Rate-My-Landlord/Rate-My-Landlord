@@ -38,7 +38,7 @@ export default ({ windowWidth }: Props) => {
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                     <Text>Profile</Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
                     <Text style={{ marginHorizontal: 20 }}>Settings</Text>
                 </TouchableOpacity>
             </View>

@@ -8,28 +8,26 @@ import MainContainer from '../components/mainContainer';
 import { ThemeColors } from '../constants/Colors';
 import { Query } from '../../graphql/generated';
 
-type Props = NativeStackScreenProps<NavParamList, "Home">;
+type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
-const ALLLANDLORDS = gql`
+const ALLREVIEWS = gql`
 query {
-    AllLandlords {
+    ReviewsByLandlordId {
         success,
         errors,
-        landlords {
+        review {
           id,
-          overallRating,
-          firstName,
-          lastName,
-          zipCode
+          overallStarRating,
+          author,
         }
     }
 }
 `
 
-const HomeScreen = ({ route, navigation }: Props) => {
+const ReviewsScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
-  const { loading, error, data } = useQuery<Query>(ALLLANDLORDS);
+  const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
 
   return (
     <MainContainer windowWidth={windowWidth} >
@@ -45,14 +43,14 @@ const HomeScreen = ({ route, navigation }: Props) => {
           />
         </View>
         <View style={styles(windowWidth).listControlContainer}>
-          <Text style={styles(windowWidth).textColor}>List Controler</Text>
+          <Text style={styles(windowWidth).textColor}>Review Screen</Text>
         </View>
       </>
     </MainContainer>
   );
 };
 
-export default HomeScreen;
+export default ReviewsScreen;
 
 
 // Page Styles

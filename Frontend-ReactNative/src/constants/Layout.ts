@@ -4,7 +4,7 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 // The point at which style changes
-export const screenChangePoint: number = 1250;
+export const screenChangePoint: number = 1000;
 
 export default {
   window: {

@@ -35,8 +35,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
         flex: 1,
     },
     mainContainer: {
-        // Change FlexBox valuse based on screen size
-        marginHorizontal: 10,
+        marginHorizontal: 0,
 
         // Flex Settings
         flex: 3,
@@ -47,7 +46,7 @@ const styles = (windowWidth: number) => StyleSheet.create({
         flex: 10,
         flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
         paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
-        paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
+        paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') || windowWidth <= screenChangePoint ? 5 : '10%',
         backgroundColor: ThemeColors.white,
     },
     // Body Containers (Right Ad Space (Web Only) and Main Container)

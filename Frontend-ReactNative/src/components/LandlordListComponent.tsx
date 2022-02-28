@@ -3,8 +3,10 @@
 */
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Star } from './Star';
+import{ FontAwesome } from '@expo/vector-icons'
+import { ThemeColors } from '../constants/Colors';
 
 /* 
   Component added to list for each landlord present in area.
@@ -27,8 +29,16 @@ export const LandlordComponent = (props: any) => {
         <Text style={styles().headerText}>{props.name}</Text>
       </View>
       <View style={styles().bodyContainer}>
-        <Text style={styles().ratingText}>Overall</Text>
-        <Star style={styles().star} rating={props.rating}/>
+        <View>
+          <Text style={styles().ratingText}>Overall</Text>
+          <Star style={styles().star} rating={props.rating}/>
+        </View>
+        <View style={styles().spacer}/>
+        
+        {/** Button to Go to Review Screen */}
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
+          <View style={styles().reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue}/></View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -48,25 +58,39 @@ const styles = () => StyleSheet.create({
     flex: 2,
     backgroundColor: "#FFFFFF",
     padding: 10,
+    paddingHorizontal: 15,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     alignItems: 'center',
     flexDirection: 'row',
-    
   },
   headerText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 20,
   },
+  ratingContainer: {
+    flex: 1
+  },
+  spacer: {
+    flex: 3,
+  },
   ratingText: {
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 10,
     paddingRight: 10,
+    textAlign: 'center',
   },
   star: {
     flex: 1,
-  }
+  },
+  reviewPageButton: {
+    flex: 1,
+    backgroundColor: ThemeColors.grey,
+    borderRadius: 15,
+    alignItems: 'center',
+    padding: 5,
+  },
 })
 
 const headerStyle = (ratingColor : any) => StyleSheet.create({

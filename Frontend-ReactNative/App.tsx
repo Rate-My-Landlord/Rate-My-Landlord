@@ -11,8 +11,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
-// Searching
-import LandlordScreen from './src/screens/SearchScreenFlow/LandlordScreen';
+import ReviewScreen from './src/screens/ReviewScreen'
+
 // Apollo
 import {
   ApolloClient,
@@ -81,8 +81,8 @@ const linking = {
 export type NavParamList = {
   Home: undefined,
   Profile: undefined,
-  // New_Review: undefined,
-  Settings: undefined
+  Settings: undefined,
+  Reviews: undefined,
 }
 
 // Mobile
@@ -94,20 +94,16 @@ const StackSearch = createNativeStackNavigator();
 
 
 // User Search Flow Stack Navigation
-function SearchFlow() {
+function HomeFlow() {
   return (
     <StackSearch.Navigator
-      initialRouteName="SearchScreen"
+      initialRouteName="Home"
       screenOptions={{
-        headerStyle: {
-          backgroundColor: 'transparent'
-        },
-        headerTransparent: true,
-        headerTitle: ''
+        headerShown: false,
       }}
     >
-      <StackSearch.Screen name="Search Screen" component={HomeScreen} />
-      <StackSearch.Screen name="Landlord Screen" component={LandlordScreen} />
+      <StackSearch.Screen name="Home" component={HomeScreen} />
+      <StackSearch.Screen name="Reviews" component={ReviewScreen} />
     </StackSearch.Navigator>
   );
 }
@@ -131,8 +127,6 @@ export default function App() {
                   iconName = 'settings';
                 } else if (route.name === 'Profile') {
                   iconName = 'person';
-                } else if (route.name === 'Login') {
-                  iconName = 'person-add';
                 }
 
                 // You can return any component that you like here!
@@ -146,7 +140,7 @@ export default function App() {
               tabBarShowLabel: false,
             })}
           >
-            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Home" component={HomeFlow} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
             <Tab.Screen name="Settings" component={SettingsScreen} />
           </Tab.Navigator>
@@ -157,10 +151,10 @@ export default function App() {
               headerShown: false,
             })}
           >
-            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Home" component={HomeFlow} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
-            {/* <Stack.Screen name="New_Review" component={WriteReviewScreen} /> */}
             <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Reviews" component={ReviewScreen} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

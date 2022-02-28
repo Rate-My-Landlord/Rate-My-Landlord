@@ -1,6 +1,5 @@
 const white = '#FFFFFF';
 const grey = '#E5E7EB';
-//const darkGrey = '#9CA3AF';
 const darkGrey = '#D2D5DA'
 const darkBlue = '#1F2937';
 const blue = '#60ACDB';
