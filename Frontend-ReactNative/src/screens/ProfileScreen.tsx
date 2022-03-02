@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, useWindowDimensions, ScrollView } from 'react-native';
 import MainContainer from '../components/mainContainer';
-import CreateAccount from '../components/user/createAccount';
-import Login from '../components/user/login';
-import User from '../components/user/user';
+import User from '../components/user/userProfile';
+import UserNotAuthenticated from '../components/user/userNotAuthenticated';
 import loadUserCredsFromLocal, { resetCreds } from '../global/localStorage';
 import { IAuthUser } from '../types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -34,12 +33,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   return (
     <MainContainer windowWidth={windowWidth}>
       {user === undefined ?
-        <ScrollView>
-          <View style={{ width: '100%' }}>
-            <Login setUser={setUser} />
-            <CreateAccount setUser={setUser} />
-          </View>
-        </ScrollView>
+        <UserNotAuthenticated setUser={setUser} />
         : <User userId={user!.user_id} setUser={setUser} />}
     </MainContainer>
   )

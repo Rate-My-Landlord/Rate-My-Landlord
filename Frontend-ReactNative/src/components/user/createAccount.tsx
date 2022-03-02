@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import { gql, useMutation } from '@apollo/client';
@@ -38,9 +38,12 @@ const ADD_USER = gql`
 
 type Props = {
     setUser: (user: IAuthUser) => void,
+    createAccountExpanded: boolean,
+    setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
+    setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default ({ setUser }: Props) => {
+export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpanded: setExpanded, setLoginExpanded }: Props) => {
     const [addUser, { data, loading, error }] = useMutation<Mutation, MutationNewUserArgs>(ADD_USER);
 
 
@@ -81,25 +84,36 @@ export default ({ setUser }: Props) => {
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
+    const toggle = () => {
+        setExpanded(true);
+        setLoginExpanded(false);
+    }
+
     return (
         <TouchableWithoutFeedback style={styles.container} onPress={() => dismissKeyboard()}>
-            <View>
-                {loading && <Text>Submitting...</Text>}
-                {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
-                {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
-                <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
-                <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
-                <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
-                <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
-                <TextField label='Password' name='password' error={errors.password} control={control} secureTextEntry={true} rules={{ required: true }} />
-                <TextField label='Confirm Password' name='confirmPassword' error={errors.confirmPassword} control={control} secureTextEntry={true} rules={{ required: true, validate: (value: any) => value == password.current || 'Passwords do not match' }} />
+            {!expanded ?
+                <TouchableOpacity style={styles.createAccountContainer} onPress={toggle}>
+                    <Text style={styles.createAccountText}>Create Account</Text>
+                </TouchableOpacity>
+
+                : <View>
+                    {loading && <Text>Submitting...</Text>}
+                    {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
+                    {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
+                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                    <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
+                    <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
+                    <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
+                    <TextField label='Password' name='password' error={errors.password} control={control} secureTextEntry={true} rules={{ required: true }} />
+                    <TextField label='Confirm Password' name='confirmPassword' error={errors.confirmPassword} control={control} secureTextEntry={true} rules={{ required: true, validate: (value: any) => value == password.current || 'Passwords do not match' }} />
 
 
-                <TouchableHighlight style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                    <Text>Submit</Text>
-                </TouchableHighlight>
+                    <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                        <Text>Submit</Text>
+                    </TouchableOpacity>
 
-            </View>
+                </View>
+            }
         </TouchableWithoutFeedback>
     )
 }
@@ -123,6 +137,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderWidth: 2,
         padding: 10,
-        borderColor: ThemeColors.darkBlue
+        borderColor: ThemeColors.darkBlue,
+        width: '25%',
+        alignSelf: 'center'
+    },
+    createAccountContainer: {
+        padding: 10,
+        borderWidth: 2,
+        borderColor: ThemeColors.darkBlue,
+        margin: 5,
+        borderRadius: 5,
+        alignSelf: 'center',
+        width: '25%',
+        alignItems: 'center'
+    },
+    createAccountText: {
+        color: ThemeColors.blue,
+        fontWeight: 'bold',
+        fontSize: 18,
     }
 })
