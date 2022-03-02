@@ -30,8 +30,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   // resetCreds();
 
   // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
-  if (loading) return <Text>Loading...</Text>
-
+  if (loading) return(<Text>Loading...</Text>)
   return (
     <MainContainer windowWidth={windowWidth}>
       {user === undefined ?

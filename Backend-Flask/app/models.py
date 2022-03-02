@@ -40,7 +40,11 @@ class User(db.Model):
         }
         # If not brief, include personal info
         if not brief:
-            json_user['phone'] = self.phone
+            if self.phone[:2] == '+1':
+                # Splicing the +1 off of the phone
+                json_user['phone'] = self.phone[2:]
+            else:
+                json_user['phone'] = self.phone
             json_user['email'] = self.email
         return json_user
     

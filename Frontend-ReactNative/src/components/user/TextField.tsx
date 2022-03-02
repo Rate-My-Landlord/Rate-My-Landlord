@@ -9,11 +9,12 @@ type TextProps = {
     error: FieldError | undefined,
     control: Control<any>
     rules: any,
-    secureTextEntry?: boolean
-    keyboardType?: 'default' | 'numeric' | 'email-address'
+    secureTextEntry?: boolean,
+    keyboardType?: 'default' | 'numeric' | 'email-address',
+    disabled?: boolean
 }
 
-export default ({ label, name, error, control, rules, secureTextEntry = false, keyboardType = 'default' }: TextProps) => (
+export default ({ label, name, error, control, rules, secureTextEntry = false, keyboardType = 'default', disabled = false }: TextProps) => (
     <View>
         <Text style={styles.label}>{label}</Text>
         <Controller
@@ -21,12 +22,13 @@ export default ({ label, name, error, control, rules, secureTextEntry = false, k
             rules={rules}
             render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                    style={styles.input}
+                    style={disabled ? styles.inputDisabled : styles.input}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     secureTextEntry={secureTextEntry}
                     value={value ? String(value) : ''}
                     keyboardType={keyboardType}
+                    editable={!disabled}
                 />
             )}
             name={name}
@@ -46,6 +48,16 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         backgroundColor: ThemeColors.white,
+    },
+    inputDisabled: {
+        backgroundColor: ThemeColors.darkGrey,
+        height: 40,
+        alignItems: 'stretch',
+        borderWidth: 2,
+        marginVertical: 5,
+        width: 250,
+        borderRadius: 5,
+        padding: 10,
     },
     label: {
     },
