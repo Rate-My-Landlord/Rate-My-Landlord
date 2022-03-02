@@ -56,11 +56,11 @@ export default ({ setUser }: Props) => {
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
     return (
-        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
-            <View style={styles.container}>
+        <TouchableWithoutFeedback style={styles.container} onPress={() => dismissKeyboard()}>
+            <View>
                 <Text style={styles.title}>Login</Text>
-                <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} />
-                <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} />
+                <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
                 <TouchableHighlight style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
                     <Text>Login</Text>
                 </TouchableHighlight>
@@ -72,7 +72,7 @@ export default ({ setUser }: Props) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 3,
+        flex: 1,
         backgroundColor: ThemeColors.grey,
         justifyContent: 'center',
         alignItems: 'center',

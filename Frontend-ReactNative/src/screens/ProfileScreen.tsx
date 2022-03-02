@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, ScrollView } from 'react-native';
 import MainContainer from '../components/mainContainer';
 import CreateAccount from '../components/user/createAccount';
 import Login from '../components/user/login';
@@ -30,15 +30,17 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   // resetCreds();
 
   // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
-  if (loading) return(<Text>Loading...</Text>)
+  if (loading) return (<Text>Loading...</Text>)
   return (
     <MainContainer windowWidth={windowWidth}>
       {user === undefined ?
-        <View style={{width: '100%'}}>
-          <Login setUser={setUser} />
-          <CreateAccount setUser={setUser} />
-        </View>
-        : <User userId={user!.user_id} />}
+        <ScrollView>
+          <View style={{ width: '100%' }}>
+            <Login setUser={setUser} />
+            <CreateAccount setUser={setUser} />
+          </View>
+        </ScrollView>
+        : <User userId={user!.user_id} setUser={setUser} />}
     </MainContainer>
   )
 };

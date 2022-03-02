@@ -82,8 +82,8 @@ export default ({ setUser }: Props) => {
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
     return (
-        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
-            <View style={styles.container}>
+        <TouchableWithoutFeedback style={styles.container} onPress={() => dismissKeyboard()}>
+            <View>
                 {loading && <Text>Submitting...</Text>}
                 {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
                 {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}

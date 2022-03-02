@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { IAuthUser } from "../types";
 
-// For testing purposes only, use with caution
+// Logout
 export async function resetCreds() {
     await AsyncStorage.setItem('@user_cred', '');
 }
