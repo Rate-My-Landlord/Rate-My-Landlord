@@ -8,6 +8,7 @@ import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
 import dismissKeyboard from '../../global/dismissKeyboard';
+import formStyles from '../../Styles/styles-form';
 
 
 const LOG_IN = gql`
@@ -64,18 +65,18 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     }
 
     return (
-        <TouchableWithoutFeedback style={styles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
             {!expanded ?
-                <TouchableOpacity style={styles.loginContainer} onPress={toggle}>
-                    <Text style={styles.loginText}>Sign In</Text>
+                <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
+                    <Text style={formStyles.buttonText}>Sign In</Text>
                 </TouchableOpacity>
                 :
                 <View>
-                    <Text style={styles.title}>Login</Text>
+                    <Text style={formStyles.formHeaderText}>Login</Text>
                     <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
                     <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
-                    <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                        <Text>Login</Text>
+                    <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                        <Text style={formStyles.submitText}>Login</Text>
                     </TouchableOpacity>
                 </View>
             }
@@ -83,51 +84,3 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     )
 
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: ThemeColors.grey,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        // Top Right rounded only on Web when screen is big.
-        borderRadius: 15,
-    },
-    input: {
-        height: 40,
-        alignItems: 'stretch',
-        borderWidth: 2,
-        marginVertical: 5,
-        width: 250,
-        borderRadius: 5,
-        padding: 10,
-        backgroundColor: ThemeColors.white,
-    },
-    title: {
-        fontSize: 24
-    },
-    submit: {
-        borderRadius: 5,
-        borderWidth: 2,
-        padding: 10,
-        borderColor: ThemeColors.darkBlue,
-        width: '25%',
-        alignSelf: 'center'
-    },
-    loginContainer: {
-        padding: 10,
-        borderWidth: 2,
-        borderColor: ThemeColors.darkBlue,
-        margin: 5,
-        borderRadius: 5,
-        alignSelf: 'center',
-        width: '25%',
-        alignItems: 'center'
-    },
-    loginText: {
-        color: ThemeColors.blue,
-        fontWeight: 'bold',
-        fontSize: 18,
-    }
-})

@@ -8,6 +8,7 @@ import { IAuthUser } from '../../types';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import TextField from './TextField';
 import dismissKeyboard from '../../global/dismissKeyboard';
+import formStyles from '../../Styles/styles-form';
 
 type Inputs = {
     phone: number,
@@ -55,10 +56,10 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
     // Form stuff
     const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
-            // phone: '5089880446',
-            email: 'em',
-            firstName: 'fn',
-            lastName: 'ln',
+            phone: 6,
+            email: 'hayden.stegman@gmail.com',
+            firstName: 'hayden',
+            lastName: 'stegman',
             password: 'pw',
             confirmPassword: 'pw'
         }
@@ -90,16 +91,17 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
     }
 
     return (
-        <TouchableWithoutFeedback style={styles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
             {!expanded ?
-                <TouchableOpacity style={styles.createAccountContainer} onPress={toggle}>
-                    <Text style={styles.createAccountText}>Create Account</Text>
+                <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
+                    <Text style={formStyles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
 
                 : <View>
                     {loading && <Text>Submitting...</Text>}
-                    {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
-                    {data?.NewUser.errors && <Text style={styles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
+                    {error && <Text style={formStyles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
+                    {data?.NewUser.errors && <Text style={formStyles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
+                    <Text style={formStyles.formHeaderText}>Create an Account</Text>
                     <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
                     <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
                     <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
@@ -107,9 +109,8 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
                     <TextField label='Password' name='password' error={errors.password} control={control} secureTextEntry={true} rules={{ required: true }} />
                     <TextField label='Confirm Password' name='confirmPassword' error={errors.confirmPassword} control={control} secureTextEntry={true} rules={{ required: true, validate: (value: any) => value == password.current || 'Passwords do not match' }} />
 
-
-                    <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                        <Text>Submit</Text>
+                    <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                        <Text style={formStyles.submitText}>Submit</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -117,43 +118,3 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
         </TouchableWithoutFeedback>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 3,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-        // Top Right rounded only on Web when screen is big.
-    },
-    error: {
-        color: 'red',
-    },
-    errorTop: {
-        marginBottom: 3,
-        fontSize: 18
-    },
-    submit: {
-        borderRadius: 5,
-        borderWidth: 2,
-        padding: 10,
-        borderColor: ThemeColors.darkBlue,
-        width: '25%',
-        alignSelf: 'center'
-    },
-    createAccountContainer: {
-        padding: 10,
-        borderWidth: 2,
-        borderColor: ThemeColors.darkBlue,
-        margin: 5,
-        borderRadius: 5,
-        alignSelf: 'center',
-        width: '25%',
-        alignItems: 'center'
-    },
-    createAccountText: {
-        color: ThemeColors.blue,
-        fontWeight: 'bold',
-        fontSize: 18,
-    }
-})

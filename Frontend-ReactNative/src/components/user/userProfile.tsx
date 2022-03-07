@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { IAuthUser } from '../../types';
 import dismissKeyboard from '../../global/dismissKeyboard';
+import formStyles from '../../Styles/styles-form';
 
 const UPDATE_USER = gql`
     mutation UpdateUser($email: String, $firstName: String, $lastName: String) {
@@ -115,69 +116,25 @@ export default ({ userId, setUser }: Props) => {
 
     return (
         <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Edit your profile</Text>
-                </View>
-                <View style={styles.form}>
-                    {feedback && <Text style={styles.feedback}>{feedback} </Text>/* Feedback from updating profile */}
-                    {m_error && <Text style={styles.error}>An error occurred: {m_error.message} </Text>/* Errors from apollo */}
-                    {m_data?.UpdateUser.errors && <Text style={styles.error}>{m_data?.UpdateUser.errors.map((e: any) => e)} </Text>/* Errors from our API */}
+            <View style={{ flex: 1, alignItems: 'center', marginTop: 50 }}>
+                <Text style={formStyles.formHeaderText}>Edit your profile</Text>
+                <View>
+                    {feedback && <Text style={formStyles.feedback}>{feedback} </Text>/* Feedback from updating profile */}
+                    {m_error && <Text style={formStyles.error}>An error occurred: {m_error.message} </Text>/* Errors from apollo */}
+                    {m_data?.UpdateUser.errors && <Text style={formStyles.error}>{m_data?.UpdateUser.errors.map((e: any) => e)} </Text>/* Errors from our API */}
                     <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' disabled={true} />
                     <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
                     <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
                     <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
 
-                    <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                        <Text>Update</Text>
+                    <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                        <Text style={formStyles.submitText}>Update</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.logout} onPress={logout}>
-                    <Text>Logout</Text>
+                <TouchableOpacity style={formStyles.logout} onPress={logout}>
+                    <Text style={formStyles.buttonText}>Logout</Text>
                 </TouchableOpacity>
             </View>
         </TouchableWithoutFeedback>
     )
 }
-
-const styles = StyleSheet.create({
-    header: {
-        justifyContent: 'center',
-        marginVertical: 5,
-    },
-    headerText: {
-        textAlign: 'center',
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    form: {
-        flex: 1
-    },
-    feedback: {
-        color: ThemeColors.green,
-        fontWeight: 'bold',
-        fontSize: 18,
-        textAlign: 'center'
-    },
-    error: {
-        color: ThemeColors.red
-    },
-    submit: {
-        borderRadius: 5,
-        borderWidth: 2,
-        padding: 10,
-        width: '45%',
-        textAlign: 'center',
-        alignSelf: 'center',
-        borderColor: ThemeColors.darkBlue
-    },
-    logout: {
-        borderRadius: 5,
-        borderWidth: 2,
-        padding: 10,
-        width: '35%',
-        marginVertical: 10,
-        alignItems: 'center',
-        borderColor: ThemeColors.red
-    }
-})
