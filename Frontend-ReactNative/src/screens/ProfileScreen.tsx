@@ -16,14 +16,18 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   // Fetching User from local storage
+  // useEffect(() => {
+  //   async function fetchUserCreds() {
+  //     const creds = await loadUserCredsFromLocal();
+  //     if (creds) setUser(creds);
+  //     setLoading(false);
+  //   }
+  //   fetchUserCreds();
+  //   return () => { };
+  // }, [])
+
   useEffect(() => {
-    async function fetchUserCreds() {
-      const creds = await loadUserCredsFromLocal();
-      if (creds) setUser(creds);
-      setLoading(false);
-    }
-    fetchUserCreds();
-    return () => { };
+    setLoading(false);
   }, [])
 
   // resetCreds();
