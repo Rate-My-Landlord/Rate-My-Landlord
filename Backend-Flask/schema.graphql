@@ -93,6 +93,13 @@ type UserResult {
     token: String
 }
 
+type ExternalLoginResult {
+    success: Boolean!
+    errors: [String]
+    user: User
+    token: String
+}
+
 
 ##########################
 #      Query types       #
@@ -143,6 +150,8 @@ type Mutation {
     NewUser(phone: String!, firstName: String!, lastName: String!, email: String!, password: String!): UserResult!
     """Login a user"""
     Login(phone: String!, password: String!): UserResult!
+    """External Login (Google sign in)"""
+    ExternalLogin(externalToken: String!, provider: String!): ExternalLoginResult!
     """Update user info"""
     UpdateUser(firstName: String, lastName: String, email: String): UserResult!
 

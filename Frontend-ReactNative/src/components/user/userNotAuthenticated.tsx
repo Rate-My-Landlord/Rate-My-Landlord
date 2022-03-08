@@ -8,16 +8,17 @@ import Login from './login';
 
 type Props = {
     setUser: (user: IAuthUser | undefined) => void,
+    promptPhone: (externalToken: String) => void
 }
 
-export default ({ setUser }: Props) => {
+export default ({ setUser, promptPhone }: Props) => {
     const [loginExpanded, setLoginExpanded] = useState<boolean>(true)
     const [createAccountExpanded, setCreateAccountExpanded] = useState<boolean>(false)
 
 
     return (
         <ScrollView>
-            <GoogleSignIn setUser={setUser} />
+            <GoogleSignIn setUser={setUser} promptPhone={promptPhone} />
             {/* <TouchableWithoutFeedback onPress={() => { setLoginExpanded(false); setCreateAccountExpanded(false) }}>
                 <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                     <Login

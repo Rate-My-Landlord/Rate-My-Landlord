@@ -44,7 +44,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     }
 
     // Form stuff
-    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+    const { control, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {

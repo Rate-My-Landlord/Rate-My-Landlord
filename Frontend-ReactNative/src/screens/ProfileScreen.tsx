@@ -15,6 +15,8 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [user, setUser] = useState<IAuthUser | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const promptPhone = (externalToken: String) => navigation.navigate('PhoneModal', { externalToken: externalToken })
+
   // Fetching User from local storage
   // useEffect(() => {
   //   async function fetchUserCreds() {
@@ -37,7 +39,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   return (
     <MainContainer windowWidth={windowWidth}>
       {user === undefined ?
-        <UserNotAuthenticated setUser={setUser} />
+        <UserNotAuthenticated setUser={setUser} promptPhone={promptPhone} />
         : <User userId={user!.user_id} setUser={setUser} />}
     </MainContainer>
   )
