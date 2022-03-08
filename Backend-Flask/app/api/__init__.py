@@ -47,6 +47,7 @@ mutation.set_field('NewProperty', resolve_new_property)
 # User
 query.set_field('UserByUserId', resolve_user_by_id)
 mutation.set_field('NewUser', resolve_new_user)
+mutation.set_field('NewUserExternal', resolve_new_user_external)
 mutation.set_field('Login', resolve_login_user)
 mutation.set_field('ExternalLogin', resolve_external_login)
 mutation.set_field('UpdateUser', resolve_update_user)

@@ -8,10 +8,11 @@ from google.oauth2 import id_token
 from google.auth.transport import requests
 
 GOOGLE_CLIENT_IDS = [
-    '949113263939-kpkujab0kitl565jp91b57u1mojrb0tk.apps.googleusercontent.com', # ExpoGo (development)
-    '949113263939-pftg976fc203njlr7rbevfdhn9b3ka6u.apps.googleusercontent.com', # iOS
-    '949113263939-nnaor8s90ktpbd4g90ck1slsh5e87h4c.apps.googleusercontent.com', # Android
-    '949113263939-317nn9jfs9p4p9uhh04pbm5o2ru2s4ur.apps.googleusercontent.com', # Web
+    # ExpoGo (development)
+    '949113263939-kpkujab0kitl565jp91b57u1mojrb0tk.apps.googleusercontent.com',
+    '949113263939-pftg976fc203njlr7rbevfdhn9b3ka6u.apps.googleusercontent.com',  # iOS
+    '949113263939-nnaor8s90ktpbd4g90ck1slsh5e87h4c.apps.googleusercontent.com',  # Android
+    '949113263939-317nn9jfs9p4p9uhh04pbm5o2ru2s4ur.apps.googleusercontent.com',  # Web
 ]
 VALID_PROVIDERS = ['google']
 
@@ -21,6 +22,14 @@ def generate_token(id):
     expire_date = datetime.timedelta(days=7)
     # Creating a JWT using the users id and the JWT_SECRET that is valid for 7 days
     return create_access_token(identity=str(id), expires_delta=expire_date)
+
+
+def validate_google_token(token):
+    idinfo = id_token.verify_oauth2_token(
+        token, requests.Request())
+    if idinfo['aud'] not in GOOGLE_CLIENT_IDS:
+        raise Exception('Could not verify platform')
+    return idinfo
 
 
 @convert_kwargs_to_snake_case
@@ -57,11 +66,7 @@ def resolve_external_login(info, obj, external_token, provider):
             raise Exception('Invalid provider')
 
         # Validating Google ID Token
-        idinfo = id_token.verify_oauth2_token(
-            external_token, requests.Request())
-        if idinfo['aud'] not in GOOGLE_CLIENT_IDS:
-            raise Exception('Could not verify platform')
-        
+        idinfo = validate_google_token(external_token)
 
         external_auth_user = ExternalAuth.query.filter(
             ExternalAuth.external_id == idinfo['sub'], ExternalAuth.provider == provider).first()
@@ -87,14 +92,10 @@ def resolve_external_login(info, obj, external_token, provider):
 def resolve_new_user(info, obj, phone, first_name, last_name, email, password):
     """Create a new user"""
     try:
-        phone = User.format_phone(phone)
         if phone is None or password is None:
             raise Exception('Phone or password not provided')
-        User.validate_phone(phone)
-        new_user = User(phone=phone,
-                        first_name=first_name,
-                        last_name=last_name,
-                        email=email)
+        new_user = User.onboard_user(
+            phone=phone, email=email, first_name=first_name, last_name=last_name)
         new_user.set_password(password)
 
         db.session.add(new_user)
@@ -105,6 +106,41 @@ def resolve_new_user(info, obj, phone, first_name, last_name, email, password):
         payload = {
             'success': True,
             'token': access_token,
+            'user': new_user.to_json()
+        }
+    except Exception as e:
+        payload = {
+            'success': False,
+            'errors': [str(e)]
+        }
+    return payload
+
+
+@convert_kwargs_to_snake_case
+def resolve_new_user_external(info, obj, external_token, provider, phone):
+    """Create a new account with external auth"""
+    try:
+        # Validating Google ID Token
+        idinfo = validate_google_token(external_token)
+
+        external_auth_user = ExternalAuth.query.filter(
+            ExternalAuth.external_id == idinfo['sub'], ExternalAuth.provider == provider).first()
+        if external_auth_user:
+            raise Exception('Account already exists')
+
+        new_user = User.onboard_user(
+            phone=phone, email=idinfo['email'], first_name=idinfo['given_name'], last_name=idinfo['family_name'])
+
+        db.session.add(new_user)
+        db.session.flush()
+        new_auth = ExternalAuth(user_id=new_user.id,
+                                provider=provider,
+                                external_id=idinfo['sub'])
+        db.session.add(new_auth)
+        db.session.commit()
+        payload = {
+            'success': True,
+            'token': generate_token(new_user.id),
             'user': new_user.to_json()
         }
     except Exception as e:

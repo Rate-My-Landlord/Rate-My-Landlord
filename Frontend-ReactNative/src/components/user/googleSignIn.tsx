@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
 import { IAuthUser } from '../../types';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { gql, useMutation } from '@apollo/client';
-import { ExternalLoginResult, Mutation, MutationExternalLoginArgs } from '../../../graphql/generated';
+import { UserResult, Mutation, MutationExternalLoginArgs, User } from '../../../graphql/generated';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { NavParamList } from '../../../App';
+import { saveUserCredsToLocal } from '../../global/localStorage';
+
+
+const googleLogo = require('../../../assets/images/googleLogo.png');
 
 const expoGoProxyClientId = '949113263939-kpkujab0kitl565jp91b57u1mojrb0tk.apps.googleusercontent.com';
 const iOSClientId = '949113263939-pftg976fc203njlr7rbevfdhn9b3ka6u.apps.googleusercontent.com';
@@ -49,10 +53,11 @@ export default ({ setUser, promptPhone }: Props) => {
 
     const [externalLogin, { data, loading, error }] = useMutation<Mutation, MutationExternalLoginArgs>(EXTERNAL_LOG_IN);
 
-    const handleCompleted = (data: ExternalLoginResult) => {
-        console.log(data);
+    const handleCompleted = async (data: UserResult) => {
         if (data.token) {
-            // save token and user id
+            await saveUserCredsToLocal(data.user!.id, data.token)
+                .then(() => setUser({ token: data.token!, user_id: data.user!.id } as IAuthUser));
+
         } else {
             promptPhone(externalToken!);
         }
@@ -80,7 +85,10 @@ export default ({ setUser, promptPhone }: Props) => {
 
     return (
         <TouchableOpacity style={styles.button} onPress={() => promptAsync()} >
-            <Text>Sign in</Text>
+            <View style={styles.googleButton}>
+                <Image source={googleLogo} style={styles.googleLogo} />
+                <Text style={styles.text}>Continue with Google</Text>
+            </View>
         </TouchableOpacity >
     )
 }
@@ -88,12 +96,23 @@ export default ({ setUser, promptPhone }: Props) => {
 const styles = StyleSheet.create({
     button: {
         flex: 1,
-        padding: 10,
-        borderColor: ThemeColors.blue,
+        margin: 5,
+        padding: 5,
+        borderColor: ThemeColors.darkBlue,
         borderWidth: 2,
         borderRadius: 5
     },
+    googleButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    googleLogo: {
+        height: 20,
+        width: 20,
+    },
     text: {
-
+        paddingStart: 10,
+        fontWeight: '500'
     }
 })

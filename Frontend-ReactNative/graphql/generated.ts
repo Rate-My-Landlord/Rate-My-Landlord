@@ -12,14 +12,6 @@ export type Scalars = {
   Float: number;
 };
 
-export type ExternalLoginResult = {
-  __typename?: 'ExternalLoginResult';
-  errors?: Maybe<Array<Maybe<Scalars['String']>>>;
-  success: Scalars['Boolean'];
-  token?: Maybe<Scalars['String']>;
-  user?: Maybe<User>;
-};
-
 export type Landlord = {
   __typename?: 'Landlord';
   firstName: Scalars['String'];
@@ -49,7 +41,7 @@ export type LandlordsResult = {
 export type Mutation = {
   __typename?: 'Mutation';
   /** External Login (Google sign in) */
-  ExternalLogin: ExternalLoginResult;
+  ExternalLogin: UserResult;
   /** Login a user */
   Login: UserResult;
   /** Create a new landlord */
@@ -60,6 +52,8 @@ export type Mutation = {
   NewReview: ReviewResult;
   /** Create a new user */
   NewUser: UserResult;
+  /** Create a new account using an external authenticator */
+  NewUserExternal: UserResult;
   /** Update user info */
   UpdateUser: UserResult;
 };
@@ -113,6 +107,13 @@ export type MutationNewUserArgs = {
   lastName: Scalars['String'];
   password: Scalars['String'];
   phone: Scalars['String'];
+};
+
+
+export type MutationNewUserExternalArgs = {
+  externalToken: Scalars['String'];
+  phone: Scalars['String'];
+  provider?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -261,6 +262,14 @@ export type AddUserMutationVariables = Exact<{
 
 
 export type AddUserMutation = { __typename?: 'Mutation', NewUser: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, token?: string | null, user?: { __typename?: 'User', id: string } | null } };
+
+export type ExternalLoginMutationVariables = Exact<{
+  externalToken: Scalars['String'];
+  provider: Scalars['String'];
+}>;
+
+
+export type ExternalLoginMutation = { __typename?: 'Mutation', ExternalLogin: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, token?: string | null, user?: { __typename?: 'User', id: string } | null } };
 
 export type LoginMutationVariables = Exact<{
   phone: Scalars['String'];

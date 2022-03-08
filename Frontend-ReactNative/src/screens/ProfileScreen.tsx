@@ -18,21 +18,16 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const promptPhone = (externalToken: String) => navigation.navigate('PhoneModal', { externalToken: externalToken })
 
   // Fetching User from local storage
-  // useEffect(() => {
-  //   async function fetchUserCreds() {
-  //     const creds = await loadUserCredsFromLocal();
-  //     if (creds) setUser(creds);
-  //     setLoading(false);
-  //   }
-  //   fetchUserCreds();
-  //   return () => { };
-  // }, [])
-
   useEffect(() => {
-    setLoading(false);
-  }, [])
-
-  // resetCreds();
+    async function fetchUserCreds() {
+      const creds = await loadUserCredsFromLocal();
+      console.log(creds);
+      if (creds) setUser(creds);
+      setLoading(false);
+    }
+    fetchUserCreds();
+    return () => { };
+  }, [route.params?.reload])
 
   // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
   if (loading) return (<Text>Loading...</Text>)

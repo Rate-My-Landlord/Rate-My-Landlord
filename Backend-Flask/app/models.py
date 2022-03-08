@@ -131,6 +131,16 @@ class User(db.Model):
     def __repr__(self):
         return '<User {}>'.format(self.id)
 
+    @staticmethod
+    def onboard_user(phone, email, first_name, last_name):
+        phone = User.format_phone(phone)
+        User.validate_phone(phone)
+        new_user = User(phone=phone,
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email)
+        return new_user
+
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, ScrollView, TouchableWithoutFeedback } from 're
 import { ThemeColors } from '../../constants/Colors';
 import { IAuthUser } from '../../types';
 import CreateAccount from './createAccount';
-import GoogleSignIn from './googleSignIn';
 import Login from './login';
 
 type Props = {
@@ -18,14 +17,15 @@ export default ({ setUser, promptPhone }: Props) => {
 
     return (
         <ScrollView>
-            <GoogleSignIn setUser={setUser} promptPhone={promptPhone} />
-            {/* <TouchableWithoutFeedback onPress={() => { setLoginExpanded(false); setCreateAccountExpanded(false) }}>
+            <TouchableWithoutFeedback onPress={() => { setLoginExpanded(false); setCreateAccountExpanded(false) }}>
                 <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                     <Login
                         setUser={setUser}
                         setCreateAccountExpanded={setCreateAccountExpanded}
                         loginExpanded={loginExpanded}
-                        setLoginExpanded={setLoginExpanded} />
+                        setLoginExpanded={setLoginExpanded}
+                        promptPhone={promptPhone}
+                        />
                     <View style={styles.line} />
                     <CreateAccount
                         setUser={setUser}
@@ -34,7 +34,7 @@ export default ({ setUser, promptPhone }: Props) => {
                         setLoginExpanded={setLoginExpanded}
                     />
                 </View>
-            </TouchableWithoutFeedback> */}
+            </TouchableWithoutFeedback>
         </ScrollView>
     )
 }
