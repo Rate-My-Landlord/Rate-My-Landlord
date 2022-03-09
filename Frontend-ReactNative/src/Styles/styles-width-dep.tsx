@@ -6,17 +6,17 @@ import { screenChangePoint } from "../constants/Layout";
 export default (windowWidth: number) => StyleSheet.create({
         mainContainer: {
             marginHorizontal: 0,
-            backgroundColor: ThemeColors.grey,
             borderRadius: 15,
             flex: 3,
             flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            backgroundColor: ThemeColors.white
         },
         bodyScreen: {
             flex: 10,
             flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
             paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
             paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') || windowWidth <= screenChangePoint ? 5 : '10%',
-            backgroundColor: ThemeColors.white,
+            backgroundColor: ThemeColors.darkGrey,
         },
 })

@@ -10,7 +10,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Screen
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
-import SettingsScreen from './src/screens/SettingsScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 
 // Apollo
@@ -72,7 +71,6 @@ const linking = {
       Home: '',
       Profile: 'profile',
       NewReview: ':landlordId/newReview',
-      Setting: 'settings',
       NotFound: '*'
     }
   }
@@ -81,7 +79,6 @@ const linking = {
 export type NavParamList = {
   Home: undefined,
   Profile: undefined,
-  Settings: undefined,
   Reviews: undefined,
 }
 
@@ -123,8 +120,6 @@ export default function App() {
 
                 if (route.name === 'Home') {
                   iconName = 'home';
-                } else if (route.name === 'Settings') {
-                  iconName = 'settings';
                 } else if (route.name === 'Profile') {
                   iconName = 'person';
                 }
@@ -142,7 +137,6 @@ export default function App() {
           >
             <Tab.Screen name="Home" component={HomeFlow} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
           </Tab.Navigator>
           // Web Navigation
         ) : (
@@ -153,7 +147,6 @@ export default function App() {
           >
             <Stack.Screen name="Home" component={HomeFlow} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="Reviews" component={ReviewScreen} />
           </Stack.Navigator>
         )}

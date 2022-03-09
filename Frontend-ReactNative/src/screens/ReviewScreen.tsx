@@ -60,7 +60,7 @@ const styles = (windowWidth: any) => StyleSheet.create({
   // Content Containers
   listContainer: {
     flex: windowWidth >= screenChangePoint ? 2 : 5,
-    backgroundColor: ThemeColors.darkGrey,
+    backgroundColor: ThemeColors.white,
     justifyContent: 'center',
     alignItems: 'center',
 

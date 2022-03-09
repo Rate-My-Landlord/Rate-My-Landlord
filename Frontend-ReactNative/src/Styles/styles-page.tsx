@@ -4,7 +4,6 @@ import { ThemeColors } from "../constants/Colors";
 export default StyleSheet.create({
     // Back Ground Container - Holds all
     backgroundScreen: {
-        backgroundColor: ThemeColors.white,
         flex: 1,
     },
     // Right Ad Container for potential Ad Space - (Web Only)
@@ -15,7 +14,7 @@ export default StyleSheet.create({
         borderRadius: 15,
 
         // Temp?
-        backgroundColor: ThemeColors.grey,
+        backgroundColor: ThemeColors.white,
         justifyContent: 'center',
         alignItems: 'center',
     },

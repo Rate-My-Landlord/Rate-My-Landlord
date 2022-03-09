@@ -51,7 +51,7 @@ const styles = () => StyleSheet.create({
   },
   bodyContainer: {
     flex: 2,
-    backgroundColor: ThemeColors.white,
+    backgroundColor: ThemeColors.grey,
     padding: 10,
     paddingHorizontal: 15,
     borderBottomLeftRadius: 15,

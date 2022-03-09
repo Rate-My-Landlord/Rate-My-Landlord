@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { Text, TouchableOpacity, View, Image, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, View, Image, StyleSheet, Button } from 'react-native'
 // import { NavParamList } from '../../../App'
 import { NavParamList } from '../../../App';
 import { ThemeColors } from '../../constants/Colors';
+import AppLoading from 'expo-app-loading';
+import { useFonts } from 'expo-font';
 
 const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
@@ -14,13 +16,21 @@ type Props = {
 export default ({ windowWidth }: Props) => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
 
+    // Loads Font
+    let [fontsLoaded] = useFonts({
+        'BebasNeue-Regular': require('../../../assets/fonts/BebasNeue-Regular.ttf'),
+    });
+    if (!fontsLoaded) {
+        return <AppLoading />;
+    }
+
     return (
         <View style={styles.navBar}>
             {/* Rate My Landlord Logo / home button */}
             <TouchableOpacity style={styles.homeButton} onPress={() => navigation.navigate('Home')}>
                 <View style={styles.logoContainer}>
                     <Image style={styles.logo} source={logo} />
-                    <Text style={styles.headerText}>Rate My Landlord </Text>
+                    <Text style={styles.headerText}>RATE MY LANDLORD</Text>
                 </View>
             </TouchableOpacity>
 
@@ -36,10 +46,7 @@ export default ({ windowWidth }: Props) => {
             {/* Profile and Settings Section */}
             <View style={styles.buttonsContainer}>
                 <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-                    <Text>Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-                    <Text style={{ marginHorizontal: 20 }}>Settings</Text>
+                    <Text style={styles.navText}>Profile</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     // Overall Container
     navBar: {
         flexDirection: 'row',
-        backgroundColor: ThemeColors.grey,
+        backgroundColor: ThemeColors.white,
         justifyContent: 'space-between',
         alignItems: 'center'
     },
@@ -58,20 +65,23 @@ const styles = StyleSheet.create({
     // Three Sections of Header
     homeButton: {
         flex: 3,
+        //backgroundColor: ThemeColors.darkBlue,
     },
     searchContainer: {
-        flex: 10,
-        height: '100%'
+        flex: 8,
+        height: '100%',
+        //backgroundColor: ThemeColors.red
     },
     buttonsContainer: {
-        flexDirection: 'row',
         flex: 2,
+        alignItems: 'center',
+        //backgroundColor: ThemeColors.orange
     },
 
     // Spacer for Main Sections
     spacer: {
         backgroundColor: ThemeColors.darkBlue,
-        flex: 2,
+        flex: 1,
     },
 
     // Sub Containers / Elements
@@ -86,19 +96,28 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         borderRadius: 15,
-        backgroundColor: ThemeColors.white,
+        backgroundColor: ThemeColors.grey,
         paddingHorizontal: 15,
         marginHorizontal: 100,
         marginVertical: 10,
         flex: 1,
     },
     headerText: {
-        color: ThemeColors.darkBlue,
+        color: ThemeColors.blue,
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 30,
+        fontFamily: "BebasNeue-Regular",
+        lineHeight: 25,
     },
     searchText: {
         color: ThemeColors.darkBlue,
         fontWeight: 'bold',
-    }
+    },
+    navText: {
+        fontFamily: "BebasNeue-Regular",
+        fontWeight: 'bold',
+        fontSize: 30,
+        color: ThemeColors.blue,
+        marginRight: 10,
+    },
 })
