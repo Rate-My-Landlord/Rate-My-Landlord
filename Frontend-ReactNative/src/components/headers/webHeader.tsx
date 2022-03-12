@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Text, TouchableOpacity, View, Image, StyleSheet, Button } from 'react-native'
-// import { NavParamList } from '../../../App'
 import { NavParamList } from '../../../App';
 import { ThemeColors } from '../../constants/Colors';
 import AppLoading from 'expo-app-loading';

@@ -5,8 +5,10 @@ import { ReviewComponent } from '../components/ListComponents/ReviewListComponen
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { screenChangePoint } from '../constants/Layout';
 import MainContainer from '../components/mainContainer';
-import { ThemeColors } from '../constants/Colors';
 import { Query } from '../../graphql/generated';
+import pageStyles from '../Styles/styles-page';
+import widthDepStyles from '../Styles/styles-width-dep';
+import { AddButton } from '../components/AddButton';
 
 type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
@@ -34,8 +36,8 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   return (
     <MainContainer windowWidth={windowWidth} >
       <>
-        <View style={styles(windowWidth).listContainer}>
-          <FlatList style={styles(windowWidth).flatList}
+        <View style={widthDepStyles(windowWidth).listContainer}>
+          <FlatList style={pageStyles.flatList}
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
@@ -44,8 +46,9 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
             showsVerticalScrollIndicator={false}
           />
         </View>
-        <View style={styles(windowWidth).listControlContainer}>
-          <Text style={styles(windowWidth).textColor}>Review Screen</Text>
+        <View style={widthDepStyles(windowWidth).listControlContainer}>
+          <AddButton text={"Add Review"} link={'Reviews'}/>
+          <AddButton text={"Go Back"} link={'Home'}/>
         </View>
       </>
     </MainContainer>
@@ -53,42 +56,3 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
 };
 
 export default ReviewsScreen;
-
-
-// Page Styles
-const styles = (windowWidth: any) => StyleSheet.create({
-  // Content Containers
-  listContainer: {
-    flex: windowWidth >= screenChangePoint ? 2 : 5,
-    backgroundColor: ThemeColors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    // Top Right rounded only on Web when screen is big.
-    borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
-  },
-  // Contains Filter box, buttons, ect.
-  listControlContainer: {
-    flex: 1,
-    backgroundColor: ThemeColors.grey,
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    // Top Right only rounded when on IOS or Screen is small
-    borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 0 : 15,
-    borderTopLeftRadius: 15,
-  },
-
-  // Temp
-  textColor: {
-    color: ThemeColors.darkBlue,
-  },
-  listTextColor: {
-    color: ThemeColors.white,
-  },
-  flatList: {
-    width: '100%',
-    height: '100%',
-    padding: 15,
-  }
-})

@@ -77,7 +77,7 @@ const linking = {
 }
 
 export type NavParamList = {
-  Home: undefined,
+  HomeFlow: undefined,
   Profile: undefined,
   Reviews: undefined,
 }
@@ -118,7 +118,7 @@ export default function App() {
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName: any = "";
 
-                if (route.name === 'Home') {
+                if (route.name === 'HomeFlow') {
                   iconName = 'home';
                 } else if (route.name === 'Profile') {
                   iconName = 'person';
@@ -135,7 +135,7 @@ export default function App() {
               tabBarShowLabel: false,
             })}
           >
-            <Tab.Screen name="Home" component={HomeFlow} />
+            <Tab.Screen name="HomeFlow" component={HomeFlow} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
           // Web Navigation
@@ -145,7 +145,7 @@ export default function App() {
               headerShown: false,
             })}
           >
-            <Stack.Screen name="Home" component={HomeFlow} />
+            <Stack.Screen name="HomeFlow" component={HomeFlow} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Reviews" component={ReviewScreen} />
           </Stack.Navigator>

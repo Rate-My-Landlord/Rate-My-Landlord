@@ -19,7 +19,7 @@ export const LandlordComponent = (props: any) => {
 
   if(props.rating <= 2) {
     ratingColor = "red";
-  } else if (props.rating == 3) {
+  } else if (props.rating > 2 && props.rating < 3.5) {
     ratingColor = "orange";
   }
 
@@ -30,7 +30,7 @@ export const LandlordComponent = (props: any) => {
       </View>
       <View style={styles().bodyContainer}>
         <View>
-          <Text style={styles().ratingText}>Overall</Text>
+          <Text style={styles().ratingText}>{"Overall: " + props.rating}</Text>
           <Star style={styles().star} rating={props.rating}/>
         </View>
         <View style={styles().spacer}/>
@@ -49,10 +49,11 @@ const styles = () => StyleSheet.create({
   listItemContainer: {
     flexDirection: 'column',
     height: 100,
-    marginVertical: 10,
+    marginVertical: 5,
     width: '100%',
     borderRadius: 15,
-    backgroundColor: "#F3F3F3",
+    borderColor: ThemeColors.darkBlue,
+    borderWidth: 2,
   },
   bodyContainer: {
     flex: 2,
@@ -65,9 +66,11 @@ const styles = () => StyleSheet.create({
     flexDirection: 'row',
   },
   headerText: {
-    color: '#FFFFFF',
+    color: ThemeColors.white,
     fontWeight: 'bold',
     fontSize: 20,
+    flex: 1,
+    textAlign: "center",
   },
   ratingContainer: {
     flex: 1
@@ -77,8 +80,8 @@ const styles = () => StyleSheet.create({
   },
   ratingText: {
     fontWeight: 'bold',
-    fontSize: 10,
-    paddingRight: 10,
+    fontSize: 13,
+    paddingBottom: 2.5,
     textAlign: 'center',
   },
   star: {
@@ -86,7 +89,7 @@ const styles = () => StyleSheet.create({
   },
   reviewPageButton: {
     flex: 1,
-    backgroundColor: ThemeColors.grey,
+    backgroundColor: ThemeColors.white,
     borderRadius: 15,
     alignItems: 'center',
     padding: 5,
@@ -97,17 +100,15 @@ const headerStyle = (ratingColor : any) => StyleSheet.create({
   headerContainer: {
     flex: 2,
 
-    // Red = #EF4444
-    // Green = #10B981
-    // Orange = #FAAF3E
-
     // Color Logic
-    backgroundColor: ratingColor == "green" ? '#10B981'
-      : ratingColor == "orange" ? '#FAAF3E' : '#EF4444',
+    backgroundColor: ratingColor == "green" ? ThemeColors.green
+      : ratingColor == "orange" ? ThemeColors.orange : ThemeColors.red,
     
     borderTopRightRadius: 15,
     borderTopLeftRadius: 15,
     alignItems: 'center',
     padding: 0,
+
+    flexDirection: 'row',
   },
 })

@@ -24,16 +24,16 @@ export const ReviewComponent = (props: any) => {
 
   return (
     <View style={styles().listItemContainer}>
-      <View style={headerStyle(ratingColor).headerContainer}>
-        <Text style={styles().headerText}>{props.name}</Text>
-      </View>
+      
+      <View style={headerStyle(ratingColor).headerContainer} />
       <View style={styles().bodyContainer}>
         <View>
           <Text style={styles().ratingText}>Overall</Text>
           <Star style={styles().star} rating={props.rating}/>
         </View>
+        <View style={styles().line}/>
         <View style={styles().spacer}/>
-        <Text>{props.reviewText}</Text>
+        <Text>      {props.reviewText}</Text>
       </View>
     </View>
   );
@@ -42,22 +42,24 @@ export const ReviewComponent = (props: any) => {
 const styles = () => StyleSheet.create({
   // Back Ground Contain
   listItemContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     height: 100,
-    marginVertical: 10,
+    marginVertical: 5,
     width: '100%',
     borderRadius: 15,
-    backgroundColor: "#F3F3F3",
+    borderColor: ThemeColors.darkBlue,
+    borderWidth: 2,
   },
   bodyContainer: {
-    flex: 2,
+    flex: 7,
     backgroundColor: ThemeColors.grey,
-    padding: 10,
     paddingHorizontal: 15,
-    borderBottomLeftRadius: 15,
+    paddingTop: 10,
+    paddingBottom: 20,
+    borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   headerText: {
     color: ThemeColors.white,
@@ -79,21 +81,25 @@ const styles = () => StyleSheet.create({
   star: {
     flex: 1,
   },
+  line: {
+    height: 2,
+    width: '15%',
+    borderTopColor: ThemeColors.darkBlue,
+    borderTopWidth: 3,
+    borderRadius: 5,
+    margin: 5
+}
 })
 
 const headerStyle = (ratingColor : any) => StyleSheet.create({
   headerContainer: {
-    flex: 2,
-
-    // Red = #EF4444
-    // Green = #10B981
-    // Orange = #FAAF3E
+    flex: 1,
 
     // Color Logic
     backgroundColor: ratingColor == "green" ? '#10B981'
       : ratingColor == "orange" ? '#FAAF3E' : '#EF4444',
     
-    borderTopRightRadius: 15,
+    borderBottomLeftRadius: 15,
     borderTopLeftRadius: 15,
     alignItems: 'center',
     padding: 0,

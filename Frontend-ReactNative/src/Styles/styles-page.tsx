@@ -18,7 +18,13 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    // General Text color for Paragraphs and such
     textColor: {
         color: ThemeColors.darkBlue,
+    },
+    flatList: {
+        width: '100%',
+        height: '100%',
+        padding: 15,
     },
 })
