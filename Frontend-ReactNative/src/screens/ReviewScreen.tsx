@@ -12,6 +12,7 @@ import { AddButton } from '../components/AddButton';
 
 type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
+// Gets the Reviews for the Landlord
 const ALLREVIEWS = gql`
 query ReviewsByLandlordId($landlordId: ID = 13){
     ReviewsByLandlordId(landlordId: $landlordId) {
@@ -21,6 +22,10 @@ query ReviewsByLandlordId($landlordId: ID = 13){
           id,
           overallStarRating,
           text,
+          landlord {
+            firstName,
+            lastName,
+          }
         }
     }
 }
@@ -30,13 +35,15 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
-
-  console.log(data?.ReviewsByLandlordId.reviews)
+  const landlord = data?.ReviewsByLandlordId.reviews;
 
   return (
     <MainContainer windowWidth={windowWidth} >
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
+          <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+            <Text style={pageStyles.whiteHeaderText}>Reviews for {}</Text>
+          </View>
           <FlatList style={pageStyles.flatList}
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
@@ -47,7 +54,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
           />
         </View>
         <View style={widthDepStyles(windowWidth).listControlContainer}>
-          <AddButton text={"Add Review"} link={'Reviews'}/>
+          <AddButton text={"Add Review"} link={'AddReviews'}/>
           <AddButton text={"Go Back"} link={'Home'}/>
         </View>
       </>

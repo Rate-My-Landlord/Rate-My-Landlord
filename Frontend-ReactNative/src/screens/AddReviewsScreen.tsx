@@ -1,16 +1,15 @@
-/*
-  Author: Hayden Stegman 
-*/
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { AddButton } from '../components/AddButton';
+import MainContainer from '../components/mainContainer';
+import widthDepStyles from '../Styles/styles-width-dep';
 
 // The point at which style changes
 const screenChangePoint = 1250;
 
 /*
   Write Review Screen
-*/
 
 
 const PostReview = gql`
@@ -21,7 +20,7 @@ const PostReview = gql`
   }
 `
 
-const HomeScreen = ({ route, navigation }: any) => {
+const AddReviewsScreen = ({ route, navigation }: any) => {
   const landlordId = route.params.landlordId;
 
   const [newReview, { data, loading, error}] = useMutation(PostReview);
@@ -44,7 +43,7 @@ const HomeScreen = ({ route, navigation }: any) => {
       <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text></View>
       <View style={styles(windowWidth).bodyScreen}>
 
-        {/* Main Content Container */}
+        {/* Main Content Container }
         <View style={styles(windowWidth).mainContainer}>
           <View style={styles(windowWidth).FormContainer}>
             <TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
@@ -65,7 +64,56 @@ const HomeScreen = ({ route, navigation }: any) => {
   );
 };
 
-export default HomeScreen;
+export default AddReviewsScreen;
+*/
+
+const PostReview = gql`
+  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
+    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
+      success
+    }
+  }
+`
+
+const AddReviewsScreen = ({ route, navigation }: any) => {
+  const windowWidth = useWindowDimensions().width;
+
+  /*
+  const landlordId = route.params.landlordId;
+
+  const [newReview, { data, loading, error}] = useMutation(PostReview);
+
+  const [rating, onRatingText] = useState('1');
+  const [comments, onCommentsText] = useState("");
+
+  const postReview = () => {
+    newReview({variables: {
+      landlordId: landlordId,
+      overallStarRating: parseInt(rating),
+      text: comments
+    }}).then(res => navigation.navigate('Web_Home'));
+  }
+  */
+  return(
+    <MainContainer windowWidth={windowWidth} >
+    <>
+      <View style={widthDepStyles(windowWidth).listContainer}>
+        <View style={styles(windowWidth).FormContainer}>
+          {/*<TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+          <TextInput style={textStyles.input} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
+          <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={postReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
+          */}
+        </View>
+      </View>
+      <View style={widthDepStyles(windowWidth).listControlContainer}>
+        <AddButton text={"Go Back"} link={'Home'}/>
+      </View>
+    </>
+  </MainContainer>
+  );
+}
+
+export default AddReviewsScreen;
 
 const textStyles = StyleSheet.create({
   input: {

@@ -9,7 +9,7 @@ import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
 import { AddButton } from '../components/AddButton'
 
-type Props = NativeStackScreenProps<NavParamList, "HomeFlow">;
+type Props = NativeStackScreenProps<NavParamList, "Home">;
 
 const ALLLANDLORDS = gql`
 query {

@@ -47,8 +47,8 @@ const styles = () => StyleSheet.create({
     marginVertical: 5,
     width: '100%',
     borderRadius: 15,
-    borderColor: ThemeColors.darkBlue,
-    borderWidth: 2,
+    borderColor: ThemeColors.darkGrey,
+    borderWidth: 3,
   },
   bodyContainer: {
     flex: 7,
@@ -99,8 +99,8 @@ const headerStyle = (ratingColor : any) => StyleSheet.create({
     backgroundColor: ratingColor == "green" ? '#10B981'
       : ratingColor == "orange" ? '#FAAF3E' : '#EF4444',
     
-    borderBottomLeftRadius: 15,
-    borderTopLeftRadius: 15,
+    borderBottomLeftRadius: 12,
+    borderTopLeftRadius: 12,
     alignItems: 'center',
     padding: 0,
   },

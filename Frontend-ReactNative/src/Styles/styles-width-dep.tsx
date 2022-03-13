@@ -19,7 +19,6 @@ export default (windowWidth: number) => StyleSheet.create({
         paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') || windowWidth <= screenChangePoint ? 5 : '10%',
         backgroundColor: ThemeColors.darkGrey,
     },
-
     // Content Containers
     listContainer: {
         flex: windowWidth >= screenChangePoint ? 2 : 5,
@@ -34,11 +33,21 @@ export default (windowWidth: number) => StyleSheet.create({
     listControlContainer: {
         flex: 1,
         backgroundColor: ThemeColors.grey,
-        justifyContent: 'center',
+        paddingTop: 20,
         alignItems: 'center',
 
         // Top Right only rounded when on IOS or Screen is small
         borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 0 : 15,
         borderTopLeftRadius: 15,
     },
+    // Header for Reviews Page
+    reviewsPageHeader: {
+        backgroundColor: ThemeColors.blue,
+        width: '100%',
+        height: 50,
+        alignItems: 'center',
+        flexDirection: 'row',
+        // Top Right rounded only on Web when screen is big.
+        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
+    }
 })

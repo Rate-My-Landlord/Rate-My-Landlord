@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
+import AddReviewsScreen from './src/screens/AddReviewsScreen';
 
 // Apollo
 import {
@@ -77,9 +78,10 @@ const linking = {
 }
 
 export type NavParamList = {
-  HomeFlow: undefined,
+  Home: undefined,
   Profile: undefined,
   Reviews: undefined,
+  AddReviews: undefined,
 }
 
 // Mobile
@@ -118,7 +120,7 @@ export default function App() {
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName: any = "";
 
-                if (route.name === 'HomeFlow') {
+                if (route.name === 'Home') {
                   iconName = 'home';
                 } else if (route.name === 'Profile') {
                   iconName = 'person';
@@ -135,7 +137,7 @@ export default function App() {
               tabBarShowLabel: false,
             })}
           >
-            <Tab.Screen name="HomeFlow" component={HomeFlow} />
+            <Tab.Screen name="Home" component={HomeFlow} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
           </Tab.Navigator>
           // Web Navigation
@@ -145,9 +147,10 @@ export default function App() {
               headerShown: false,
             })}
           >
-            <Stack.Screen name="HomeFlow" component={HomeFlow} />
+            <Stack.Screen name="Home" component={HomeFlow} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Reviews" component={ReviewScreen} />
+            <Stack.Screen name="AddReviews" component={AddReviewsScreen} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

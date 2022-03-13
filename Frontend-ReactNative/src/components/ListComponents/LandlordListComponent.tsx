@@ -52,7 +52,7 @@ const styles = () => StyleSheet.create({
     marginVertical: 5,
     width: '100%',
     borderRadius: 15,
-    borderColor: ThemeColors.darkBlue,
+    borderColor: ThemeColors.darkGrey,
     borderWidth: 2,
   },
   bodyContainer: {

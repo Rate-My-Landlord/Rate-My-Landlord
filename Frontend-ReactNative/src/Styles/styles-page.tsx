@@ -22,9 +22,17 @@ export default StyleSheet.create({
     textColor: {
         color: ThemeColors.darkBlue,
     },
+    // List containing Landlords and Reviews
     flatList: {
         width: '100%',
         height: '100%',
         padding: 15,
     },
+    whiteHeaderText: {
+        color: ThemeColors.white,
+        fontWeight: 'bold',
+        fontSize: 20,
+        flex: 1,
+        textAlign: "center",
+    }
 })
