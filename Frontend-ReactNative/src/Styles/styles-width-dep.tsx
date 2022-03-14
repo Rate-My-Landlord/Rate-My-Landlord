@@ -6,7 +6,7 @@ import { screenChangePoint } from "../constants/Layout";
 export default (windowWidth: number) => StyleSheet.create({
     mainContainer: {
         marginHorizontal: 0,
-        borderRadius: 15,
+        borderRadius: 5,
         flex: 3,
         flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
         justifyContent: 'center',
@@ -27,7 +27,7 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
+        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 5 : 0,
     },
     // Contains Filter box, buttons, ect.
     listControlContainer: {
@@ -37,8 +37,8 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right only rounded when on IOS or Screen is small
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 0 : 15,
-        borderTopLeftRadius: 15,
+        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 0 : 5,
+        borderTopLeftRadius: 5,
     },
     // Header for Reviews Page
     reviewsPageHeader: {
@@ -48,6 +48,6 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
+        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 5 : 0,
     }
 })

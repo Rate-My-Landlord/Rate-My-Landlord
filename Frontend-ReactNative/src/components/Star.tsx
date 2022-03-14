@@ -10,10 +10,10 @@ export const Star = ( props:any ) => {
     return (
         <View style={starStyles.starContainer}>
             {[1,2,3,4,5].map((num, key) => num<=rating ? 
-            <FontAwesome key={key} name="star" size={20} style={starStyles.starItems}/> : // whole star
+            <FontAwesome key={key} name="star" size={25} style={starStyles.starItems}/> : // whole star
                 (num-1<rating ? 
-                    <FontAwesome key={key} name="star-half-empty" size={20} /> : // half
-                    <FontAwesome key={key} name="star-o" size={20} /> // empty
+                    <FontAwesome key={key} name="star-half-empty" size={25} /> : // half
+                    <FontAwesome key={key} name="star-o" size={25} /> // empty
                 ))}
         </View>
     )

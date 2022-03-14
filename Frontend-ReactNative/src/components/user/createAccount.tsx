@@ -97,7 +97,7 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
                     <Text style={formStyles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
 
-                : <View>
+                : <View style={formStyles.container}>
                     {loading && <Text>Submitting...</Text>}
                     {error && <Text style={formStyles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
                     {data?.NewUser.errors && <Text style={formStyles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}

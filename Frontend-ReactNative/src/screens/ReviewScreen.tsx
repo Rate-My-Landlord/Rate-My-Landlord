@@ -35,14 +35,13 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
-  const landlord = data?.ReviewsByLandlordId.reviews;
 
   return (
     <MainContainer windowWidth={windowWidth} >
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
           <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-            <Text style={pageStyles.whiteHeaderText}>Reviews for {}</Text>
+            <Text style={pageStyles.whiteHeaderText}>Reviews for Joe</Text>
           </View>
           <FlatList style={pageStyles.flatList}
             data={data?.ReviewsByLandlordId.reviews}

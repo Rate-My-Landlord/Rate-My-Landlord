@@ -83,9 +83,6 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
 
   const [newReview, { data, loading, error}] = useMutation(PostReview);
 
-  const [rating, onRatingText] = useState('1');
-  const [comments, onCommentsText] = useState("");
-
   const postReview = () => {
     newReview({variables: {
       landlordId: landlordId,
@@ -94,15 +91,17 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
     }}).then(res => navigation.navigate('Web_Home'));
   }
   */
+
+  const [rating, onRatingText] = useState('1');
+  const [comments, onCommentsText] = useState("");
   return(
     <MainContainer windowWidth={windowWidth} >
     <>
       <View style={widthDepStyles(windowWidth).listContainer}>
         <View style={styles(windowWidth).FormContainer}>
-          {/*<TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+          <TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
           <TextInput style={textStyles.input} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
-          <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={postReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
-          */}
+          <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
         </View>
       </View>
       <View style={widthDepStyles(windowWidth).listControlContainer}>

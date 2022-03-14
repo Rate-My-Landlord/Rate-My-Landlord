@@ -61,7 +61,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-
 /* For displaying URLs on desktop */
 const prefix = Linking.createURL('/');
 

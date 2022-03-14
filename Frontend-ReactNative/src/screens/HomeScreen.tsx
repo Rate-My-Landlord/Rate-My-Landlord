@@ -36,6 +36,9 @@ const HomeScreen = ({ route, navigation }: Props) => {
     <MainContainer windowWidth={windowWidth} >
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
+          <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+            <Text style={pageStyles.whiteHeaderText}>Landlords in 05401</Text>
+          </View>
           <FlatList style={pageStyles.flatList}
             data={data?.AllLandlords.landlords}
             keyExtractor={item => item!!.id}

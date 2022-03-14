@@ -4,12 +4,12 @@ import { ThemeColors } from "../constants/Colors";
 export default StyleSheet.create({
     container: {
         flex: 3,
-        backgroundColor: ThemeColors.grey,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
         // Top Right rounded only on Web when screen is big.
-        borderRadius: 15,
+        borderRadius: 5,
+        width: '75%',
     },
     input: {
         height: 40,

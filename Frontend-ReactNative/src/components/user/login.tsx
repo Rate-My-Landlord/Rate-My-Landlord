@@ -71,7 +71,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                     <Text style={formStyles.buttonText}>Sign In</Text>
                 </TouchableOpacity>
                 :
-                <View>
+                <View style={formStyles.container}>
                     <Text style={formStyles.formHeaderText}>Login</Text>
                     <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
                     <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />

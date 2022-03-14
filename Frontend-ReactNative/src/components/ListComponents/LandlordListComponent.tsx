@@ -51,7 +51,7 @@ const styles = () => StyleSheet.create({
     height: 100,
     marginVertical: 5,
     width: '100%',
-    borderRadius: 15,
+    borderRadius: 5,
     borderColor: ThemeColors.darkGrey,
     borderWidth: 2,
   },
@@ -59,9 +59,9 @@ const styles = () => StyleSheet.create({
     flex: 2,
     backgroundColor: ThemeColors.grey,
     padding: 10,
-    paddingHorizontal: 15,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    paddingHorizontal: 10,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
     alignItems: 'center',
     flexDirection: 'row',
   },
@@ -90,9 +90,12 @@ const styles = () => StyleSheet.create({
   reviewPageButton: {
     flex: 1,
     backgroundColor: ThemeColors.white,
-    borderRadius: 15,
+    borderRadius: 5,
     alignItems: 'center',
     padding: 5,
+    borderColor: ThemeColors.darkGrey,
+    borderWidth: 2,
+    width: 45,
   },
 })
 
@@ -104,8 +107,8 @@ const headerStyle = (ratingColor : any) => StyleSheet.create({
     backgroundColor: ratingColor == "green" ? ThemeColors.green
       : ratingColor == "orange" ? ThemeColors.orange : ThemeColors.red,
     
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
     alignItems: 'center',
     padding: 0,
 

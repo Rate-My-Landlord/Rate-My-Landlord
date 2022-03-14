@@ -11,7 +11,7 @@ export default StyleSheet.create({
         flex: 1,
         marginHorizontal: 10,
         marginBottom: 10,
-        borderRadius: 15,
+        borderRadius: 5,
 
         // Temp?
         backgroundColor: ThemeColors.white,
