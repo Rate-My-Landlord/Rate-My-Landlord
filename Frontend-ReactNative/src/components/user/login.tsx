@@ -2,13 +2,14 @@ import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableO
 import { useMutation, gql } from '@apollo/client';
 import { IAuthUser } from '../../types';
 import { Mutation, MutationLoginArgs } from '../../../graphql/generated';
-import { Control, FieldError, Controller, SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
 import dismissKeyboard from '../../global/dismissKeyboard';
 import formStyles from '../../Styles/styles-form';
+import GoogleSignIn from './googleSignIn';
 
 
 const LOG_IN = gql`
@@ -30,13 +31,14 @@ type Inputs = {
 }
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
     loginExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
-    setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
+    setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>,
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded }: Props) => {
+export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
     const [login, { data, loading, error }] = useMutation<Mutation, MutationLoginArgs>(LOG_IN);
 
     const saveUser = async (token: any, id: any) => {
@@ -45,7 +47,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     }
 
     // Form stuff
-    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+    const { control, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
@@ -72,13 +74,17 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                 </TouchableOpacity>
                 :
                 <View style={formStyles.container}>
-                    <Text style={formStyles.formHeaderText}>Login</Text>
-                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
-                    <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
-                    <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                        <Text style={formStyles.submitText}>Login</Text>
-                    </TouchableOpacity>
+                    <View style={{ flex: 1 }}>
+                        <Text style={formStyles.formHeaderText}>Login</Text>
+                        <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                        <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
+                        <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                            <Text style={formStyles.submitText}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <GoogleSignIn setUser={setUser} setExternalToken={setExternalToken} />
                 </View>
+
             }
         </TouchableWithoutFeedback>
     )
