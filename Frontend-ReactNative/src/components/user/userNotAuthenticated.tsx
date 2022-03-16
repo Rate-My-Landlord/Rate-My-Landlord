@@ -6,11 +6,11 @@ import CreateAccount from './createAccount';
 import Login from './login';
 
 type Props = {
-    setUser: (user: IAuthUser | undefined) => void,
-    promptPhone: (externalToken: String) => void
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>,
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, promptPhone }: Props) => {
+export default ({ setUser, setExternalToken }: Props) => {
     const [loginExpanded, setLoginExpanded] = useState<boolean>(true)
     const [createAccountExpanded, setCreateAccountExpanded] = useState<boolean>(false)
 
@@ -24,8 +24,8 @@ export default ({ setUser, promptPhone }: Props) => {
                         setCreateAccountExpanded={setCreateAccountExpanded}
                         loginExpanded={loginExpanded}
                         setLoginExpanded={setLoginExpanded}
-                        promptPhone={promptPhone}
-                        />
+                        setExternalToken={setExternalToken}
+                    />
                     <View style={styles.line} />
                     <CreateAccount
                         setUser={setUser}

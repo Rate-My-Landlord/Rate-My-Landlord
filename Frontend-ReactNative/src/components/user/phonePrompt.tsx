@@ -1,13 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { ThemeColors } from '../constants/Colors';
-import TextField from '../components/user/TextField';
+import { ThemeColors } from '../../constants/Colors';
+import TextField from './TextField';
 import { useMutation, gql } from '@apollo/client';
-import { Mutation, MutationNewUserExternalArgs, UserResult } from '../../graphql/generated';
+import { Mutation, MutationNewUserExternalArgs, UserResult } from '../../../graphql/generated';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { NavParamList } from '../../App';
+import { NavParamList } from '../../../App';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import { saveUserCredsToLocal } from '../global/localStorage';
+import { saveUserCredsToLocal } from '../../global/localStorage';
 import { CommonActions } from '@react-navigation/native';
+import { IAuthUser } from '../../types';
 
 
 
@@ -30,15 +31,21 @@ type Inputs = {
     phone: number,
 }
 
-type Props = NativeStackScreenProps<NavParamList, "PhoneModal">;
+type Props = {
+    externalToken: String,
+    resetExternalToken: () => void
+}
 
 
-const PhoneModal = ({ route, navigation }: Props) => {
+const PhonePrompt = ({ externalToken, resetExternalToken }: Props) => {
     const [newUserExternal, { loading, error, data }] = useMutation<Mutation, MutationNewUserExternalArgs>(NEW_USER_EXTERNAL)
 
     const handleCompleted = async (data: UserResult) => {
         if (data.token && data.user)
-            await saveUserCredsToLocal(data.user?.id!, data.token!).then(() => navigation.navigate('Profile', {reload: true}));
+        await saveUserCredsToLocal(data.user!.id!, data.token!)
+            .then(() => {
+                resetExternalToken();
+            })
     }
 
     // Form stuff
@@ -48,11 +55,11 @@ const PhoneModal = ({ route, navigation }: Props) => {
     const onSubmit: SubmitHandler<Inputs> = data => {
         newUserExternal({
             variables: {
-                externalToken: route.params.externalToken.toString(),
+                externalToken: externalToken.toString(),
                 provider: 'google',
                 phone: data.phone.toString(),
             },
-            onCompleted({ NewUserExternal }) { if(NewUserExternal.success) handleCompleted(NewUserExternal) }
+            onCompleted({ NewUserExternal }) { if (NewUserExternal.success) handleCompleted(NewUserExternal) }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
@@ -91,4 +98,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PhoneModal;
+export default PhonePrompt;

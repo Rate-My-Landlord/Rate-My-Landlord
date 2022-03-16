@@ -12,7 +12,6 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
-import PhoneModal from './src/screens/PhoneModal';
 
 // Apollo
 import {
@@ -74,7 +73,6 @@ const linking = {
       Profile: 'profile',
       NewReview: ':landlordId/newReview',
       Setting: 'settings',
-      PhoneModal: 'promptPhone',
       NotFound: '*'
     }
   }
@@ -85,7 +83,6 @@ export type NavParamList = {
   Profile: {reload: Boolean} | undefined,
   Settings: undefined,
   Reviews: undefined,
-  PhoneModal: { externalToken: String }
 }
 
 // Mobile
@@ -158,9 +155,6 @@ export default function App() {
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Settings" component={SettingsScreen} />
             <Stack.Screen name="Reviews" component={ReviewScreen} />
-            <Stack.Group>
-              <Stack.Screen name="PhoneModal" component={PhoneModal} />
-            </Stack.Group>
           </Stack.Navigator>
         )}
       </NavigationContainer>

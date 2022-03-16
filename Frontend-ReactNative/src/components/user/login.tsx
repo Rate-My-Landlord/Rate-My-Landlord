@@ -30,14 +30,14 @@ type Inputs = {
 }
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
     loginExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>,
-    promptPhone: (externalToken: String) => void
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, promptPhone }: Props) => {
+export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
     const [login, { data, loading, error }] = useMutation<Mutation, MutationLoginArgs>(LOG_IN);
 
     const saveUser = async (token: any, id: any) => {
@@ -81,7 +81,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                             <Text>Login</Text>
                         </TouchableOpacity>
                     </View>
-                    <GoogleSignIn setUser={setUser} promptPhone={promptPhone} />
+                    <GoogleSignIn setUser={setUser} setExternalToken={setExternalToken} />
                 </View>
 
             }

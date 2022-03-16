@@ -36,11 +36,11 @@ const EXTERNAL_LOG_IN = gql`
 
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
-    promptPhone: (externalToken: String) => void
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, promptPhone }: Props) => {
+export default ({ setUser, setExternalToken: setET }: Props) => {
     const [externalToken, setExternalToken] = useState<String | undefined>();
 
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
@@ -54,12 +54,13 @@ export default ({ setUser, promptPhone }: Props) => {
     const [externalLogin, { data, loading, error }] = useMutation<Mutation, MutationExternalLoginArgs>(EXTERNAL_LOG_IN);
 
     const handleCompleted = async (data: UserResult) => {
+        // User account already exists
         if (data.token) {
             await saveUserCredsToLocal(data.user!.id, data.token)
                 .then(() => setUser({ token: data.token!, user_id: data.user!.id } as IAuthUser));
 
         } else {
-            promptPhone(externalToken!);
+            setET(externalToken);
         }
     }
 
@@ -95,16 +96,15 @@ export default ({ setUser, promptPhone }: Props) => {
 
 const styles = StyleSheet.create({
     button: {
-        flex: 1,
         margin: 5,
         padding: 5,
         borderColor: ThemeColors.darkBlue,
         borderWidth: 2,
-        borderRadius: 5
+        borderRadius: 5,
+        alignItems: 'center',
     },
     googleButton: {
         flexDirection: 'row',
-        alignItems: 'center',
         justifyContent: 'space-between'
     },
     googleLogo: {

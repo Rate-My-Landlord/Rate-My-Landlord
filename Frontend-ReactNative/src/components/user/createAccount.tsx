@@ -37,7 +37,7 @@ const ADD_USER = gql`
 `
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
     createAccountExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
