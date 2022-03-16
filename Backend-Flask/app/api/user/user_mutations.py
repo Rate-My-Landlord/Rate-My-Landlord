@@ -1,7 +1,6 @@
 from ... import db
 from ...models import User, ExternalAuth
 from ariadne import convert_kwargs_to_snake_case
-import re
 import datetime
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from google.oauth2 import id_token
@@ -172,7 +171,6 @@ def resolve_update_user(info, obj, first_name=None, last_name=None, email=None):
             'success': True,
             'user': user.to_json()
         }
-
     except Exception as e:
         payload = {
             'success': False,

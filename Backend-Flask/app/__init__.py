@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager
 import os
 
 db = SQLAlchemy()
+jwt = JWTManager()
+
 
 def create_app(config_name):
     # print(config[config_name])
@@ -15,23 +17,22 @@ def create_app(config_name):
     # these two lines don't work, need to look into it more
     # app.config.from_object(config[config_name])
     # config[config_name].init_app(app)
-    
+
     app.config.from_object(config['development'])
     config['development'].init_app(app)
 
     # Loading environment variables
     app.config.from_envvar('ENV_FILE_LOCATION')
     
-    jwt = JWTManager(app)
-    
+    jwt.init_app(app)
+
     db.init_app(app)
     migrate = Migrate(app, db)
-    
+
     from .commands import commands as commands_blueprint
     app.register_blueprint(commands_blueprint)
-    
-    
+
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')
-    
+
     return app

@@ -53,20 +53,37 @@ mutation.set_field('ExternalLogin', resolve_external_login)
 mutation.set_field('UpdateUser', resolve_update_user)
 
 
+# Custom error handling
+def my_format_error(error, debug=False):
+    formatted = error.formatted
+    # if debug:
+    if formatted['message'] == 'Not enough segments':
+        return 'Invalid JWT format'
+
+    return formatted['message']
+    
+    # formatted['message'] = 'INTERNAL SERVER ERROR'
+    # return formatted
+
+
 # Creating schema
-schema = make_executable_schema(type_defs, query, mutation, snake_case_fallback_resolvers)
+schema = make_executable_schema(
+    type_defs, query, mutation, snake_case_fallback_resolvers)
+
 
 @api.route('/graphql', methods=['GET'])
 def playground():
     return PLAYGROUND_HTML, 200
 
+
 @api.route('/graphql', methods=['POST'])
 def graphql_server():
     data = request.get_json()
-    success, result  = graphql_sync(
-        schema=schema, 
-        data=data, 
-        context_value=request)
-    
+    success, result = graphql_sync(
+        schema=schema,
+        data=data,
+        context_value=request,
+        error_formatter=my_format_error)
+
     status_code = 200 if success else 400
     return jsonify(result), status_code
