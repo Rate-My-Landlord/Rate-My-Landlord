@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TextIn
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
+import { isMobileDevice, isMobileScreen } from '../utils';
 
 // The point at which style changes
 const screenChangePoint = 1250;
@@ -137,23 +138,23 @@ const styles = (windowWidth: any) => StyleSheet.create({
     backgroundColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 40 : 0,
+    paddingTop: isMobileDevice() ? 40 : 0,
 
     // Header Gap - Only on Web
-    margin: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 5,
+    margin: isMobileDevice() ? 0 : 5,
 
     // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
-    borderRadius: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 15,
+    borderRadius: isMobileDevice() ? 0 : 15,
 
     // Shadow
   },
   bodyScreen: {
     flex: 10,
     flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
-    paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
+    paddingTop: isMobileDevice() ? 10 : 15,
+    paddingHorizontal: isMobileDevice() ? 0 : '10%',
     backgroundColor: '#ffffff',
   },
 
@@ -189,7 +190,7 @@ const styles = (windowWidth: any) => StyleSheet.create({
     alignItems: 'center',
 
     // Top Right rounded only on Web when screen is big.
-    borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
+    borderTopRightRadius: !isMobileScreen() ? 15 : 0,
   },
 
   // Temp

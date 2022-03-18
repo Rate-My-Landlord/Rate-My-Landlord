@@ -7,7 +7,7 @@ import { ThemeColors } from '../../constants/Colors';
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 import GoogleSignIn from './googleSignIn';
 
@@ -67,7 +67,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     }
 
     return (
-        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard}>
             {!expanded ?
                 <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
                     <Text style={formStyles.buttonText}>Sign In</Text>

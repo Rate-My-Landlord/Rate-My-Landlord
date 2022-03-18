@@ -6,9 +6,8 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { resetCreds, saveUserCredsToLocal } from '../../global/localStorage';
 import { ThemeColors } from '../../constants/Colors';
 import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import { IAuthUser } from '../../types';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 
 const UPDATE_USER = gql`
@@ -115,7 +114,7 @@ export default ({ userId, setUser }: Props) => {
     if (loading) return (<Text>Loading...</Text>)
 
     return (
-        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback onPress={() => dismissKeyboard}>
             <View style={{ flex: 1, alignItems: 'center', marginTop: 50 }}>
                 <Text style={formStyles.formHeaderText}>Edit your profile</Text>
                 <View>
