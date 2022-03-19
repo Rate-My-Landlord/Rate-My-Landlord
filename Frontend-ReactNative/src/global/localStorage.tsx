@@ -6,16 +6,23 @@ export async function resetCreds() {
     await AsyncStorage.setItem('@user_cred', '');
 }
 
-export async function saveUserCredsToLocal(user_id: string, token: string) {
-    if (user_id !== undefined && token !== undefined) {
-        const user_obj = { token: token, user_id: user_id } as IAuthUser;
-        const json_value = JSON.stringify(user_obj);
-        await AsyncStorage.setItem('@user_cred', json_value);
+export async function getRefreshToken(): Promise<string | null> {
+    return await AsyncStorage.getItem('@refreshToken');
+}
+
+export async function saveUserCredsToLocal(userId: string, accessToken: string, refreshToken?: string) {
+    if (userId !== undefined && accessToken !== undefined) {
+        const userObj = { accessToken: accessToken, userId: userId, } as IAuthUser;
+        const jsonValue = JSON.stringify(userObj);
+        await AsyncStorage.setItem('@user_cred', jsonValue);
+    }
+    if (refreshToken !== undefined) {
+        await AsyncStorage.setItem('@refreshToken', refreshToken);
     }
 }
 
 export default async function loadUserCredsFromLocal() {
-    const json_value = await AsyncStorage.getItem('@user_cred');
-    if (json_value) return JSON.parse(json_value) as IAuthUser;
+    const jsonValue = await AsyncStorage.getItem('@user_cred');
+    if (jsonValue) return JSON.parse(jsonValue) as IAuthUser;
     return null;
 }

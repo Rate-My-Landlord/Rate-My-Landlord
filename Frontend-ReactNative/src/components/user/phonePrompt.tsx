@@ -17,7 +17,10 @@ const NEW_USER_EXTERNAL = gql`
         NewUserExternal(externalToken: $externalToken, provider: $provider, phone: $phone) {
             success,
             errors,
-            token,
+            tokens {
+                accessToken,
+                refreshToken
+            },
             user {
                 id
             }
@@ -41,8 +44,8 @@ const PhonePrompt = ({ externalToken, resetExternalToken }: Props) => {
     const [newUserExternal, { loading, error, data }] = useMutation<Mutation, MutationNewUserExternalArgs>(NEW_USER_EXTERNAL)
 
     const handleCompleted = async (data: UserResult) => {
-        if (data.token && data.user)
-        await saveUserCredsToLocal(data.user!.id!, data.token!)
+        if (data.tokens && data.user)
+        await saveUserCredsToLocal(data.user.id, data.tokens.accessToken, data.tokens.refreshToken)
             .then(() => {
                 resetExternalToken();
             })

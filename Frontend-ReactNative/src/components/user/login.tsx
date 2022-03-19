@@ -1,7 +1,7 @@
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { useMutation, gql } from '@apollo/client';
 import { IAuthUser } from '../../types';
-import { Mutation, MutationLoginArgs } from '../../../graphql/generated';
+import { Mutation, MutationLoginArgs, Tokens } from '../../../graphql/generated';
 import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import TextField from './TextField';
@@ -17,7 +17,10 @@ const LOG_IN = gql`
         Login(phone: $phone, password: $password) {
             success,
             errors,
-            token,
+            tokens {
+                accessToken,
+                refreshToken,
+            },
             user {
                 id
             }
@@ -41,9 +44,9 @@ type Props = {
 export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
     const [login, { data, loading, error }] = useMutation<Mutation, MutationLoginArgs>(LOG_IN);
 
-    const saveUser = async (token: any, id: any) => {
-        await saveUserCredsToLocal(id, token)
-            .then(() => setUser({ token: token, user_id: id } as IAuthUser));
+    const saveUser = async (tokens: Tokens, id: string) => {
+        await saveUserCredsToLocal(id, tokens.accessToken, tokens.refreshToken)
+            .then(() => setUser({ accessToken: tokens.accessToken, userId: id } as IAuthUser));
     }
 
     // Form stuff
@@ -56,7 +59,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                 phone: data.phone.toString(),
                 password: data.password
             },
-            onCompleted({ Login }) { if (Login) { saveUser(Login.token, Login.user?.id) } }
+            onCompleted({ Login }) { if (Login) { saveUser(Login.tokens!, Login.user?.id!) } }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);

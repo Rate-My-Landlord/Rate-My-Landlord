@@ -67,13 +67,13 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
 export default AddReviewsScreen;
 */
 
-const PostReview = gql`
-  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
-    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
-      success
-    }
-  }
-`
+// const PostReview = gql`
+//   mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
+//     NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
+//       success
+//     }
+//   }
+// `
 
 const AddReviewsScreen = ({ route, navigation }: any) => {
   const windowWidth = useWindowDimensions().width;

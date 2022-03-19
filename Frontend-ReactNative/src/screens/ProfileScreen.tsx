@@ -40,7 +40,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
         :
         user === undefined ?
           <UserNotAuthenticated setUser={setUser} setExternalToken={setExternalToken} />
-          : <User userId={user!.user_id} setUser={setUser} />
+          : <User userId={user!.userId} setUser={setUser} />
       }
     </MainContainer>
   )

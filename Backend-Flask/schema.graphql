@@ -51,6 +51,11 @@ type Property {
     country: String!
 }
 
+type Tokens {
+    accessToken: String!
+    refreshToken: String!
+}
+
 
 ##########################
 #      Result types      #
@@ -90,7 +95,14 @@ type UserResult {
     success: Boolean!
     errors: [String]
     user: User
-    token: String
+    tokens: Tokens
+}
+
+type RefreshTokenResult {
+    success: Boolean!
+    errors: [String]
+    token: String,
+    id: ID
 }
 
 
@@ -120,6 +132,8 @@ type Query {
     LandlordByPropertyId(propertyId: ID!): LandlordResult!
     """Get a user by userId"""
     UserByUserId(userId: ID!): UserResult!
+    """Refresh a token"""
+    RefreshToken: RefreshTokenResult!
 }
 
 
@@ -149,5 +163,4 @@ type Mutation {
     ExternalLogin(externalToken: String!, provider: String!): UserResult!
     """Update user info"""
     UpdateUser(firstName: String, lastName: String, email: String): UserResult!
-
 }

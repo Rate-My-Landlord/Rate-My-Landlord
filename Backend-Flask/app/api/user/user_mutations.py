@@ -2,7 +2,7 @@ from ... import db
 from ...models import User, ExternalAuth
 from ariadne import convert_kwargs_to_snake_case
 import datetime
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
@@ -16,9 +16,20 @@ GOOGLE_CLIENT_IDS = [
 VALID_PROVIDERS = ['google']
 
 
-def generate_token(id):
+def generate_token(id, refresh=True):
     """Helper function for generating a JWT for a user"""
-    expire_date = datetime.timedelta(days=7)
+    # Creating a JWT using the users id and the JWT_SECRET that is valid for 7 days
+    if refresh:
+        return {
+            'access_token': create_access_token(identity=str(id)),
+            'refresh_token': create_refresh_token(identity=str(id))
+        }
+
+    return create_access_token(identity=str(id))
+
+
+def generate_expired_token(id):
+    expire_date = datetime.timedelta(seconds=10)
     # Creating a JWT using the users id and the JWT_SECRET that is valid for 7 days
     return create_access_token(identity=str(id), expires_delta=expire_date)
 
@@ -40,12 +51,10 @@ def resolve_login_user(info, obj, phone, password):
         if not user or not user.check_password(password):
             raise Exception('Phone number or password not valid')
 
-        # Creating a JWT that is valid for 7 days
-        access_token = generate_token(user.id)
 
         payload = {
             'success': True,
-            'token': access_token,
+            'tokens': generate_token(user.id),
             'user': user.to_json()
         }
 
@@ -72,7 +81,7 @@ def resolve_external_login(info, obj, external_token, provider):
         if external_auth_user:
             payload = {
                 'success': True,
-                'token': generate_token(external_auth_user.user.id),
+                'tokens': generate_token(external_auth_user.user.id),
                 'user': external_auth_user.user.to_json()
             }
         else:
@@ -100,11 +109,9 @@ def resolve_new_user(info, obj, phone, first_name, last_name, email, password):
         db.session.add(new_user)
         db.session.commit()
 
-        # Creating a JWT that is valid for 7 days
-        access_token = generate_token(new_user.id)
         payload = {
             'success': True,
-            'token': access_token,
+            'tokens': generate_token(new_user.id),
             'user': new_user.to_json()
         }
     except Exception as e:
@@ -139,7 +146,7 @@ def resolve_new_user_external(info, obj, external_token, provider, phone):
         db.session.commit()
         payload = {
             'success': True,
-            'token': generate_token(new_user.id),
+            'tokens': generate_token(new_user.id),
             'user': new_user.to_json()
         }
     except Exception as e:

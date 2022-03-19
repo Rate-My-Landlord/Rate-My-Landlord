@@ -26,7 +26,10 @@ const EXTERNAL_LOG_IN = gql`
         ExternalLogin(externalToken: $externalToken, provider: $provider) {
             success,
             errors,
-            token,
+            tokens {
+                accessToken,
+                refreshToken
+            },
             user {
                 id
             }
@@ -55,9 +58,9 @@ export default ({ setUser, setExternalToken: setET }: Props) => {
 
     const handleCompleted = async (data: UserResult) => {
         // User account already exists
-        if (data.token) {
-            await saveUserCredsToLocal(data.user!.id, data.token)
-                .then(() => setUser({ token: data.token!, user_id: data.user!.id } as IAuthUser));
+        if (data.tokens) {
+            await saveUserCredsToLocal(data.user!.id, data.tokens.accessToken, data.tokens.refreshToken)
+                .then(() => setUser({ accessToken: data.tokens?.accessToken!, userId: data.user!.id } as IAuthUser));
 
         } else {
             setET(externalToken);

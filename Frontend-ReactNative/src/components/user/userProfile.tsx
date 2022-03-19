@@ -32,7 +32,10 @@ const GET_USER_BY_ID = gql`
                 email,
                 phone
             },
-            token,
+            tokens {
+                accessToken,
+                refreshToken
+            },
         }
     }
 `
@@ -69,12 +72,12 @@ export default ({ userId, setUser }: Props) => {
             })
 
             // Updating user token on device
-            if (data?.UserByUserId.token !== undefined) {
+            if (data?.UserByUserId.tokens !== undefined) {
                 if (data?.UserByUserId.user?.id! !== userId) {
                     throw new Error('User ids do not match');
                 } else {
                     // Not using setUser from UserCOntext because then it will infinitely rerender 
-                    saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.token!)
+                    saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.tokens?.accessToken!, data?.UserByUserId.tokens?.refreshToken!)
                 }
             }
         }

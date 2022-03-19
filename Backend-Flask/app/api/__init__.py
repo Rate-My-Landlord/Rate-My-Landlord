@@ -46,6 +46,7 @@ mutation.set_field('NewLandlord', resolve_new_landlord)
 mutation.set_field('NewProperty', resolve_new_property)
 # User
 query.set_field('UserByUserId', resolve_user_by_id)
+query.set_field('RefreshToken', resolve_refresh_token)
 mutation.set_field('NewUser', resolve_new_user)
 mutation.set_field('NewUserExternal', resolve_new_user_external)
 mutation.set_field('Login', resolve_login_user)
