@@ -7,7 +7,7 @@ import { Mutation, MutationNewUserArgs, Tokens } from '../../../graphql/generate
 import { IAuthUser } from '../../types';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import TextField from './TextField';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 
 type Inputs = {
@@ -94,7 +94,7 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
     }
 
     return (
-        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard}>
             {!expanded ?
                 <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
                     <Text style={formStyles.buttonText}>Create Account</Text>

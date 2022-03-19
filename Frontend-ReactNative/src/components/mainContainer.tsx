@@ -3,6 +3,7 @@ import Header from './headers/header';
 import { screenChangePoint } from '../constants/Layout';
 import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
+import { isMobileScreen } from '../utils';
 
 type Props = {
     windowWidth: number,
@@ -18,7 +19,7 @@ export default ({ windowWidth, children }: Props) => (
                 {children}
             </View>
             { // Right Container Only on Web and when screen is big
-                (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint && (
+                isMobileScreen() && (
                     <View style={pageStyles.rightContainer}>
                         <Text style={pageStyles.textColor}>Ad Space?</Text>
                     </View>

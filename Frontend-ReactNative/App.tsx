@@ -25,6 +25,7 @@ import {
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
 import { useEffect } from 'react';
+import { isMobileScreen } from './src/utils';
 
 
 /* Apollo Config */
@@ -135,7 +136,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        {Platform.OS === 'ios' || Platform.OS === 'android' ? (
+        {isMobileScreen() ? (
           // Phone Navigation
           <Tab.Navigator
             screenOptions={({ route }) => ({
