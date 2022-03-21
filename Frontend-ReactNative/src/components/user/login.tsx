@@ -3,7 +3,6 @@ import { useMutation, gql } from '@apollo/client';
 import { IAuthUser } from '../../types';
 import { Mutation, MutationLoginArgs } from '../../../graphql/generated';
 import { Control, FieldError, Controller, SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
-import { ThemeColors } from '../../constants/Colors';
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
@@ -54,7 +53,10 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                 phone: data.phone.toString(),
                 password: data.password
             },
-            onCompleted({ Login }) { if (Login) { saveUser(Login.token, Login.user?.id) } }
+            onCompleted({ Login }) 
+            { 
+                if (Login) { saveUser(Login.token, Login.user?.id) } 
+            }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);

@@ -1,9 +1,12 @@
 import { gql, useMutation } from '@apollo/client';
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, Platform, useWindowDimensions, FlatList, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
+import formStyles from '../Styles/styles-form';
+import pageStyles from '../Styles/styles-page'
+import { ThemeColors } from '../constants/Colors';
 
 // The point at which style changes
 const screenChangePoint = 1250;
@@ -78,30 +81,33 @@ const PostReview = gql`
 const AddReviewsScreen = ({ route, navigation }: any) => {
   const windowWidth = useWindowDimensions().width;
 
-  /*
-  const landlordId = route.params.landlordId;
-
-  const [newReview, { data, loading, error}] = useMutation(PostReview);
-
-  const postReview = () => {
-    newReview({variables: {
-      landlordId: landlordId,
-      overallStarRating: parseInt(rating),
-      text: comments
-    }}).then(res => navigation.navigate('Web_Home'));
-  }
-  */
-
   const [rating, onRatingText] = useState('1');
   const [comments, onCommentsText] = useState("");
   return(
     <MainContainer windowWidth={windowWidth} >
     <>
-      <View style={widthDepStyles(windowWidth).listContainer}>
-        <View style={styles(windowWidth).FormContainer}>
-          <TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
-          <TextInput style={textStyles.input} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
-          <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
+      <View style={formStyles.container}>
+        <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+              <Text style={pageStyles.whiteHeaderText}>Write Review for 'Name'</Text>
+        </View>
+        <View style={styles.padding}>
+          <View style={styles.formItem}>
+            <Text style={styles.sectionText}>Overall</Text>
+            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+          </View>
+          <View style={styles.formItem}>
+            <Text style={styles.sectionText}>Communication Skills</Text>
+            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+          </View>
+          <View style={styles.formItem}>
+            <Text style={styles.sectionText}>Property Maintainence Level</Text>
+            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+          </View>
+          <View style={styles.formItem}>
+            <Text style={styles.sectionText}>Comments</Text>
+            <TextInput style={textStyles.commentInput} maxLength={350} multiline={true} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
+          </View>
+          <TouchableOpacity style={formStyles.submit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
         </View>
       </View>
       <View style={widthDepStyles(windowWidth).listControlContainer}>
@@ -115,85 +121,40 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
 export default AddReviewsScreen;
 
 const textStyles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
+  numberInput: {
+    height: '35%',
     borderWidth: 1,
     padding: 10,
   },
+  commentInput: {
+    height: '90%',
+    borderWidth: 1,
+    padding: 10,
+    width: '90%',
+  }
 });
 
 // Page Styles
-const styles = (windowWidth: any) => StyleSheet.create({
-  // Back Ground Contain
-  backgroundScreen: {
-    backgroundColor: "#ffffff",
+const styles = StyleSheet.create({
+  formItem: {
     flex: 1,
-  },
-
-  // Main Dividers of the Screen (Header from Body)
-  headerScreen: {
-    flex: 1,
-    backgroundColor: '#E5E7EB',
+    flexDirection: 'column',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 40 : 0,
-
-    // Header Gap - Only on Web
-    margin: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 5,
-
-    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    borderRadius: Platform.OS === 'ios' || Platform.OS === 'android' ? 0 : 15,
-
-    // Shadow
   },
-  bodyScreen: {
-    flex: 10,
-    flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
-    paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
-    paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') ? 0 : '10%',
-    backgroundColor: '#ffffff',
+  sectionText: {
+    color: ThemeColors.darkBlue,
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 5,
   },
-
-  // Body Containers (Right Ad Space (Web Only) and Main Container)
-  rightContainer: {
+  padding: {
     flex: 1,
-    marginHorizontal: 10,
-    marginBottom: 10,
-
-    //Temp for Visibility
-    backgroundColor: '#E5E7EB',
-
-    // Temp for Text Viewing
     justifyContent: 'center',
     alignItems: 'center',
-
-    borderRadius: 15,
-  },
-  mainContainer: {
-    // Change FlexBox valuse based on screen size
-    marginHorizontal: 10,
-
-    // Flex Settings
-    flex: 3,
-    flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
-  },
-
-  // Content Containers
-  FormContainer: {
-    flex: windowWidth >= screenChangePoint ? 2 : 5,
-    backgroundColor: "#D4D4D4",
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    // Top Right rounded only on Web when screen is big.
-    borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 15 : 0,
-  },
-
-  // Temp
-  textColor: {
-    color: '#1F2937',
-  },
+    padding: 15,
+    borderRadius: 5,
+    width: '100%',
+  }
 })

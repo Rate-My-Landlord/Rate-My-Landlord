@@ -6,8 +6,7 @@ export default StyleSheet.create({
         flex: 3,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
-        // Top Right rounded only on Web when screen is big.
+        padding: 0,
         borderRadius: 5,
         width: '75%',
     },
