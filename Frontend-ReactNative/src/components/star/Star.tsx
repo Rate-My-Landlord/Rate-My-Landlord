@@ -1,7 +1,7 @@
 import React from "react";
 import{ FontAwesome } from '@expo/vector-icons'
 import { View } from "react-native";
-import starStyles from "../Styles/styles-star";
+import starStyles from "../../Styles/styles-star";
 
 
 export const Star = ( props:any ) => {

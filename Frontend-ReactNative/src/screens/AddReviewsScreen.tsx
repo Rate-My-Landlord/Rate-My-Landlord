@@ -8,6 +8,7 @@ import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
 import { isMobileDevice, isMobileScreen } from '../utils';
+import StarInput from '../components/star/starInput';
 
 // The point at which style changes
 const screenChangePoint = 1250;
@@ -17,6 +18,9 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
 
   const [rating, onRatingText] = useState('1');
   const [comments, onCommentsText] = useState("");
+
+  const [overallRating, setOverallRating] = useState<number>(0);
+
   return(
     <MainContainer windowWidth={windowWidth} >
     <>
@@ -27,7 +31,9 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
         <View style={styles.padding}>
           <View style={styles.formItem}>
             <Text style={textStyles.sectionText}>Overall</Text>
-            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
+            {/* Example of star rating */}
+            <StarInput star={overallRating} setStar={setOverallRating} />
+            {/* <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} /> */}
           </View>
           <View style={styles.formItem}>
             <Text style={textStyles.sectionText}>Communication Skills</Text>

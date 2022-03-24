@@ -4,7 +4,7 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Star } from '../Star';
+import { Star } from '../star/Star';
 import { FontAwesome } from '@expo/vector-icons'
 import { ThemeColors } from '../../constants/Colors';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
