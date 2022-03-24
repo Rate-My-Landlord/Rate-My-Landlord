@@ -1,14 +1,9 @@
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { useMutation, gql } from '@apollo/client';
 import { IAuthUser } from '../../types';
-<<<<<<< HEAD
-import { Mutation, MutationLoginArgs } from '../../../graphql/generated';
-import { Control, FieldError, Controller, SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
-=======
 import { Mutation, MutationLoginArgs, Tokens } from '../../../graphql/generated';
 import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
->>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
@@ -64,14 +59,7 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                 phone: data.phone.toString(),
                 password: data.password
             },
-<<<<<<< HEAD
-            onCompleted({ Login }) 
-            { 
-                if (Login) { saveUser(Login.token, Login.user?.id) } 
-            }
-=======
             onCompleted({ Login }) { if (Login) { saveUser(Login.tokens!, Login.user?.id!) } }
->>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);

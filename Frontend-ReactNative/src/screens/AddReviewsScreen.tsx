@@ -4,83 +4,13 @@ import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacit
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
-<<<<<<< HEAD
 import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
-=======
 import { isMobileDevice, isMobileScreen } from '../utils';
->>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 
 // The point at which style changes
 const screenChangePoint = 1250;
-
-/*
-  Write Review Screen
-
-
-const PostReview = gql`
-  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
-    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
-      success
-    }
-  }
-`
-
-const AddReviewsScreen = ({ route, navigation }: any) => {
-  const landlordId = route.params.landlordId;
-
-  const [newReview, { data, loading, error}] = useMutation(PostReview);
-
-  const [rating, onRatingText] = useState('1');
-  const [comments, onCommentsText] = useState("");
-
-  const postReview = () => {
-    newReview({variables: {
-      landlordId: landlordId,
-      overallStarRating: parseInt(rating),
-      text: comments
-    }}).then(res => navigation.navigate('Web_Home'));
-  }
-
-  const windowWidth = useWindowDimensions().width;
-
-  return (
-    <View style={styles(windowWidth).backgroundScreen}>
-      <View style={styles(windowWidth).headerScreen}><Text style={styles(windowWidth).textColor}>Rate My Landlord</Text></View>
-      <View style={styles(windowWidth).bodyScreen}>
-
-        {/* Main Content Container }
-        <View style={styles(windowWidth).mainContainer}>
-          <View style={styles(windowWidth).FormContainer}>
-            <TextInput style={textStyles.input} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
-            <TextInput style={textStyles.input} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
-            <TouchableOpacity style={{ backgroundColor: 'black', padding: 10 }} onPress={postReview}><Text style={{ color: 'white' }}>New Review</Text></TouchableOpacity>
-          </View>
-        </View>
-
-        { // Right Container Only on Web and when screen is big
-          (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? (
-            <View style={styles(windowWidth).rightContainer}>
-              <Text style={styles(windowWidth).textColor}>Ad Space?</Text>
-            </View>
-          ) : (<></>)
-        }
-      </View>
-    </View>
-  );
-};
-
-export default AddReviewsScreen;
-*/
-
-// const PostReview = gql`
-//   mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
-//     NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
-//       success
-//     }
-//   }
-// `
 
 const AddReviewsScreen = ({ route, navigation }: any) => {
   const windowWidth = useWindowDimensions().width;
@@ -96,19 +26,19 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
         </View>
         <View style={styles.padding}>
           <View style={styles.formItem}>
-            <Text style={styles.sectionText}>Overall</Text>
+            <Text style={textStyles.sectionText}>Overall</Text>
             <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
           </View>
           <View style={styles.formItem}>
-            <Text style={styles.sectionText}>Communication Skills</Text>
+            <Text style={textStyles.sectionText}>Communication Skills</Text>
             <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
           </View>
           <View style={styles.formItem}>
-            <Text style={styles.sectionText}>Property Maintainence Level</Text>
+            <Text style={textStyles.sectionText}>Property Maintainence Level</Text>
             <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
           </View>
           <View style={styles.formItem}>
-            <Text style={styles.sectionText}>Comments</Text>
+            <Text style={textStyles.sectionText}>Comments</Text>
             <TextInput style={textStyles.commentInput} maxLength={350} multiline={true} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
           </View>
           <TouchableOpacity style={formStyles.submit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
@@ -135,7 +65,13 @@ const textStyles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     width: '90%',
-  }
+  },
+  sectionText: {
+    color: ThemeColors.darkBlue,
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 5,
+  },
 });
 
 // Page Styles
@@ -146,14 +82,6 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
-<<<<<<< HEAD
-  },
-  sectionText: {
-    color: ThemeColors.darkBlue,
-    fontWeight: 'bold',
-    fontSize: 20,
-    padding: 5,
-=======
     paddingTop: isMobileDevice() ? 40 : 0,
 
     // Header Gap - Only on Web
@@ -163,35 +91,18 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
     borderRadius: isMobileDevice() ? 0 : 15,
-
-    // Shadow
-  },
-  bodyScreen: {
-    flex: 10,
-    flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
-    paddingTop: isMobileDevice() ? 10 : 15,
-    paddingHorizontal: isMobileDevice() ? 0 : '10%',
-    backgroundColor: '#ffffff',
->>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
   },
   padding: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-<<<<<<< HEAD
-    padding: 15,
-    borderRadius: 5,
-    width: '100%',
-  }
-=======
 
     // Top Right rounded only on Web when screen is big.
-    borderTopRightRadius: !isMobileScreen() ? 15 : 0,
+    //borderTopRightRadius: !isMobileScreen() ? 15 : 0,
   },
 
   // Temp
   textColor: {
     color: '#1F2937',
   },
->>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 })

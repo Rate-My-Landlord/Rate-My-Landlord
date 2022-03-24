@@ -88,7 +88,7 @@ const linking = {
 export type NavParamList = {
   Home: undefined,
   Profile: undefined,
-  Reviews: {landlordId: number},
+  Reviews: {landlordId: string},
   AddReviews: undefined,
 }
 

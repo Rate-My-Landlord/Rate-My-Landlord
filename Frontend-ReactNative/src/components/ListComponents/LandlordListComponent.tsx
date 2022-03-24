@@ -48,7 +48,7 @@ export const LandlordComponent = (props: Props) => {
         <View style={styles().spacer} />
 
         {/** Button to Go to Review Screen */}
-        <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews', {landlordId : props.id})}>
           <View style={styles().reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
         </TouchableOpacity>
       </View>

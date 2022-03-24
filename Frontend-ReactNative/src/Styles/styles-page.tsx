@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 import { ThemeColors } from "../constants/Colors";
 
-export default StyleSheet.create({
+    export default StyleSheet.create({
     // Back Ground Container - Holds all
     backgroundScreen: {
         flex: 1,
