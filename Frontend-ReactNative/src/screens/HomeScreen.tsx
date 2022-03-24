@@ -21,7 +21,10 @@ query {
           overallRating,
           firstName,
           lastName,
-          zipCode
+          zipCode,
+          reviews {
+            id
+          }
         }
     }
 }
@@ -43,7 +46,13 @@ const HomeScreen = ({ route, navigation }: Props) => {
             data={data?.AllLandlords.landlords}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <LandlordComponent name={item?.firstName + " " + item?.lastName} rating={item?.overallRating} />
+              <LandlordComponent 
+              id={item?.id!}
+              firstName={item?.firstName!} 
+              lastName={item?.lastName!}
+              overallRating={item?.overallRating!}
+              totalReviews={item?.reviews!.length!}
+              />
             )}
             showsVerticalScrollIndicator={false}
           />

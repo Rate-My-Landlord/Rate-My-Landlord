@@ -5,39 +5,51 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Star } from '../Star';
-import{ FontAwesome } from '@expo/vector-icons'
+import { FontAwesome } from '@expo/vector-icons'
 import { ThemeColors } from '../../constants/Colors';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NavParamList } from '../../../App';
 
 /* 
   Component added to list for each landlord present in area.
 */
-export const LandlordComponent = (props: any) => {
-  const navigation = useNavigation();
+
+type Props = {
+  id: string,
+  firstName: string,
+  lastName: string,
+  overallRating: number,
+  totalReviews: number
+}
+
+
+export const LandlordComponent = (props: Props) => {
+  const navigation = useNavigation<NativeStackNavigationProp<NavParamList, "Home">>();
 
   // Logic For Review Colors
   let ratingColor = "green"; // Default Green
 
-  if(props.rating <= 2) {
+  if (props.overallRating <= 2) {
     ratingColor = "red";
-  } else if (props.rating > 2 && props.rating < 3.5) {
+  } else if (props.overallRating > 2 && props.overallRating < 3.5) {
     ratingColor = "orange";
   }
 
   return (
     <View style={styles().listItemContainer}>
       <View style={headerStyle(ratingColor).headerContainer}>
-        <Text style={styles().headerText}>{props.name}</Text>
+        <Text style={styles().headerText}>{props.firstName} {props.lastName}</Text>
       </View>
       <View style={styles().bodyContainer}>
         <View>
-          <Text style={styles().ratingText}>{"Overall: " + props.rating}</Text>
-          <Star style={styles().star} rating={props.rating}/>
+          <Text style={styles().ratingText}>{"Overall: " + props.overallRating}({props.totalReviews})</Text>
+          <Star style={styles().star} rating={props.overallRating} />
         </View>
-        <View style={styles().spacer}/>
-        
+        <View style={styles().spacer} />
+
         {/** Button to Go to Review Screen */}
         <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
-          <View style={styles().reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue}/></View>
+          <View style={styles().reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
         </TouchableOpacity>
       </View>
     </View>
@@ -99,14 +111,14 @@ const styles = () => StyleSheet.create({
   },
 })
 
-const headerStyle = (ratingColor : any) => StyleSheet.create({
+const headerStyle = (ratingColor: any) => StyleSheet.create({
   headerContainer: {
     flex: 2,
 
     // Color Logic
     backgroundColor: ratingColor == "green" ? ThemeColors.green
       : ratingColor == "orange" ? ThemeColors.orange : ThemeColors.red,
-    
+
     borderTopRightRadius: 5,
     borderTopLeftRadius: 5,
     alignItems: 'center',
