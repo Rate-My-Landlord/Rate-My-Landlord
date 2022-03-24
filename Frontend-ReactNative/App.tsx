@@ -1,4 +1,5 @@
-import { Platform, Text } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
@@ -12,6 +13,7 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewsScreen from './src/screens/AddReviewsScreen';
+import SearchResults from './src/components/search/searchResults';
 
 // Apollo
 import {
@@ -24,8 +26,8 @@ import {
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-import { useEffect } from 'react';
 import { isMobileScreen } from './src/utils';
+import { SearchContext } from './src/global/searchContext';
 
 
 /* Apollo Config */
@@ -78,6 +80,7 @@ const linking = {
   config: {
     screens: {
       Home: '',
+      SearchResults: 'search',
       Profile: 'profile',
       NewReview: ':landlordId/newReview',
       NotFound: '*'
@@ -87,6 +90,7 @@ const linking = {
 
 export type NavParamList = {
   Home: undefined,
+  SearchResults: undefined,
   Profile: undefined,
   Reviews: undefined,
   AddReviews: undefined,
@@ -96,27 +100,24 @@ export type NavParamList = {
 const Tab = createBottomTabNavigator<NavParamList>();
 // Web
 const Stack = createNativeStackNavigator<NavParamList>();
-// For Search ???
-const StackSearch = createNativeStackNavigator();
-
-
-// User Search Flow Stack Navigation
-function HomeFlow() {
-  return (
-    <StackSearch.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <StackSearch.Screen name="Home" component={HomeScreen} />
-      <StackSearch.Screen name="Reviews" component={ReviewScreen} />
-    </StackSearch.Navigator>
-  );
-}
 
 // Main App Tab Navigation
 export default function App() {
+  const [zipCode, setZipCode] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => setZipCode(data.postal))
+        .catch(error => console.log(error));
+    }
+
+    return () => { isMounted = false };
+  }, [])
+
 
   // A kind of hacky way to get a new token on startup
   useEffect(() => {
@@ -135,48 +136,53 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        {isMobileScreen() ? (
-          // Phone Navigation
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName: any = "";
+      <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+          {isMobileScreen() ? (
+            // Phone Navigation
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName: any = "";
 
-                if (route.name === 'Home') {
-                  iconName = 'home';
-                } else if (route.name === 'Profile') {
-                  iconName = 'person';
-                }
+                  if (route.name === 'Home') {
+                    iconName = 'home';
+                  } else if (route.name === 'Profile') {
+                    iconName = 'person';
+                  }
 
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} color={color} size={size} />;
-              },
-              // Icon Colors
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
+                  // You can return any component that you like here!
+                  return <Ionicons name={iconName} color={color} size={size} />;
+                },
+                // Icon Colors
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
 
-              headerShown: false,
-              tabBarShowLabel: false,
-            })}
-          >
-            <Tab.Screen name="Home" component={HomeFlow} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
-          </Tab.Navigator>
-          // Web Navigation
-        ) : (
-          <Stack.Navigator
-            screenOptions={({
-              headerShown: false,
-            })}
-          >
-            <Stack.Screen name="Home" component={HomeFlow} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="Reviews" component={ReviewScreen} />
-            <Stack.Screen name="AddReviews" component={AddReviewsScreen} />
-          </Stack.Navigator>
-        )}
-      </NavigationContainer>
+                headerShown: false,
+                tabBarShowLabel: false,
+              })}
+            >
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="SearchResults" component={SearchResults} />
+              <Stack.Screen name="Reviews" component={ReviewScreen} />
+              <Tab.Screen name="Profile" component={ProfileScreen} />
+            </Tab.Navigator>
+            // Web Navigation
+          ) : (
+            <Stack.Navigator
+              screenOptions={({
+                headerShown: false,
+              })}
+            >
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="SearchResults" component={SearchResults} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="Reviews" component={ReviewScreen} />
+              <Stack.Screen name="AddReviews" component={AddReviewsScreen} />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </SearchContext.Provider>
     </ApolloProvider>
   );
 }

@@ -37,7 +37,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   const { loading, error, data } = useQuery<Query>(ALLREVIEWS);
 
   return (
-    <MainContainer windowWidth={windowWidth} >
+    <MainContainer>
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
           <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
@@ -47,14 +47,14 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text}/>
+              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text} />
             )}
             showsVerticalScrollIndicator={false}
           />
         </View>
         <View style={widthDepStyles(windowWidth).listControlContainer}>
-          <AddButton text={"Add Review"} link={'AddReviews'}/>
-          <AddButton text={"Go Back"} link={'Home'}/>
+          <AddButton text={"Add Review"} link={'AddReviews'} />
+          <AddButton text={"Go Back"} link={'Home'} />
         </View>
       </>
     </MainContainer>

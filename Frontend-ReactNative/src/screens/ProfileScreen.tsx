@@ -12,7 +12,6 @@ import PhonePrompt from '../components/user/phonePrompt';
 type Props = NativeStackScreenProps<NavParamList, "Profile">;
 
 const ProfileScreen = ({ route, navigation }: Props) => {
-  const windowWidth = useWindowDimensions().width;
   const [user, setUser] = useState<IAuthUser | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [externalToken, setExternalToken] = useState<String | undefined>(undefined);
@@ -34,7 +33,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   if (loading) return (<Text>Loading...</Text>)
 
   return (
-    <MainContainer windowWidth={windowWidth}>
+    <MainContainer>
       {externalToken ?
         <PhonePrompt externalToken={externalToken} resetExternalToken={() => { console.log('retting...'); setExternalToken(undefined); }} />
         :

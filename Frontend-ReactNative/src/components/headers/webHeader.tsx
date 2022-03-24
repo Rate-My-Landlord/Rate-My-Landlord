@@ -5,15 +5,14 @@ import { NavParamList } from '../../../App';
 import { ThemeColors } from '../../constants/Colors';
 import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
+import { useSearchContext } from '../../global/searchContext';
+import SearchBar from '../search/searchBar';
 
 const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
-type Props = {
-    zipCode: string
-}
-
-export default ({ zipCode }: Props) => {
+export default () => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
+
 
     // Loads Font
     let [fontsLoaded] = useFonts({
@@ -37,8 +36,7 @@ export default ({ zipCode }: Props) => {
 
             {/* Search Bar Section */}
             <View style={styles.searchContainer}>
-                <Text>{zipCode}</Text>
-                <View style={styles.searchBar}><Text style={styles.searchText}>Search</Text></View>
+                <SearchBar />
             </View>
 
             <View style={styles.spacer} />
