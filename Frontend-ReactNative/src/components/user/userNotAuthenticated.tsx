@@ -7,10 +7,11 @@ import Login from './login';
 import styles from '../../Styles/styles-userNotAuth'
 
 type Props = {
-    setUser: (user: IAuthUser | undefined) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>,
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser }: Props) => {
+export default ({ setUser, setExternalToken }: Props) => {
     const [loginExpanded, setLoginExpanded] = useState<boolean>(true)
     const [createAccountExpanded, setCreateAccountExpanded] = useState<boolean>(false)
 
@@ -23,7 +24,9 @@ export default ({ setUser }: Props) => {
                         setUser={setUser}
                         setCreateAccountExpanded={setCreateAccountExpanded}
                         loginExpanded={loginExpanded}
-                        setLoginExpanded={setLoginExpanded} />
+                        setLoginExpanded={setLoginExpanded}
+                        setExternalToken={setExternalToken}
+                    />
                     <View style={styles.line} />
                     <CreateAccount
                         setUser={setUser}

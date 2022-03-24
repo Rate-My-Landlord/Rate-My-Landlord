@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from "react-native";
 import { ThemeColors } from "../constants/Colors";
 import { screenChangePoint } from "../constants/Layout";
+import { isMobileDevice, isMobileScreen } from "../utils";
 
 // Styles Dependant on the Width of the Window
 export default (windowWidth: number) => StyleSheet.create({
@@ -15,8 +16,8 @@ export default (windowWidth: number) => StyleSheet.create({
     bodyScreen: {
         flex: 10,
         flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
-        paddingTop: Platform.OS === 'ios' || Platform.OS === 'android' ? 10 : 15,
-        paddingHorizontal: (Platform.OS === 'ios' || Platform.OS === 'android') || windowWidth <= screenChangePoint ? 5 : '10%',
+        paddingTop: isMobileDevice() ? 10 : 15,
+        paddingHorizontal: isMobileScreen() ? 5 : '10%',
         backgroundColor: ThemeColors.darkGrey,
     },
     // Content Containers
@@ -27,7 +28,7 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 5 : 0,
+        borderTopRightRadius: !isMobileScreen() ? 5 : 0,
     },
     // Contains Filter box, buttons, ect.
     listControlContainer: {
@@ -37,7 +38,7 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right only rounded when on IOS or Screen is small
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 0 : 5,
+        borderTopRightRadius: !isMobileScreen() ? 0 : 5,
         borderTopLeftRadius: 5,
     },
     // Header for Reviews Page
@@ -48,6 +49,6 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: (Platform.OS !== 'ios' && Platform.OS !== 'android') && windowWidth >= screenChangePoint ? 5 : 0,
+        borderTopRightRadius: !isMobileScreen() ? 5 : 0,
     }
 })

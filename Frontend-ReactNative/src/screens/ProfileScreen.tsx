@@ -7,6 +7,7 @@ import loadUserCredsFromLocal, { resetCreds } from '../global/localStorage';
 import { IAuthUser } from '../types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
+import PhonePrompt from '../components/user/phonePrompt';
 
 type Props = NativeStackScreenProps<NavParamList, "Profile">;
 
@@ -14,6 +15,9 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   const [user, setUser] = useState<IAuthUser | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
+  const [externalToken, setExternalToken] = useState<String | undefined>(undefined);
+
+  // const promptPhone = (externalToken: String) => navigation.navigate('PhoneModal', { externalToken: externalToken })
 
   // Fetching User from local storage
   useEffect(() => {
@@ -23,18 +27,21 @@ const ProfileScreen = ({ route, navigation }: Props) => {
       setLoading(false);
     }
     fetchUserCreds();
-    return () => { };
-  }, [])
-
-  // resetCreds();
+    // return () => { };
+  }, [externalToken])
 
   // Here we are using loading because a user could be authenticated, but we need to get that data from local storage
   if (loading) return (<Text>Loading...</Text>)
+
   return (
     <MainContainer windowWidth={windowWidth}>
-      {user === undefined ?
-        <UserNotAuthenticated setUser={setUser} />
-        : <User userId={user!.user_id} setUser={setUser} />}
+      {externalToken ?
+        <PhonePrompt externalToken={externalToken} resetExternalToken={() => { console.log('retting...'); setExternalToken(undefined); }} />
+        :
+        user === undefined ?
+          <UserNotAuthenticated setUser={setUser} setExternalToken={setExternalToken} />
+          : <User userId={user!.userId} setUser={setUser} />
+      }
     </MainContainer>
   )
 };

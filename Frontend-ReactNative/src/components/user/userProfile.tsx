@@ -6,9 +6,8 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { resetCreds, saveUserCredsToLocal } from '../../global/localStorage';
 import { ThemeColors } from '../../constants/Colors';
 import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import { IAuthUser } from '../../types';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 
 const UPDATE_USER = gql`
@@ -32,7 +31,10 @@ const GET_USER_BY_ID = gql`
                 email,
                 phone
             },
-            token,
+            tokens {
+                accessToken,
+                refreshToken
+            },
         }
     }
 `
@@ -69,12 +71,12 @@ export default ({ userId, setUser }: Props) => {
             })
 
             // Updating user token on device
-            if (data?.UserByUserId.token !== undefined) {
+            if (data?.UserByUserId.tokens !== undefined) {
                 if (data?.UserByUserId.user?.id! !== userId) {
                     throw new Error('User ids do not match');
                 } else {
                     // Not using setUser from UserCOntext because then it will infinitely rerender 
-                    saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.token!)
+                    saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.tokens?.accessToken!, data?.UserByUserId.tokens?.refreshToken!)
                 }
             }
         }
@@ -115,7 +117,7 @@ export default ({ userId, setUser }: Props) => {
     if (loading) return (<Text>Loading...</Text>)
 
     return (
-        <TouchableWithoutFeedback onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback onPress={() => dismissKeyboard}>
             <View style={{ flex: 1, alignItems: 'center', marginTop: 50 }}>
                 <Text style={formStyles.formHeaderText}>Edit your profile</Text>
                 <View>

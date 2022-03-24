@@ -40,6 +40,8 @@ export type LandlordsResult = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** External Login (Google sign in) */
+  ExternalLogin: UserResult;
   /** Login a user */
   Login: UserResult;
   /** Create a new landlord */
@@ -50,8 +52,16 @@ export type Mutation = {
   NewReview: ReviewResult;
   /** Create a new user */
   NewUser: UserResult;
+  /** Create a new account using an external authenticator */
+  NewUserExternal: UserResult;
   /** Update user info */
   UpdateUser: UserResult;
+};
+
+
+export type MutationExternalLoginArgs = {
+  externalToken: Scalars['String'];
+  provider: Scalars['String'];
 };
 
 
@@ -100,6 +110,13 @@ export type MutationNewUserArgs = {
 };
 
 
+export type MutationNewUserExternalArgs = {
+  externalToken: Scalars['String'];
+  phone: Scalars['String'];
+  provider?: InputMaybe<Scalars['String']>;
+};
+
+
 export type MutationUpdateUserArgs = {
   email?: InputMaybe<Scalars['String']>;
   firstName?: InputMaybe<Scalars['String']>;
@@ -137,6 +154,8 @@ export type Query = {
   LandlordByPropertyId: LandlordResult;
   /** Get all landlords by zip code */
   LandlordsByZipCode: LandlordsResult;
+  /** Refresh a token */
+  RefreshToken: RefreshTokenResult;
   /** Get a review by the reviewId */
   ReviewById: ReviewResult;
   /** Get all reviews for a landlord with landlordId */
@@ -189,6 +208,13 @@ export type QueryUserByUserIdArgs = {
   userId: Scalars['ID'];
 };
 
+export type RefreshTokenResult = {
+  __typename?: 'RefreshTokenResult';
+  errors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  success: Scalars['Boolean'];
+  token?: Maybe<Scalars['String']>;
+};
+
 export type Review = {
   __typename?: 'Review';
   author?: Maybe<User>;
@@ -216,6 +242,12 @@ export type ReviewsResult = {
   success: Scalars['Boolean'];
 };
 
+export type Tokens = {
+  __typename?: 'Tokens';
+  accessToken: Scalars['String'];
+  refreshToken: Scalars['String'];
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String'];
@@ -231,7 +263,7 @@ export type UserResult = {
   __typename?: 'UserResult';
   errors?: Maybe<Array<Maybe<Scalars['String']>>>;
   success: Scalars['Boolean'];
-  token?: Maybe<Scalars['String']>;
+  tokens?: Maybe<Tokens>;
   user?: Maybe<User>;
 };
 
@@ -244,9 +276,57 @@ export type AddUserMutationVariables = Exact<{
 }>;
 
 
-export type AddUserMutation = { __typename?: 'Mutation', NewUser: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, token?: string | null, user?: { __typename?: 'User', id: string } | null } };
+export type AddUserMutation = { __typename?: 'Mutation', NewUser: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, user?: { __typename?: 'User', id: string } | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null } };
+
+export type ExternalLoginMutationVariables = Exact<{
+  externalToken: Scalars['String'];
+  provider: Scalars['String'];
+}>;
+
+
+export type ExternalLoginMutation = { __typename?: 'Mutation', ExternalLogin: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null, user?: { __typename?: 'User', id: string } | null } };
+
+export type LoginMutationVariables = Exact<{
+  phone: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', Login: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null, user?: { __typename?: 'User', id: string } | null } };
+
+export type NewUserExternalMutationVariables = Exact<{
+  externalToken: Scalars['String'];
+  provider: Scalars['String'];
+  phone: Scalars['String'];
+}>;
+
+
+export type NewUserExternalMutation = { __typename?: 'Mutation', NewUserExternal: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null, user?: { __typename?: 'User', id: string } | null } };
+
+export type UpdateUserMutationVariables = Exact<{
+  email?: InputMaybe<Scalars['String']>;
+  firstName?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type UpdateUserMutation = { __typename?: 'Mutation', UpdateUser: { __typename?: 'UserResult', success: boolean } };
+
+export type GetUserByIdQueryVariables = Exact<{
+  userId: Scalars['ID'];
+}>;
+
+
+export type GetUserByIdQuery = { __typename?: 'Query', UserByUserId: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email?: string | null, phone?: string | null } | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null } };
 
 export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type Unnamed_1_Query = { __typename?: 'Query', AllLandlords: { __typename?: 'LandlordsResult', success: boolean, errors?: Array<string | null> | null, landlords?: Array<{ __typename?: 'Landlord', id: string, overallRating: number, firstName: string, lastName: string, zipCode: string } | null> | null } };
+
+export type ReviewsByLandlordIdQueryVariables = Exact<{
+  landlordId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type ReviewsByLandlordIdQuery = { __typename?: 'Query', ReviewsByLandlordId: { __typename?: 'ReviewsResult', success: boolean, errors?: Array<string | null> | null, reviews?: Array<{ __typename?: 'Review', id: string, overallStarRating: number, text?: string | null, landlord: { __typename?: 'Landlord', firstName: string, lastName: string } } | null> | null } };

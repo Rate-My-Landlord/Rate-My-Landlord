@@ -1,3 +1,4 @@
+import datetime
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -5,6 +6,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=7)
+    JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=30)
     
     @staticmethod
     def init_app(app):

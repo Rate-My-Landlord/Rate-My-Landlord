@@ -4,9 +4,13 @@ import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacit
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
+<<<<<<< HEAD
 import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
+=======
+import { isMobileDevice, isMobileScreen } from '../utils';
+>>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 
 // The point at which style changes
 const screenChangePoint = 1250;
@@ -70,13 +74,13 @@ const AddReviewsScreen = ({ route, navigation }: any) => {
 export default AddReviewsScreen;
 */
 
-const PostReview = gql`
-  mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
-    NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
-      success
-    }
-  }
-`
+// const PostReview = gql`
+//   mutation NewReview($landlordId: ID!, $overallStarRating: Int!, $text: String) {
+//     NewReview(landlordId: $landlordId, overallStarRating: $overallStarRating, text: $text) {
+//       success
+//     }
+//   }
+// `
 
 const AddReviewsScreen = ({ route, navigation }: any) => {
   const windowWidth = useWindowDimensions().width;
@@ -142,19 +146,52 @@ const styles = StyleSheet.create({
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
+<<<<<<< HEAD
   },
   sectionText: {
     color: ThemeColors.darkBlue,
     fontWeight: 'bold',
     fontSize: 20,
     padding: 5,
+=======
+    paddingTop: isMobileDevice() ? 40 : 0,
+
+    // Header Gap - Only on Web
+    margin: isMobileDevice() ? 0 : 5,
+
+    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    borderRadius: isMobileDevice() ? 0 : 15,
+
+    // Shadow
+  },
+  bodyScreen: {
+    flex: 10,
+    flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
+    paddingTop: isMobileDevice() ? 10 : 15,
+    paddingHorizontal: isMobileDevice() ? 0 : '10%',
+    backgroundColor: '#ffffff',
+>>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
   },
   padding: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+<<<<<<< HEAD
     padding: 15,
     borderRadius: 5,
     width: '100%',
   }
+=======
+
+    // Top Right rounded only on Web when screen is big.
+    borderTopRightRadius: !isMobileScreen() ? 15 : 0,
+  },
+
+  // Temp
+  textColor: {
+    color: '#1F2937',
+  },
+>>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 })

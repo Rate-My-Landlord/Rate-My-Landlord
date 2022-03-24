@@ -19,9 +19,11 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.rml.ratemylandlord",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.rml.ratemylandlord",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"

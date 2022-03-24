@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } fr
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import { gql, useMutation } from '@apollo/client';
-import { Mutation, MutationNewUserArgs } from '../../../graphql/generated';
+import { Mutation, MutationNewUserArgs, Tokens } from '../../../graphql/generated';
 import { IAuthUser } from '../../types';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import TextField from './TextField';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 
 type Inputs = {
@@ -32,13 +32,16 @@ const ADD_USER = gql`
                 user {
                     id
                 },
-                token
+                tokens {
+                    accessToken,
+                    refreshToken
+                }
             }
         }
 `
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
     createAccountExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
@@ -48,9 +51,9 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
     const [addUser, { data, loading, error }] = useMutation<Mutation, MutationNewUserArgs>(ADD_USER);
 
 
-    const saveUser = async (token: any, id: any) => {
-        await saveUserCredsToLocal(id, token)
-            .then(() => setUser({ token: token, user_id: id } as IAuthUser));
+    const saveUser = async (tokens: Tokens, id: string) => {
+        await saveUserCredsToLocal(id, tokens.accessToken, tokens.refreshToken)
+            .then(() => setUser({ accessToken: tokens.accessToken, userId: id } as IAuthUser));
     }
 
     // Form stuff
@@ -80,7 +83,7 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
                 email: data.email,
                 password: data.password
             },
-            onCompleted({ NewUser }) { if (NewUser) { saveUser(NewUser.token, NewUser.user?.id) } }
+            onCompleted({ NewUser }) { if (NewUser) { saveUser(NewUser.tokens!, NewUser.user?.id!) } }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
@@ -91,7 +94,7 @@ export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpa
     }
 
     return (
-        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard}>
             {!expanded ?
                 <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
                     <Text style={formStyles.buttonText}>Create Account</Text>

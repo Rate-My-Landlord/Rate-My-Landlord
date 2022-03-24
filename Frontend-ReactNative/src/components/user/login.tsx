@@ -1,13 +1,20 @@
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { useMutation, gql } from '@apollo/client';
 import { IAuthUser } from '../../types';
+<<<<<<< HEAD
 import { Mutation, MutationLoginArgs } from '../../../graphql/generated';
 import { Control, FieldError, Controller, SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
+=======
+import { Mutation, MutationLoginArgs, Tokens } from '../../../graphql/generated';
+import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
+import { ThemeColors } from '../../constants/Colors';
+>>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useState } from 'react';
-import dismissKeyboard from '../../global/dismissKeyboard';
+import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
+import GoogleSignIn from './googleSignIn';
 
 
 const LOG_IN = gql`
@@ -15,7 +22,10 @@ const LOG_IN = gql`
         Login(phone: $phone, password: $password) {
             success,
             errors,
-            token,
+            tokens {
+                accessToken,
+                refreshToken,
+            },
             user {
                 id
             }
@@ -29,22 +39,23 @@ type Inputs = {
 }
 
 type Props = {
-    setUser: (user: IAuthUser) => void,
+    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
     loginExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
-    setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
+    setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>,
+    setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded }: Props) => {
+export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
     const [login, { data, loading, error }] = useMutation<Mutation, MutationLoginArgs>(LOG_IN);
 
-    const saveUser = async (token: any, id: any) => {
-        await saveUserCredsToLocal(id, token)
-            .then(() => setUser({ token: token, user_id: id } as IAuthUser));
+    const saveUser = async (tokens: Tokens, id: string) => {
+        await saveUserCredsToLocal(id, tokens.accessToken, tokens.refreshToken)
+            .then(() => setUser({ accessToken: tokens.accessToken, userId: id } as IAuthUser));
     }
 
     // Form stuff
-    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+    const { control, handleSubmit, formState: { errors } } = useForm<Inputs>();
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
@@ -53,10 +64,14 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
                 phone: data.phone.toString(),
                 password: data.password
             },
+<<<<<<< HEAD
             onCompleted({ Login }) 
             { 
                 if (Login) { saveUser(Login.token, Login.user?.id) } 
             }
+=======
+            onCompleted({ Login }) { if (Login) { saveUser(Login.tokens!, Login.user?.id!) } }
+>>>>>>> 3bd9d2bc12d20125981b1fc47a7988f7f9ae192e
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
@@ -67,20 +82,24 @@ export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpande
     }
 
     return (
-        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard()}>
+        <TouchableWithoutFeedback style={formStyles.container} onPress={() => dismissKeyboard}>
             {!expanded ?
                 <TouchableOpacity style={formStyles.buttonContainer} onPress={toggle}>
                     <Text style={formStyles.buttonText}>Sign In</Text>
                 </TouchableOpacity>
                 :
                 <View style={formStyles.container}>
-                    <Text style={formStyles.formHeaderText}>Login</Text>
-                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
-                    <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
-                    <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
-                        <Text style={formStyles.submitText}>Login</Text>
-                    </TouchableOpacity>
+                    <View style={{ flex: 1 }}>
+                        <Text style={formStyles.formHeaderText}>Login</Text>
+                        <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                        <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
+                        <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
+                            <Text style={formStyles.submitText}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <GoogleSignIn setUser={setUser} setExternalToken={setExternalToken} />
                 </View>
+
             }
         </TouchableWithoutFeedback>
     )
