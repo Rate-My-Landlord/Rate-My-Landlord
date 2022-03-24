@@ -9,10 +9,10 @@ import { useFonts } from 'expo-font';
 const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
 type Props = {
-    windowWidth: number
+    zipCode: string
 }
 
-export default ({ windowWidth }: Props) => {
+export default ({ zipCode }: Props) => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
 
     // Loads Font
@@ -37,6 +37,7 @@ export default ({ windowWidth }: Props) => {
 
             {/* Search Bar Section */}
             <View style={styles.searchContainer}>
+                <Text>{zipCode}</Text>
                 <View style={styles.searchBar}><Text style={styles.searchText}>Search</Text></View>
             </View>
 

@@ -3,11 +3,13 @@ import { ThemeColors } from '../../constants/Colors';
 import { isMobileDevice } from '../../utils';
 
 type Props = {
-    windowWidth: number
+    windowWidth: number,
+    zipCode: string
 }
 
-export default ({windowWidth}: Props) => (
+export default ({ windowWidth, zipCode }: Props) => (
     <View style={styles(windowWidth).headerScreen}>
+        <Text>{zipCode}</Text>
         <Text style={styles(windowWidth).textColor}>Rate My Landlord</Text>
     </View>
 )
