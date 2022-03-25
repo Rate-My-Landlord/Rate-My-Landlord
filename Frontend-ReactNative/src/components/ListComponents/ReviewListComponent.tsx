@@ -6,40 +6,48 @@ import { useNavigation } from '@react-navigation/native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Star } from '../star/Star';
 import { ThemeColors } from '../../constants/Colors';
+import { Review } from '../../../graphql/generated';
+import dayjs from 'dayjs';
 
 /* 
   Component added to list for each landlord present in area.
 */
-export const ReviewComponent = (props: any) => {
+
+type Props = {
+  review: Review
+}
+
+export const ReviewComponent = ({ review }: Props) => {
   const navigation = useNavigation();
 
   // Logic For Review Colors
   let ratingColor = "green"; // Default Green
 
-  if(props.rating <= 2) {
+  if (review.overallStarRating <= 2) {
     ratingColor = "red";
-  } else if (props.rating == 3) {
+  } else if (review.overallStarRating == 3) {
     ratingColor = "orange";
   }
 
   return (
-    <View style={styles().listItemContainer}>
-      
+    <View style={styles.listItemContainer}>
+
       <View style={headerStyle(ratingColor).headerContainer} />
-      <View style={styles().bodyContainer}>
+      <View style={styles.bodyContainer}>
         <View>
-          <Text style={styles().ratingText}>Overall</Text>
-          <Star style={styles().star} rating={props.rating}/>
+          <Text style={styles.ratingText}>Overall</Text>
+          <Star style={styles.star} rating={review.overallStarRating} />
+          <Text>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
         </View>
-        <View style={styles().line}/>
-        <View style={styles().spacer}/>
-        <Text>      {props.reviewText}</Text>
+        <View style={styles.line} />
+        <View style={styles.spacer} />
+        <Text>{review.text}</Text>
       </View>
     </View>
   );
 };
 
-const styles = () => StyleSheet.create({
+const styles = StyleSheet.create({
   // Back Ground Contain
   listItemContainer: {
     flexDirection: 'row',
@@ -88,17 +96,17 @@ const styles = () => StyleSheet.create({
     borderTopWidth: 3,
     borderRadius: 5,
     margin: 5
-}
+  }
 })
 
-const headerStyle = (ratingColor : any) => StyleSheet.create({
+const headerStyle = (ratingColor: any) => StyleSheet.create({
   headerContainer: {
     flex: 1,
 
     // Color Logic
     backgroundColor: ratingColor == "green" ? '#10B981'
       : ratingColor == "orange" ? '#FAAF3E' : '#EF4444',
-    
+
     borderBottomLeftRadius: 12,
     borderTopLeftRadius: 12,
     alignItems: 'center',

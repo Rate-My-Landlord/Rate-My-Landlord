@@ -13,6 +13,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeParamList, NavParamList } from '../../App';
 import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
 import loadUserCredsFromLocal from '../global/localStorage';
+import { IAuthUser } from '../types';
 
 type FieldProps = {
   title: string,
@@ -61,7 +62,7 @@ const POST_REVIEW = gql`
 
 
 const AddReviewScreen = ({ route, navigation }: Props) => {
-  const [userId, setUserId] = useState<string>('fetching');
+  const [user, setUser] = useState<IAuthUser | undefined | null>(undefined);
   const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
   const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW);
   const [overallRating, setOverallRating] = useState<number>(0);
@@ -71,13 +72,13 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
 
   const windowWidth = useWindowDimensions().width;
 
-  const isAuthenticated = () => { return userId !== 'fetching' }
+  // loadUserFromCreds() returns null if no user, so null means user is not authenticated
+  const isAuthenticated = () => { return user!==null }
 
   useEffect(() => {
     let mounted = true;
     loadUserCredsFromLocal().then(user => {
-      // if (mounted && user) setUserId(user.userId);
-      // if (mounted && user) console.log(user.userId)
+      if (mounted) setUser(user);
     })
     return () => { mounted = false }
   }, [])
@@ -94,7 +95,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     if (overallRating === 0) return;
     postReview({
       variables: {
-        authorId: userId,
+        authorId: user!.userId,
         landlordId: route.params.landlordId,
         overallStarRating: overallRating,
         communicationStarRating: communicationRating,

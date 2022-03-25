@@ -22,6 +22,7 @@ query ReviewsByLandlordId($landlordId: ID!){
           id,
           overallStarRating,
           text,
+          createdAt,
           landlord {
             firstName,
             lastName,
@@ -54,7 +55,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text} />
+              <ReviewComponent review={item!} />
             )}
             showsVerticalScrollIndicator={false}
           />
