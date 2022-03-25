@@ -73,7 +73,7 @@ export default ({ userId, setUser }: Props) => {
             // Updating user token on device
             if (data?.UserByUserId.tokens !== undefined) {
                 if (data?.UserByUserId.user?.id! !== userId) {
-                    throw new Error('User ids do not match');
+                    // throw new Error('User ids do not match');
                 } else {
                     // Not using setUser from UserCOntext because then it will infinitely rerender 
                     saveUserCredsToLocal(data?.UserByUserId.user?.id!, data?.UserByUserId.tokens?.accessToken!, data?.UserByUserId.tokens?.refreshToken!)
