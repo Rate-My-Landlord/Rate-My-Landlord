@@ -2,17 +2,22 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeColors } from '../constants/Colors';
 
-export const AddButton = (props: any) => {
+type Props = {
+    onPress: () => void,
+    buttonText: string
+}
+
+export const AddButton = (props: Props) => {
     const navigation = useNavigation();
 
-    return(
-        <TouchableOpacity style={styles().buttonContainer} onPress={() => navigation.navigate(props.link)}>
-            <Text style={styles().text}>{props.text}</Text>
+    return (
+        <TouchableOpacity style={styles.buttonContainer} onPress={props.onPress}>
+            <Text style={styles.text}>{props.buttonText}</Text>
         </TouchableOpacity>
     );
 }
 
-const styles = () => StyleSheet.create({
+const styles = StyleSheet.create({
     buttonContainer: {
         backgroundColor: ThemeColors.blue,
         width: '90%',

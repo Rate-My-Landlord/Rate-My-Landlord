@@ -1,6 +1,7 @@
+import { useState, useEffect } from 'react';
 import { View, Text, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import { NavParamList } from '../../App';
+import { HomeParamList } from '../../App';
 import { ReviewComponent } from '../components/ListComponents/ReviewListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MainContainer from '../components/mainContainer';
@@ -9,10 +10,10 @@ import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
 import { AddButton } from '../components/AddButton';
 
-type Props = NativeStackScreenProps<NavParamList, "Reviews">;
+type Props = NativeStackScreenProps<HomeParamList, "Reviews">;
 
 // Gets the Reviews for the Landlord
-const LANDLORDREVIEWS = gql`
+const LANDLORD_REVIEWS = gql`
 query ReviewsByLandlordId($landlordId: ID!){
     ReviewsByLandlordId(landlordId: $landlordId) {
         success,
@@ -31,36 +32,36 @@ query ReviewsByLandlordId($landlordId: ID!){
 `
 
 const ReviewsScreen = ({ route, navigation }: Props) => {
-  // route.params.landlordId
+  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId.toString() } });
+  const [name, setName] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    if (data?.ReviewsByLandlordId) {
+      setName(data.ReviewsByLandlordId!.reviews!.find(_ => true)?.landlord.firstName);
+    }
+  }, [data])
+
+
   const windowWidth = useWindowDimensions().width;
-  // const [landlords, setLandlords] = useState<ILandlord[]>([]);
-  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORDREVIEWS, { variables: {landlordId: route.params.landlordId.toString()}});
-  // const [name, setName] = useState<string | undefined>(undefined);
-  // useEffect(() => {
-  //   if (data?.ReviewsByLandlordId) {
-  //     setName(data!.ReviewsByLandlordId!.reviews?.)
-  //   }
-  // }, [data])
 
   return (
     <MainContainer windowWidth={windowWidth} >
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
           <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-            <Text style={pageStyles.whiteHeaderText}>Reviews for 'Name'</Text>
+            <Text style={pageStyles.whiteHeaderText}>Reviews for {name}</Text>
           </View>
           <FlatList style={pageStyles.flatList}
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text}/>
+              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text} />
             )}
             showsVerticalScrollIndicator={false}
           />
         </View>
         <View style={widthDepStyles(windowWidth).listControlContainer}>
-          <AddButton text={"Add Review"} link={'AddReviews'}/>
-          <AddButton text={"Go Back"} link={'Home'}/>
+          <AddButton buttonText={"Add Review"} onPress={() => navigation.navigate('NewReview', { landlordId: route.params.landlordId })} />
+          <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate('Home')} />
         </View>
       </>
     </MainContainer>

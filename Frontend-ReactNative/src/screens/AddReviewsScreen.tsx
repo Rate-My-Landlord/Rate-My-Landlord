@@ -1,5 +1,5 @@
-import { gql, useMutation } from '@apollo/client';
-import React, { useState } from 'react';
+import { gql, useMutation, useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
@@ -8,51 +8,136 @@ import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
 import { isMobileDevice, isMobileScreen } from '../utils';
+import StarInput from '../components/star/starInput';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { HomeParamList, NavParamList } from '../../App';
+import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
+import loadUserCredsFromLocal from '../global/localStorage';
 
-// The point at which style changes
-const screenChangePoint = 1250;
-
-const AddReviewsScreen = ({ route, navigation }: any) => {
-  const windowWidth = useWindowDimensions().width;
-
-  const [rating, onRatingText] = useState('1');
-  const [comments, onCommentsText] = useState("");
-  return(
-    <MainContainer windowWidth={windowWidth} >
-    <>
-      <View style={formStyles.container}>
-        <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-              <Text style={pageStyles.whiteHeaderText}>Write Review for 'Name'</Text>
-        </View>
-        <View style={styles.padding}>
-          <View style={styles.formItem}>
-            <Text style={textStyles.sectionText}>Overall</Text>
-            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
-          </View>
-          <View style={styles.formItem}>
-            <Text style={textStyles.sectionText}>Communication Skills</Text>
-            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
-          </View>
-          <View style={styles.formItem}>
-            <Text style={textStyles.sectionText}>Property Maintainence Level</Text>
-            <TextInput style={textStyles.numberInput} placeholder={'Overall Rating (1-5)'} keyboardType='numeric' onChangeText={onRatingText} />
-          </View>
-          <View style={styles.formItem}>
-            <Text style={textStyles.sectionText}>Comments</Text>
-            <TextInput style={textStyles.commentInput} maxLength={350} multiline={true} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
-          </View>
-          <TouchableOpacity style={formStyles.submit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
-        </View>
-      </View>
-      <View style={widthDepStyles(windowWidth).listControlContainer}>
-        <AddButton text={"Go Back"} link={'Home'}/>
-      </View>
-    </>
-  </MainContainer>
-  );
+type FieldProps = {
+  title: string,
+  rating: number,
+  setRating: (rating: number) => void;
 }
 
-export default AddReviewsScreen;
+const StarField = (props: FieldProps) => (
+  <View style={styles.formItem}>
+    <Text style={textStyles.sectionText}>{props.title}</Text>
+    <StarInput star={props.rating} setStar={props.setRating} />
+  </View>
+)
+
+type Props = NativeStackScreenProps<HomeParamList, "NewReview">;
+
+const GET_LANDLORD = gql`
+ query GetLandlord($landlordId: ID!) {
+   LandlordById(landlordId: $landlordId) {
+     success,
+     errors,
+     landlord {
+       firstName
+     }
+   }
+ }
+`
+
+const POST_REVIEW = gql`
+  mutation NewReview(
+    $authorId: ID!, $landlordId: ID!, $propertyId: ID, 
+    $overallStarRating: Int!, $communicationStarRating: Int, $maintenanceStarRating: Int
+    $text: String) {
+      NewReview(
+        authorId: $authorId, landlordId: $landlordId, propertyId: $propertyId, 
+        overallStarRating: $overallStarRating, communicationStarRating: $communicationStarRating, 
+        maintenanceStarRating: $maintenanceStarRating, text: $text) {
+          success,
+          errors,
+          review {
+            id
+          }
+        }
+    }
+`
+
+
+const AddReviewScreen = ({ route, navigation }: Props) => {
+  const [userId, setUserId] = useState<string>('fetching');
+  const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
+  const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW);
+  const [overallRating, setOverallRating] = useState<number>(0);
+  const [communicationRating, setCommunicationRating] = useState<number>(0);
+  const [maintenanceRating, setMaintenanceRating] = useState<number>(0);
+  const [comments, onCommentsText] = useState("");
+
+  const windowWidth = useWindowDimensions().width;
+
+  const isAuthenticated = () => { return userId !== 'fetching' }
+
+  useEffect(() => {
+    let mounted = true;
+    loadUserCredsFromLocal().then(user => {
+      // if (mounted && user) setUserId(user.userId);
+      // if (mounted && user) console.log(user.userId)
+    })
+    return () => { mounted = false }
+  }, [])
+
+  // if (loading) return (<Text>Loading...</Text>)
+
+
+  const handleSuccess = (NewReview: ReviewResult) => {
+    if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
+  }
+
+
+  const handleSubmit = () => {
+    if (overallRating === 0) return;
+    postReview({
+      variables: {
+        authorId: userId,
+        landlordId: route.params.landlordId,
+        overallStarRating: overallRating,
+        communicationStarRating: communicationRating,
+        maintenanceStarRating: maintenanceRating,
+        text: comments
+      },
+      onCompleted({ NewReview }) { NewReview && handleSuccess(NewReview) }
+    })
+  }
+
+
+  return (
+    <MainContainer windowWidth={windowWidth} >
+      <>
+        {!isAuthenticated() ? <Text>Must be logged in to post reviews</Text>
+          :
+          <>
+            <View style={formStyles.container}>
+              <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+                <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
+              </View>
+              <View style={styles.padding}>
+                <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
+                <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
+                <StarField title="Maintenance Skills" rating={maintenanceRating} setRating={setMaintenanceRating} />
+
+                <View style={styles.formItem}>
+                  <Text style={textStyles.sectionText}>Comments</Text>
+                  <TextInput style={textStyles.commentInput} maxLength={350} multiline={true} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
+                </View>
+
+                <TouchableOpacity style={formStyles.submit} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+              </View>
+            </View>
+            <View style={widthDepStyles(windowWidth).listControlContainer}>
+              <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate("Home")} />
+            </View>
+          </>
+        }
+      </>
+    </MainContainer>
+  );
+}
 
 const textStyles = StyleSheet.create({
   numberInput: {
@@ -106,3 +191,5 @@ const styles = StyleSheet.create({
     color: '#1F2937',
   },
 })
+
+export default AddReviewScreen;
