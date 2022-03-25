@@ -46,19 +46,19 @@ const HomeScreen = ({ route, navigation }: Props) => {
             data={data?.AllLandlords.landlords}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <LandlordComponent 
-              id={item?.id!}
-              firstName={item?.firstName!} 
-              lastName={item?.lastName!}
-              overallRating={item?.overallRating!}
-              totalReviews={item?.reviews!.length!}
+              <LandlordComponent
+                id={item?.id!}
+                firstName={item?.firstName!}
+                lastName={item?.lastName!}
+                overallRating={item?.overallRating!}
+                totalReviews={item?.reviews!.length!}
               />
             )}
             showsVerticalScrollIndicator={false}
           />
         </View>
         <View style={widthDepStyles(windowWidth).listControlContainer}>
-          <AddButton text={"Add Landlord"} link={'Reviews'}/>
+          <AddButton buttonText={"Add Landlord"} onPress={() => navigation.navigate('Reviews', { landlordId: '0' })} />
         </View>
       </>
     </MainContainer>

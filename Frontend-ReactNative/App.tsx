@@ -11,7 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
-import AddReviewsScreen from './src/screens/AddReviewsScreen';
+import AddReviewScreen from './src/screens/AddReviewsScreen';
 
 // Apollo
 import {
@@ -88,8 +88,13 @@ const linking = {
 export type NavParamList = {
   Home: undefined,
   Profile: undefined,
-  Reviews: {landlordId: string},
-  AddReviews: undefined,
+  Reviews: { landlordId: string },
+}
+
+export type HomeParamList = {
+  Home: undefined,
+  Reviews: { landlordId: string },
+  NewReview: { landlordId: string },
 }
 
 // Mobile
@@ -97,7 +102,7 @@ const Tab = createBottomTabNavigator<NavParamList>();
 // Web
 const Stack = createNativeStackNavigator<NavParamList>();
 // For Search ???
-const StackSearch = createNativeStackNavigator();
+const StackSearch = createNativeStackNavigator<HomeParamList>();
 
 
 // User Search Flow Stack Navigation
@@ -111,6 +116,7 @@ function HomeFlow() {
     >
       <StackSearch.Screen name="Home" component={HomeScreen} />
       <StackSearch.Screen name="Reviews" component={ReviewScreen} />
+      <StackSearch.Screen name="NewReview" component={AddReviewScreen} />
     </StackSearch.Navigator>
   );
 }
@@ -173,7 +179,6 @@ export default function App() {
             <Stack.Screen name="Home" component={HomeFlow} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
             <Stack.Screen name="Reviews" component={ReviewScreen} />
-            <Stack.Screen name="AddReviews" component={AddReviewsScreen} />
           </Stack.Navigator>
         )}
       </NavigationContainer>

@@ -1,6 +1,7 @@
 import { Image, View, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'
 import starStyles from "../../Styles/styles-star";
+import stylesForm from '../../Styles/styles-form';
 
 type Props = {
     on: boolean,
