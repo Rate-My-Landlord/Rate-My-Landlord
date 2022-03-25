@@ -33,7 +33,7 @@ export const ReviewComponent = (props: any) => {
         </View>
         <View style={styles().line}/>
         <View style={styles().spacer}/>
-        <Text>      {props.reviewText}</Text>
+        <Text>{props.reviewText}</Text>
       </View>
     </View>
   );
