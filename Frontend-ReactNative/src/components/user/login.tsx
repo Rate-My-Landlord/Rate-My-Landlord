@@ -6,10 +6,11 @@ import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
 import TextField from './TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 import GoogleSignIn from './googleSignIn';
+import { UserContext } from '../../global/userContext';
 
 
 const LOG_IN = gql`
@@ -34,14 +35,16 @@ type Inputs = {
 }
 
 type Props = {
-    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
+    // setUser: (user: IAuthUser) => void,
     loginExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
+export default ({ loginExpanded: expanded, setLoginExpanded: setExpanded, setCreateAccountExpanded, setExternalToken }: Props) => {
+    const { setUser } = useContext(UserContext);
+
     const [login, { data, loading, error }] = useMutation<Mutation, MutationLoginArgs>(LOG_IN);
 
     const saveUser = async (tokens: Tokens, id: string) => {

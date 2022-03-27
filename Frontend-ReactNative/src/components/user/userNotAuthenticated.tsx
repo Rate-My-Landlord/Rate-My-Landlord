@@ -7,11 +7,11 @@ import Login from './login';
 import styles from '../../Styles/styles-userNotAuth'
 
 type Props = {
-    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>,
+    // setUser: (user: IAuthUser) => void,
     setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 
-export default ({ setUser, setExternalToken }: Props) => {
+export default ({ setExternalToken }: Props) => {
     const [loginExpanded, setLoginExpanded] = useState<boolean>(true)
     const [createAccountExpanded, setCreateAccountExpanded] = useState<boolean>(false)
 
@@ -21,7 +21,6 @@ export default ({ setUser, setExternalToken }: Props) => {
             <TouchableWithoutFeedback onPress={() => { setLoginExpanded(false); setCreateAccountExpanded(false) }}>
                 <View style={{ flex: 1, width: '100%', alignItems: 'center', justifyContent: 'center' }}>
                     <Login
-                        setUser={setUser}
                         setCreateAccountExpanded={setCreateAccountExpanded}
                         loginExpanded={loginExpanded}
                         setLoginExpanded={setLoginExpanded}
@@ -29,7 +28,6 @@ export default ({ setUser, setExternalToken }: Props) => {
                     />
                     <View style={styles.line} />
                     <CreateAccount
-                        setUser={setUser}
                         setCreateAccountExpanded={setCreateAccountExpanded}
                         createAccountExpanded={createAccountExpanded}
                         setLoginExpanded={setLoginExpanded}

@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import phonenumbers
 import re
 from sqlalchemy.orm import backref
+from sqlalchemy import desc
 
 
 class Permission:
@@ -136,9 +137,9 @@ class User(db.Model):
         phone = User.format_phone(phone)
         User.validate_phone(phone)
         new_user = User(phone=phone,
-                    first_name=first_name,
-                    last_name=last_name,
-                    email=email)
+                        first_name=first_name,
+                        last_name=last_name,
+                        email=email)
         return new_user
 
 
@@ -171,6 +172,10 @@ class Review(db.Model):
         if (self.author_id):
             json_review['author'] = self.author.to_json(brief=True),
         return json_review
+
+    @staticmethod
+    def reviews_for_landlord(landlord_id):
+        return Review.query.filter(Review.landlord_id == landlord_id).order_by(desc(Review.created_at)).all()
 
     @staticmethod
     def from_json(json_review):

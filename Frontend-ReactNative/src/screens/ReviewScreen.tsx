@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import { HomeParamList } from '../../App';
+import { NavParamList } from '../../App';
 import { ReviewComponent } from '../components/ListComponents/ReviewListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MainContainer from '../components/mainContainer';
@@ -10,10 +10,10 @@ import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
 import { AddButton } from '../components/AddButton';
 
-type Props = NativeStackScreenProps<HomeParamList, "Reviews">;
+type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
 // Gets the Reviews for the Landlord
-const LANDLORD_REVIEWS = gql`
+export const LANDLORD_REVIEWS = gql`
 query ReviewsByLandlordId($landlordId: ID!){
     ReviewsByLandlordId(landlordId: $landlordId) {
         success,
@@ -22,6 +22,7 @@ query ReviewsByLandlordId($landlordId: ID!){
           id,
           overallStarRating,
           text,
+          createdAt,
           landlord {
             firstName,
             lastName,
@@ -32,7 +33,7 @@ query ReviewsByLandlordId($landlordId: ID!){
 `
 
 const ReviewsScreen = ({ route, navigation }: Props) => {
-  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId.toString() } });
+  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId } });
   const [name, setName] = useState<string | undefined>(undefined);
   useEffect(() => {
     if (data?.ReviewsByLandlordId) {
@@ -54,7 +55,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
             data={data?.ReviewsByLandlordId.reviews}
             keyExtractor={item => item!!.id}
             renderItem={({ item }) => (
-              <ReviewComponent name={item?.author?.firstName} rating={item?.overallStarRating} reviewText={item?.text} />
+              <ReviewComponent review={item!} />
             )}
             showsVerticalScrollIndicator={false}
           />

@@ -35,9 +35,10 @@ export default ({ zipCode }: Props) => {
 
             <View style={styles.spacer} />
 
+            <Text style={styles.headerText} >{zipCode}</Text>
+
             {/* Search Bar Section */}
             <View style={styles.searchContainer}>
-                <Text>{zipCode}</Text>
                 <View style={styles.searchBar}><Text style={styles.searchText}>Search</Text></View>
             </View>
 

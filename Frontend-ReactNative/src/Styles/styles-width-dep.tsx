@@ -9,7 +9,7 @@ export default (windowWidth: number) => StyleSheet.create({
         marginHorizontal: 0,
         borderRadius: 5,
         flex: 3,
-        flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column-reverse',
+        flexDirection: windowWidth >= screenChangePoint ? 'row-reverse' : 'column',
         justifyContent: 'center',
         backgroundColor: ThemeColors.white
     },
