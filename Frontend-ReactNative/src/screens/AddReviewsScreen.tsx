@@ -14,6 +14,7 @@ import { HomeParamList, NavParamList } from '../../App';
 import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
 import loadUserCredsFromLocal from '../global/localStorage';
 import { IAuthUser } from '../types';
+import { LANDLORD_REVIEWS } from './ReviewScreen';
 
 type FieldProps = {
   title: string,
@@ -64,7 +65,14 @@ const POST_REVIEW = gql`
 const AddReviewScreen = ({ route, navigation }: Props) => {
   const [user, setUser] = useState<IAuthUser | undefined | null>(undefined);
   const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
-  const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW);
+  const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW, {
+    refetchQueries: () => [{
+      query: LANDLORD_REVIEWS,
+      variables: {
+        landlordId: route.params.landlordId
+      }
+    }]
+  });
   const [overallRating, setOverallRating] = useState<number>(0);
   const [communicationRating, setCommunicationRating] = useState<number>(0);
   const [maintenanceRating, setMaintenanceRating] = useState<number>(0);
@@ -73,7 +81,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
 
   // loadUserFromCreds() returns null if no user, so null means user is not authenticated
-  const isAuthenticated = () => { return user!==null }
+  const isAuthenticated = () => { return user !== null }
 
   useEffect(() => {
     let mounted = true;

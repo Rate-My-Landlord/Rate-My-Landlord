@@ -13,7 +13,7 @@ import { AddButton } from '../components/AddButton';
 type Props = NativeStackScreenProps<HomeParamList, "Reviews">;
 
 // Gets the Reviews for the Landlord
-const LANDLORD_REVIEWS = gql`
+export const LANDLORD_REVIEWS = gql`
 query ReviewsByLandlordId($landlordId: ID!){
     ReviewsByLandlordId(landlordId: $landlordId) {
         success,
@@ -33,7 +33,7 @@ query ReviewsByLandlordId($landlordId: ID!){
 `
 
 const ReviewsScreen = ({ route, navigation }: Props) => {
-  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId.toString() } });
+  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId } });
   const [name, setName] = useState<string | undefined>(undefined);
   useEffect(() => {
     if (data?.ReviewsByLandlordId) {
