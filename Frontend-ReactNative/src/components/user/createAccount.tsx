@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { useForm, SubmitHandler, SubmitErrorHandler } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
@@ -9,6 +9,7 @@ import { saveUserCredsToLocal } from '../../global/localStorage';
 import TextField from './TextField';
 import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
+import { UserContext } from '../../global/userContext';
 
 type Inputs = {
     phone: number,
@@ -41,13 +42,15 @@ const ADD_USER = gql`
 `
 
 type Props = {
-    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
+    // setUser: (user: IAuthUser) => void,
     createAccountExpanded: boolean,
     setLoginExpanded: React.Dispatch<React.SetStateAction<boolean>>,
     setCreateAccountExpanded: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default ({ setUser, createAccountExpanded: expanded, setCreateAccountExpanded: setExpanded, setLoginExpanded }: Props) => {
+export default ({ createAccountExpanded: expanded, setCreateAccountExpanded: setExpanded, setLoginExpanded }: Props) => {
+    const { setUser } = useContext(UserContext);
+
     const [addUser, { data, loading, error }] = useMutation<Mutation, MutationNewUserArgs>(ADD_USER);
 
 

@@ -11,7 +11,7 @@ const StarInput = ({star, setStar}: Props) => {
 
     return (
         <View style={styles.starContainer}>
-            {[1, 2, 3, 4, 5].map((i) => <StarField on={i <= star} index={i} setStar={setStar} />)}
+            {[1, 2, 3, 4, 5].map((i) => <StarField key={i} on={i <= star} index={i} setStar={setStar} />)}
         </View>
     )
 }

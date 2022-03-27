@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
-import { HomeParamList } from '../../App';
+import { NavParamList } from '../../App';
 import { ReviewComponent } from '../components/ListComponents/ReviewListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MainContainer from '../components/mainContainer';
@@ -10,7 +10,7 @@ import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
 import { AddButton } from '../components/AddButton';
 
-type Props = NativeStackScreenProps<HomeParamList, "Reviews">;
+type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
 // Gets the Reviews for the Landlord
 export const LANDLORD_REVIEWS = gql`

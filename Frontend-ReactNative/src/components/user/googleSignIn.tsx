@@ -39,7 +39,7 @@ const EXTERNAL_LOG_IN = gql`
 
 
 type Props = {
-    setUser: React.Dispatch<React.SetStateAction<IAuthUser | undefined>>
+    setUser: (user: IAuthUser) => void,
     setExternalToken: React.Dispatch<React.SetStateAction<String | undefined>>
 }
 

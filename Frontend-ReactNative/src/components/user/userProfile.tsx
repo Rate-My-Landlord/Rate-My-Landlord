@@ -5,10 +5,11 @@ import TextField from './TextField';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { resetCreds, saveUserCredsToLocal } from '../../global/localStorage';
 import { ThemeColors } from '../../constants/Colors';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { IAuthUser } from '../../types';
 import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
+import { IUserContext, UserContext } from '../../global/userContext';
 
 const UPDATE_USER = gql`
     mutation UpdateUser($email: String, $firstName: String, $lastName: String) {
@@ -46,14 +47,15 @@ type Inputs = {
     lastName: string
 }
 
-type Props = {
-    userId: string,
-    setUser: (user: IAuthUser | undefined) => void,
-}
+// type Props = {
+//     userId: string,
+//     setUser: (user: IAuthUser) => void,
+// }
 
-export default ({ userId, setUser }: Props) => {
+export default () => {
+    const { user, setUser } = useContext(UserContext);
     const [feedback, setFeedback] = useState<string | undefined>(undefined);
-    const { loading, data } = useQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID, { variables: { userId: userId } });
+    const { loading, data } = useQuery<Query, QueryUserByUserIdArgs>(GET_USER_BY_ID, { variables: { userId: user?.userId! } });
 
     const [updateUser, { loading: m_loading, data: m_data, error: m_error }] = useMutation<Mutation, MutationUpdateUserArgs>(UPDATE_USER);
 
@@ -72,7 +74,7 @@ export default ({ userId, setUser }: Props) => {
 
             // Updating user token on device
             if (data?.UserByUserId.tokens !== undefined) {
-                if (data?.UserByUserId.user?.id! !== userId) {
+                if (data?.UserByUserId.user?.id! !== user?.userId) {
                     // throw new Error('User ids do not match');
                 } else {
                     // Not using setUser from UserCOntext because then it will infinitely rerender 
@@ -111,8 +113,7 @@ export default ({ userId, setUser }: Props) => {
 
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
-    const logout = () => resetCreds().then(() => setUser(undefined));
-
+    const logout = () => resetCreds().then(() => setUser(null));
 
     if (loading) return (<Text>Loading...</Text>)
 

@@ -1,5 +1,4 @@
-import { Platform, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Text } from 'react-native';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
 import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from './src/global/localStorage';
@@ -7,6 +6,7 @@ import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from '.
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import NavTabBar from './src/navTabBar';
 // Screen
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -24,8 +24,10 @@ import {
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { isMobileScreen } from './src/utils';
+import { UserContext } from './src/global/userContext';
+import { IAuthUser } from './src/types';
 
 
 /* Apollo Config */
@@ -34,12 +36,9 @@ const apolloHttpLink = createHttpLink({
 })
 
 // Setting the jwt in the header if it is in local storage.
-// This will run every time, however, it will cache previous queries
-// So if you just log a user in, you might need to reset the cache.
-// https://www.apollographql.com/docs/react/caching/advanced-topics/#resetting-the-cache
 const apolloAuthLink = setContext(async (request, { headers }) => {
   let accessToken;
-  // Kind of hacky way to get a refresh token
+  // Kind of janky way to get a refresh token
   if (request.operationName === 'RefreshToken') {
     accessToken = await getRefreshToken().then(res => res);
   } else {
@@ -73,13 +72,14 @@ const client = new ApolloClient({
 /* For displaying URLs on desktop */
 const prefix = Linking.createURL('/');
 
-const linking = {
+const navLinking = {
   prefixes: [prefix],
   config: {
     screens: {
       Home: '',
+      Reviews: 'reviews/:landlordId',
+      NewReview: 'reviews/new/:landlordId',
       Profile: 'profile',
-      NewReview: ':landlordId/newReview',
       NotFound: '*'
     }
   }
@@ -87,14 +87,9 @@ const linking = {
 
 export type NavParamList = {
   Home: undefined,
-  Profile: undefined,
-  Reviews: { landlordId: string },
-}
-
-export type HomeParamList = {
-  Home: undefined,
-  Reviews: { landlordId: string },
+  Reviews: { landlordId: string }
   NewReview: { landlordId: string },
+  Profile: undefined,
 }
 
 // Mobile
@@ -102,89 +97,80 @@ const Tab = createBottomTabNavigator<NavParamList>();
 // Web
 const Stack = createNativeStackNavigator<NavParamList>();
 // For Search ???
-const StackSearch = createNativeStackNavigator<HomeParamList>();
+// const StackSearch = createNativeStackNavigator<HomeParamList>();
 
 
-// User Search Flow Stack Navigation
-function HomeFlow() {
-  return (
-    <StackSearch.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <StackSearch.Screen name="Home" component={HomeScreen} />
-      <StackSearch.Screen name="Reviews" component={ReviewScreen} />
-      <StackSearch.Screen name="NewReview" component={AddReviewScreen} />
-    </StackSearch.Navigator>
-  );
-}
+// // User Search Flow Stack Navigation
+// function HomeFlow() {
+//   return (
+//     <StackSearch.Navigator
+//       initialRouteName="Home"
+//       screenOptions={{
+//         headerShown: false,
+//       }}
+//     >
+//       <StackSearch.Screen name="Home" component={HomeScreen} />
+//       <StackSearch.Screen name="Reviews" component={ReviewScreen} />
+//       <StackSearch.Screen name="NewReview" component={AddReviewScreen} />
+//     </StackSearch.Navigator>
+//   );
+// }
+
+
+
 
 // Main App Tab Navigation
 export default function App() {
+  const [user, setUser] = useState<IAuthUser | null>(null);
 
-  // A kind of hacky way to get a new token on startup
+  const providerValue = useMemo(() => ({ user, setUser }), [user, setUser]);
+
+  // A kind of janky way to get a new token on startup
   useEffect(() => {
-    client.query({
-      query: gql`
-      query RefreshToken {
-        RefreshToken {
-          success,
-          token,
-          id
-        }
-      }`
-    }).then(res => res.data.RefreshToken)
-      .then(res => saveUserCredsToLocal(res.id, res.token));
+    loadUserCredsFromLocal().then(res => {
+      if (!res) return;
+      client.query({
+        query: gql`
+        query RefreshToken {
+          RefreshToken {
+            success,
+            token,
+            id
+          }
+        }`
+      }).then(res => res.data.RefreshToken)
+        .then(res => saveUserCredsToLocal(res.id, res.token));
+      setUser(res);
+    })
   }, [])
 
   return (
     <ApolloProvider client={client}>
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        {isMobileScreen() ? (
-          // Phone Navigation
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName: any = "";
-
-                if (route.name === 'Home') {
-                  iconName = 'home';
-                } else if (route.name === 'Profile') {
-                  iconName = 'person';
-                }
-
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} color={color} size={size} />;
-              },
-              // Icon Colors
-              tabBarActiveTintColor: 'tomato',
-              tabBarInactiveTintColor: 'gray',
-
-              headerShown: false,
-              tabBarShowLabel: false,
-            })}
-          >
-            <Tab.Screen name="Home" component={HomeFlow} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
-          </Tab.Navigator>
-          // Web Navigation
-        ) : (
-          <Stack.Navigator
-            screenOptions={({
-              headerShown: false,
-            })}
-          >
-            <Stack.Screen name="Home" component={HomeFlow} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="Reviews" component={ReviewScreen} />
-          </Stack.Navigator>
-        )}
+      <NavigationContainer linking={navLinking} fallback={<Text>Loading...</Text>}>
+        <UserContext.Provider value={providerValue}>
+          {isMobileScreen() ? // Phone Navigation
+            <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} >
+              <Tab.Screen name="Profile" component={ProfileScreen} />
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Tab.Screen name="Reviews" component={ReviewScreen} />
+              <Tab.Screen name="NewReview" component={AddReviewScreen} />
+            </Tab.Navigator>
+            : // Web Navigation
+            <Stack.Navigator
+              screenOptions={({
+                headerShown: false,
+              })}
+            >
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Reviews" component={ReviewScreen} />
+              <Stack.Screen name="NewReview" component={AddReviewScreen} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+            </Stack.Navigator>
+          }
+        </UserContext.Provider>
       </NavigationContainer>
     </ApolloProvider>
   );
 }
 
-// AppRegistry.registerComponent('RateMyLandlord', () => App);
 registerRootComponent(App);
