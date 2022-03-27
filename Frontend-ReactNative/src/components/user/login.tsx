@@ -62,7 +62,7 @@ export default ({ loginExpanded: expanded, setLoginExpanded: setExpanded, setCre
                 phone: data.phone.toString(),
                 password: data.password
             },
-            onCompleted({ Login }) { if (Login) { saveUser(Login.tokens!, Login.user?.id!) } }
+            onCompleted({ Login }) { if (Login.tokens) saveUser(Login.tokens!, Login.user?.id!); }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
@@ -82,6 +82,7 @@ export default ({ loginExpanded: expanded, setLoginExpanded: setExpanded, setCre
                 <View style={formStyles.container}>
                     <View style={{ flex: 1 }}>
                         <Text style={formStyles.formHeaderText}>Login</Text>
+                        {data?.Login.errors && <Text style={formStyles.error}>{data?.Login.errors.map((e: any) => e)} </Text> /* Errors from our API */}
                         <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
                         <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
                         <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>

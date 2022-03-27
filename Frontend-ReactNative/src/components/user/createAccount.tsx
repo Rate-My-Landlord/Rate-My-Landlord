@@ -86,7 +86,7 @@ export default ({ createAccountExpanded: expanded, setCreateAccountExpanded: set
                 email: data.email,
                 password: data.password
             },
-            onCompleted({ NewUser }) { if (NewUser) { saveUser(NewUser.tokens!, NewUser.user?.id!) } }
+            onCompleted({ NewUser }) { if (NewUser.tokens) { saveUser(NewUser.tokens!, NewUser.user?.id!) } }
         });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
