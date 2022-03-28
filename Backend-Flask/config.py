@@ -8,6 +8,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_ACCESS_TOKEN_EXPIRES = datetime.timedelta(days=7)
     JWT_REFRESH_TOKEN_EXPIRES = datetime.timedelta(days=30)
+    ELASTICSEARCH_URL = 'http://localhost:9200'
     
     @staticmethod
     def init_app(app):

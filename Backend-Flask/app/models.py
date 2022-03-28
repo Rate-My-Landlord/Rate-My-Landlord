@@ -7,6 +7,50 @@ import phonenumbers
 import re
 from sqlalchemy.orm import backref
 from sqlalchemy import desc
+from .search import *
+
+
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression):
+        ids, total = query_index(cls.__tablename__, expression)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            'add': list(session.new),
+            'update': list(session.dirty),
+            'delete': list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes['add']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['update']:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes['delete']:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
+
+
+db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
+db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
 
 
 class Permission:
@@ -213,7 +257,9 @@ class Review(db.Model):
         return '<Review {}>'.format(self.id)
 
 
-class Landlord(db.Model):
+class Landlord(SearchableMixin, db.Model):
+    __searchable__ = ['first_name', 'last_name', 'zip_code']
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     first_name = db.Column(db.String(40))
@@ -278,7 +324,9 @@ class Landlord(db.Model):
         return '<Landlord {}>'.format(self.id)
 
 
-class Property(db.Model):
+class Property(SearchableMixin, db.Model):
+    __searchable__ = ['address_1', 'city', 'state']
+
     id = db.Column(db.Integer, primary_key=True)
     landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
     address_1 = db.Column(db.String(50))

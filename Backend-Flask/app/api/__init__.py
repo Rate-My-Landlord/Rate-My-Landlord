@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from ..models import Landlord, Property
 from ariadne.constants import PLAYGROUND_HTML
 from ariadne import MutationType, graphql_sync, make_executable_schema, load_schema_from_path, QueryType, gql, snake_case_fallback_resolvers
 # Importing our resolvers
@@ -13,6 +14,8 @@ from .property.property_mutations import *
 # User
 from .user.user_mutations import *
 from .user.user_resolvers import *
+# Search
+from .search.search_resolvers import *
 
 api = Blueprint('api', __name__)
 
@@ -52,6 +55,8 @@ mutation.set_field('NewUserExternal', resolve_new_user_external)
 mutation.set_field('Login', resolve_login_user)
 mutation.set_field('ExternalLogin', resolve_external_login)
 mutation.set_field('UpdateUser', resolve_update_user)
+# Search
+query.set_field('Search', resolve_search)
 
 
 # Custom error handling
