@@ -42,3 +42,6 @@ To insert some dummy data:
 This command does **delete all data in your local database**, so be aware.  
 This adds 3 landlords, who each have 2 properties and 3 reviews.  
 
+### Running with docker
+
+`docker run -d --name rml-backend -p 5000:5000 backend-flask`
