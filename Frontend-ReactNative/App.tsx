@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
 import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from './src/global/localStorage';
+import { IAuthUser } from './src/types';
+import { isMobileScreen } from './src/utils';
 //Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -14,9 +16,10 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewScreen from './src/screens/AddReviewsScreen';
-import AddReviewsScreen from './src/screens/AddReviewsScreen';
 import SearchResults from './src/components/search/searchResults';
-
+// Context
+import { UserContext } from './src/global/userContext';
+import { SearchContext } from './src/global/searchContext';
 // Apollo
 import {
   ApolloClient,
@@ -28,10 +31,6 @@ import {
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-import { UserContext } from './src/global/userContext';
-import { IAuthUser } from './src/types';
-import { isMobileScreen } from './src/utils';
-import { SearchContext } from './src/global/searchContext';
 
 
 /* Apollo Config */
@@ -102,35 +101,11 @@ export type NavParamList = {
 const Tab = createBottomTabNavigator<NavParamList>();
 // Web
 const Stack = createNativeStackNavigator<NavParamList>();
-// For Search ???
-// const StackSearch = createNativeStackNavigator<HomeParamList>();
-
-
-// // User Search Flow Stack Navigation
-// function HomeFlow() {
-//   return (
-//     <StackSearch.Navigator
-//       initialRouteName="Home"
-//       screenOptions={{
-//         headerShown: false,
-//       }}
-//     >
-//       <StackSearch.Screen name="Home" component={HomeScreen} />
-//       <StackSearch.Screen name="Reviews" component={ReviewScreen} />
-//       <StackSearch.Screen name="NewReview" component={AddReviewScreen} />
-//     </StackSearch.Navigator>
-//   );
-// }
-
-
 
 
 // Main App Tab Navigation
 export default function App() {
   const [user, setUser] = useState<IAuthUser | null>(null);
-
-// Main App Tab Navigation
-export default function App() {
   const [zipCode, setZipCode] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -165,32 +140,36 @@ export default function App() {
       }).then(res => res.data.RefreshToken)
         .then(res => saveUserCredsToLocal(res.id, res.token));
       setUser(res);
-    })
+    });
   }, [])
 
   return (
     <ApolloProvider client={client}>
       <NavigationContainer linking={navLinking} fallback={<Text>Loading...</Text>}>
         <UserContext.Provider value={providerValue}>
-          {isMobileScreen() ? // Phone Navigation
-            <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} >
-              <Tab.Screen name="Profile" component={ProfileScreen} />
-              <Tab.Screen name="Home" component={HomeScreen} />
-              <Tab.Screen name="Reviews" component={ReviewScreen} />
-              <Tab.Screen name="NewReview" component={AddReviewScreen} />
-            </Tab.Navigator>
-            : // Web Navigation
-            <Stack.Navigator
-              screenOptions={({
-                headerShown: false,
-              })}
-            >
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Reviews" component={ReviewScreen} />
-              <Stack.Screen name="NewReview" component={AddReviewScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-            </Stack.Navigator>
-          }
+          <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
+            {isMobileScreen() ? // Phone Navigation
+              <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} >
+                <Tab.Screen name="Profile" component={ProfileScreen} />
+                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name="Reviews" component={ReviewScreen} />
+                <Tab.Screen name="NewReview" component={AddReviewScreen} />
+                <Tab.Screen name="SearchResults" component={SearchResults} />
+              </Tab.Navigator>
+              : // Web Navigation
+              <Stack.Navigator
+                screenOptions={({
+                  headerShown: false,
+                })}
+              >
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Reviews" component={ReviewScreen} />
+                <Stack.Screen name="NewReview" component={AddReviewScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} />
+                <Stack.Screen name="SearchResults" component={SearchResults} />
+              </Stack.Navigator>
+            }
+          </SearchContext.Provider>
         </UserContext.Provider>
       </NavigationContainer>
     </ApolloProvider>

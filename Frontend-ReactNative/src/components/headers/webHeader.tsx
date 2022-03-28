@@ -12,6 +12,7 @@ const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
 export default () => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
+    const { zipCode } = useSearchContext();
 
 
     // Loads Font
@@ -38,11 +39,7 @@ export default () => {
 
             {/* Search Bar Section */}
             <View style={styles.searchContainer}>
-<<<<<<< HEAD
-                <View style={styles.searchBar}><Text style={styles.searchText}>Search</Text></View>
-=======
                 <SearchBar />
->>>>>>> 2592b1f3 (started on search)
             </View>
 
             <View style={styles.spacer} />

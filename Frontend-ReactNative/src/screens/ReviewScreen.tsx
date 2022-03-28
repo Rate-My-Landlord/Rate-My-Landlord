@@ -36,9 +36,11 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId } });
   const [name, setName] = useState<string | undefined>(undefined);
   useEffect(() => {
-    if (data?.ReviewsByLandlordId) {
+    let mounted = true;
+    if (data?.ReviewsByLandlordId && mounted) {
       setName(data.ReviewsByLandlordId!.reviews!.find(_ => true)?.landlord.firstName);
     }
+    return () => { mounted = false }
   }, [data])
 
 
