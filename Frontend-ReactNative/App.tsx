@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useEffect, useState, useMemo } from 'react';
+=======
+import { useEffect, useState } from 'react';
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
 import { Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
@@ -15,11 +19,17 @@ import NavTabBar from './src/navTabBar';
 import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
+<<<<<<< HEAD
 import AddReviewScreen from './src/screens/AddReviewsScreen';
 import SearchResults from './src/components/search/searchResults';
 // Context
 import { UserContext } from './src/global/userContext';
 import { SearchContext } from './src/global/searchContext';
+=======
+import AddReviewsScreen from './src/screens/AddReviewsScreen';
+import SearchResults from './src/components/search/searchResults';
+
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
 // Apollo
 import {
   ApolloClient,
@@ -31,6 +41,11 @@ import {
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
+<<<<<<< HEAD
+=======
+import { isMobileScreen } from './src/utils';
+import { SearchContext } from './src/global/searchContext';
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
 
 
 /* Apollo Config */
@@ -80,8 +95,11 @@ const navLinking = {
   config: {
     screens: {
       Home: '',
+<<<<<<< HEAD
       Reviews: 'reviews/:landlordId',
       NewReview: 'reviews/new/:landlordId',
+=======
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
       SearchResults: 'search',
       Profile: 'profile',
       NotFound: '*'
@@ -91,8 +109,11 @@ const navLinking = {
 
 export type NavParamList = {
   Home: undefined,
+<<<<<<< HEAD
   Reviews: { landlordId: string }
   NewReview: { landlordId: string },
+=======
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
   SearchResults: undefined,
   Profile: undefined,
 }
@@ -108,6 +129,19 @@ export default function App() {
   const [user, setUser] = useState<IAuthUser | null>(null);
   const [zipCode, setZipCode] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => setZipCode(data.postal))
+        .catch(error => console.log(error));
+    }
+
+    return () => { isMounted = false };
+  }, [])
+
 
   useEffect(() => {
     let isMounted = true;
@@ -145,6 +179,7 @@ export default function App() {
 
   return (
     <ApolloProvider client={client}>
+<<<<<<< HEAD
       <NavigationContainer linking={navLinking} fallback={<Text>Loading...</Text>}>
         <UserContext.Provider value={providerValue}>
           <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
@@ -172,6 +207,55 @@ export default function App() {
           </SearchContext.Provider>
         </UserContext.Provider>
       </NavigationContainer>
+=======
+      <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+          {isMobileScreen() ? (
+            // Phone Navigation
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName: any = "";
+
+                  if (route.name === 'Home') {
+                    iconName = 'home';
+                  } else if (route.name === 'Profile') {
+                    iconName = 'person';
+                  }
+
+                  // You can return any component that you like here!
+                  return <Ionicons name={iconName} color={color} size={size} />;
+                },
+                // Icon Colors
+                tabBarActiveTintColor: 'tomato',
+                tabBarInactiveTintColor: 'gray',
+
+                headerShown: false,
+                tabBarShowLabel: false,
+              })}
+            >
+              <Tab.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="SearchResults" component={SearchResults} />
+              <Stack.Screen name="Reviews" component={ReviewScreen} />
+              <Tab.Screen name="Profile" component={ProfileScreen} />
+            </Tab.Navigator>
+            // Web Navigation
+          ) : (
+            <Stack.Navigator
+              screenOptions={({
+                headerShown: false,
+              })}
+            >
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="SearchResults" component={SearchResults} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="Reviews" component={ReviewScreen} />
+              <Stack.Screen name="AddReviews" component={AddReviewsScreen} />
+            </Stack.Navigator>
+          )}
+        </NavigationContainer>
+      </SearchContext.Provider>
+>>>>>>> 2592b1f35ba47156fa29e15355d58ae0dacb1288
     </ApolloProvider>
   );
 }

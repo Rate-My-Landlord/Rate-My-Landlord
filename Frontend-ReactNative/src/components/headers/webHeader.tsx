@@ -15,6 +15,7 @@ export default () => {
     const { zipCode } = useSearchContext();
 
 
+
     // Loads Font
     let [fontsLoaded] = useFonts({
         'BebasNeue-Regular': require('../../../assets/fonts/BebasNeue-Regular.ttf'),
