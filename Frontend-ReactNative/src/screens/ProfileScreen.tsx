@@ -20,7 +20,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [externalToken, setExternalToken] = useState<String | undefined>(undefined);
 
   return (
-    <MainContainer windowWidth={windowWidth}>
+    <MainContainer>
       {externalToken ?
         <PhonePrompt externalToken={externalToken} resetExternalToken={() => { setExternalToken(undefined); }} />
         :

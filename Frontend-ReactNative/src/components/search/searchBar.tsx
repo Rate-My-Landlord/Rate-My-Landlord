@@ -1,17 +1,24 @@
 // SearchBar.js
-import React from "react";
-import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, View, Keyboard, Button, Text, TouchableOpacity } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
+import { useSearchContext } from "../../global/searchContext";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { NavParamList } from "../../../App";
+import { ThemeColors } from "../../constants/Colors";
+
+const SearchBar = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
+
+  const [clicked, setClicked] = useState<Boolean>(false);
+  const { zipCode, searchTerm, setSearchTerm } = useSearchContext();
+
+  const handleSubmit = () => {
+    navigation.navigate("SearchResults");
+  }
 
 
-type Props = {
-  clicked: boolean,
-  searchPhrase: string,
-  setSearchPhrase: any,
-  setClicked: any,
-}
-
-const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: Props) => {
   return (
     <View style={styles.container}>
       <View
@@ -21,6 +28,8 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: Props
             : styles.searchBar__clicked
         }
       >
+        <Text>{zipCode}</Text>
+
         {/* search Icon */}
         <Feather
           name="search"
@@ -32,31 +41,23 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: Props
         <TextInput
           style={styles.input}
           placeholder="Search"
-          value={searchPhrase}
-          onChangeText={setSearchPhrase}
+          value={searchTerm}
+          onChangeText={(e) => setSearchTerm(e)}
           onFocus={() => {
             setClicked(true);
           }}
         />
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
-          <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-            setSearchPhrase("")
-          }} />
+          <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => { setSearchTerm('') }} />
+        )}
+        {/* cancel button, depending on whether the search bar is clicked or not */}
+        {clicked && (
+          <TouchableOpacity style={styles.submit} onPress={handleSubmit}>
+            <Text>Go</Text>
+          </TouchableOpacity>
         )}
       </View>
-      {/* cancel button, depending on whether the search bar is clicked or not */}
-      {clicked && (
-        <View>
-          <Button
-            title="Cancel"
-            onPress={() => {
-              Keyboard.dismiss();
-              setClicked(false);
-            }}
-          ></Button>
-        </View>
-      )}
     </View>
   );
 };
@@ -94,4 +95,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: "90%",
   },
+  submit: {
+  }
 });

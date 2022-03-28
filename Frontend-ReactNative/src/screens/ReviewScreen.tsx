@@ -45,7 +45,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
 
   return (
-    <MainContainer windowWidth={windowWidth} >
+    <MainContainer>
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
           <View style={widthDepStyles(windowWidth).reviewsPageHeader}>

@@ -32,11 +32,12 @@ query {
 
 const HomeScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
+
   // const [landlords, setLandlords] = useState<ILandlord[]>([]);
   const { loading, error, data } = useQuery<Query>(ALLLANDLORDS);
 
   return (
-    <MainContainer windowWidth={windowWidth} >
+    <MainContainer >
       <>
         <View style={widthDepStyles(windowWidth).listContainer}>
           <View style={widthDepStyles(windowWidth).reviewsPageHeader}>

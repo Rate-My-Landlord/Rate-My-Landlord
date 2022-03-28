@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
 import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from './src/global/localStorage';
@@ -12,6 +14,8 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewScreen from './src/screens/AddReviewsScreen';
+import AddReviewsScreen from './src/screens/AddReviewsScreen';
+import SearchResults from './src/components/search/searchResults';
 
 // Apollo
 import {
@@ -24,10 +28,10 @@ import {
 } from "@apollo/client";
 import { setContext } from '@apollo/client/link/context';
 import { onError } from "@apollo/client/link/error";
-import { useEffect, useMemo, useState } from 'react';
-import { isMobileScreen } from './src/utils';
 import { UserContext } from './src/global/userContext';
 import { IAuthUser } from './src/types';
+import { isMobileScreen } from './src/utils';
+import { SearchContext } from './src/global/searchContext';
 
 
 /* Apollo Config */
@@ -79,6 +83,7 @@ const navLinking = {
       Home: '',
       Reviews: 'reviews/:landlordId',
       NewReview: 'reviews/new/:landlordId',
+      SearchResults: 'search',
       Profile: 'profile',
       NotFound: '*'
     }
@@ -89,6 +94,7 @@ export type NavParamList = {
   Home: undefined,
   Reviews: { landlordId: string }
   NewReview: { landlordId: string },
+  SearchResults: undefined,
   Profile: undefined,
 }
 
@@ -122,6 +128,24 @@ const Stack = createNativeStackNavigator<NavParamList>();
 // Main App Tab Navigation
 export default function App() {
   const [user, setUser] = useState<IAuthUser | null>(null);
+
+// Main App Tab Navigation
+export default function App() {
+  const [zipCode, setZipCode] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  useEffect(() => {
+    let isMounted = true;
+    if (isMounted) {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => setZipCode(data.postal))
+        .catch(error => console.log(error));
+    }
+
+    return () => { isMounted = false };
+  }, [])
+
 
   const providerValue = useMemo(() => ({ user, setUser }), [user, setUser]);
 
