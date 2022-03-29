@@ -1,6 +1,7 @@
 from flask import Flask
 from config import config
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy_utils import create_database, database_exists
 from flask_migrate import Migrate
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
@@ -22,11 +23,14 @@ def create_app(config_name):
     app.config.from_object(config['development'])
     config['development'].init_app(app)
     jwt.init_app(app)
+    
+    if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
+        create_database(app.config['SQLALCHEMY_DATABASE_URI'])
 
     db.init_app(app)
 
-    # app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
-    #     if app.config['ELASTICSEARCH_URL'] else None
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
         
     app.elasticsearch = Elasticsearch('http://localhost:9200')
         

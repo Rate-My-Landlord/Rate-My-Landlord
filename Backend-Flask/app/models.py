@@ -20,7 +20,7 @@ class SearchableMixin(object):
         for i in range(len(ids)):
             when.append((ids[i], i))
         return cls.query.filter(cls.id.in_(ids)).order_by(
-            db.case(when, value=cls.id)), total
+            db.case(when, value=cls.id)).all(), total
 
     @classmethod
     def before_commit(cls, session):
@@ -258,7 +258,7 @@ class Review(db.Model):
 
 
 class Landlord(SearchableMixin, db.Model):
-    __searchable__ = ['first_name', 'last_name', 'zip_code']
+    __searchable__ = ['first_name', 'last_name', 'zipcode']
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -325,7 +325,7 @@ class Landlord(SearchableMixin, db.Model):
 
 
 class Property(SearchableMixin, db.Model):
-    __searchable__ = ['address_1', 'city', 'state']
+    __searchable__ = ['address_1', 'city', 'state', 'zipcode']
 
     id = db.Column(db.Integer, primary_key=True)
     landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))

@@ -84,6 +84,13 @@ def playground():
 
 @api.route('/graphql', methods=['POST'])
 def graphql_server():
+    # Janky way of indexinf the db on startup
+    indexed = False
+    if not indexed:
+        indexed = True
+        Landlord.reindex()
+        Property.reindex()
+    
     data = request.get_json()
     success, result = graphql_sync(
         schema=schema,

@@ -108,8 +108,8 @@ type RefreshTokenResult {
 type SearchResult {
     success: Boolean!
     errors: [String]
-    Landlords: [Landlord]
-    Property: [Property]
+    landlords: [Landlord]
+    properties: [Property]
 }
 
 

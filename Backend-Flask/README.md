@@ -25,7 +25,15 @@ Now check that it worked
 `> mysql -u rml -p`  
 7. Populate the database  
 `> python -m flask db upgrade`  
-8. Start the server  
+8. Install and configure Elasticsearch (windows instructions)  
+   1. Navigate to [Elasticsearch download page](https://www.elastic.co/guide/en/elasticsearch/reference/current/zip-windows.html) and download the package `.zip` package.
+   2. Extract it
+   3. Open your terminal and navigate to that newly extracted folder. (`cd elasticsearch-8.1.1`)
+   4. Install Elasticsearch as a service by doing `bin\elasticsearch-service.bat install`
+   5. Start it by doing `bin\elasticsearch-service.bat start`
+   6. Disable authentication for Elasticsearch (this is temporary) by opening `config\elasticsearch.yml` and then changing `xpack.security.enabled: true` to `xpack.security.enabled: false`.
+   7. Verify that it is running by going to [localhost:9200](http://localhost:9200). You should see some json.
+9.  Start the server  
 `> python -m flask run`  
 9. Navigate to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)  
 
