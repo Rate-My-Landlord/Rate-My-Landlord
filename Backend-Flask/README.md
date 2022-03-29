@@ -30,9 +30,28 @@ Now check that it worked
    2. Extract it
    3. Open your terminal and navigate to that newly extracted folder. (`cd elasticsearch-8.1.1`)
    4. Install Elasticsearch as a service by doing `bin\elasticsearch-service.bat install`
-   5. Start it by doing `bin\elasticsearch-service.bat start`
-   6. Disable authentication for Elasticsearch (this is temporary) by opening `config\elasticsearch.yml` and then changing `xpack.security.enabled: true` to `xpack.security.enabled: false`.
-   7. Verify that it is running by going to [localhost:9200](http://localhost:9200). You should see some json.
+   5. Disable authentication for Elasticsearch (this is temporary) by opening `config\elasticsearch.yml` and then changing `xpack.security.enabled: true` to `xpack.security.enabled: false`. If you don't see the `xpack.security.enabled: true` line, the you can just add `xpack.security.enabled: false`
+   6. Start it by doing `bin\elasticsearch-service.bat start`
+   7. Verify that it is running by going to [localhost:9200](http://localhost:9200). You should see some json that looks something like this: 
+   ```json
+   {
+   "name" : "CLOSET-HEATER",
+   "cluster_name" : "elasticsearch",
+   "cluster_uuid" : "t_WtdX3VR5iaNzVI9HUN3g",
+   "version" : {
+      "number" : "8.1.1",
+      "build_flavor" : "default",
+      "build_type" : "zip",
+      "build_hash" : "d0925dd6f22e07b935750420a3155db6e5c58381",
+      "build_date" : "2022-03-17T22:01:32.658689558Z",
+      "build_snapshot" : false,
+      "lucene_version" : "9.0.0",
+      "minimum_wire_compatibility_version" : "7.17.0",
+      "minimum_index_compatibility_version" : "7.0.0"
+   },
+   "tagline" : "You Know, for Search"
+   }
+   ```
 9.  Start the server  
 `> python -m flask run`  
 9. Navigate to [http://127.0.0.1:5000/](http://127.0.0.1:5000/)  
