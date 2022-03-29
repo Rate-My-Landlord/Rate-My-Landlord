@@ -164,6 +164,8 @@ export type Query = {
   ReviewsByPropertyId: ReviewsResult;
   /** Get all reviews by landlord zip code */
   ReviewsByZipCode: ReviewsResult;
+  /** Search */
+  Search: SearchResult;
   /** Get a user by userId */
   UserByUserId: UserResult;
 };
@@ -204,6 +206,12 @@ export type QueryReviewsByZipCodeArgs = {
 };
 
 
+export type QuerySearchArgs = {
+  searchTerm: Scalars['String'];
+  zipCode: Scalars['String'];
+};
+
+
 export type QueryUserByUserIdArgs = {
   userId: Scalars['ID'];
 };
@@ -211,6 +219,7 @@ export type QueryUserByUserIdArgs = {
 export type RefreshTokenResult = {
   __typename?: 'RefreshTokenResult';
   errors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  id?: Maybe<Scalars['ID']>;
   success: Scalars['Boolean'];
   token?: Maybe<Scalars['String']>;
 };
@@ -239,6 +248,14 @@ export type ReviewsResult = {
   __typename?: 'ReviewsResult';
   errors?: Maybe<Array<Maybe<Scalars['String']>>>;
   reviews?: Maybe<Array<Maybe<Review>>>;
+  success: Scalars['Boolean'];
+};
+
+export type SearchResult = {
+  __typename?: 'SearchResult';
+  errors?: Maybe<Array<Maybe<Scalars['String']>>>;
+  landlords?: Maybe<Array<Maybe<Landlord>>>;
+  properties?: Maybe<Array<Maybe<Property>>>;
   success: Scalars['Boolean'];
 };
 
@@ -319,14 +336,34 @@ export type GetUserByIdQueryVariables = Exact<{
 
 export type GetUserByIdQuery = { __typename?: 'Query', UserByUserId: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email?: string | null, phone?: string | null } | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null } };
 
-export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type Unnamed_1_Query = { __typename?: 'Query', AllLandlords: { __typename?: 'LandlordsResult', success: boolean, errors?: Array<string | null> | null, landlords?: Array<{ __typename?: 'Landlord', id: string, overallRating: number, firstName: string, lastName: string, zipCode: string } | null> | null } };
-
-export type ReviewsByLandlordIdQueryVariables = Exact<{
-  landlordId?: InputMaybe<Scalars['ID']>;
+export type GetLandlordQueryVariables = Exact<{
+  landlordId: Scalars['ID'];
 }>;
 
 
-export type ReviewsByLandlordIdQuery = { __typename?: 'Query', ReviewsByLandlordId: { __typename?: 'ReviewsResult', success: boolean, errors?: Array<string | null> | null, reviews?: Array<{ __typename?: 'Review', id: string, overallStarRating: number, text?: string | null, landlord: { __typename?: 'Landlord', firstName: string, lastName: string } } | null> | null } };
+export type GetLandlordQuery = { __typename?: 'Query', LandlordById: { __typename?: 'LandlordResult', success: boolean, errors?: Array<string | null> | null, landlord?: { __typename?: 'Landlord', firstName: string } | null } };
+
+export type NewReviewMutationVariables = Exact<{
+  authorId: Scalars['ID'];
+  landlordId: Scalars['ID'];
+  propertyId?: InputMaybe<Scalars['ID']>;
+  overallStarRating: Scalars['Int'];
+  communicationStarRating?: InputMaybe<Scalars['Int']>;
+  maintenanceStarRating?: InputMaybe<Scalars['Int']>;
+  text?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type NewReviewMutation = { __typename?: 'Mutation', NewReview: { __typename?: 'ReviewResult', success: boolean, errors?: Array<string | null> | null, review?: { __typename?: 'Review', id: string } | null } };
+
+export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type Unnamed_1_Query = { __typename?: 'Query', AllLandlords: { __typename?: 'LandlordsResult', success: boolean, errors?: Array<string | null> | null, landlords?: Array<{ __typename?: 'Landlord', id: string, overallRating: number, firstName: string, lastName: string, zipCode: string, reviews?: Array<{ __typename?: 'Review', id: string } | null> | null } | null> | null } };
+
+export type ReviewsByLandlordIdQueryVariables = Exact<{
+  landlordId: Scalars['ID'];
+}>;
+
+
+export type ReviewsByLandlordIdQuery = { __typename?: 'Query', ReviewsByLandlordId: { __typename?: 'ReviewsResult', success: boolean, errors?: Array<string | null> | null, reviews?: Array<{ __typename?: 'Review', id: string, overallStarRating: number, text?: string | null, createdAt: string, landlord: { __typename?: 'Landlord', firstName: string, lastName: string } } | null> | null } };

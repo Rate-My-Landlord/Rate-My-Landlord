@@ -16,7 +16,7 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewScreen from './src/screens/AddReviewsScreen';
-import SearchResults from './src/components/search/searchResults';
+import SearchResultsScreen from './src/screens/searchResultsScreen';
 // Context
 import { UserContext } from './src/global/userContext';
 import { SearchContext } from './src/global/searchContext';
@@ -167,7 +167,7 @@ export default function App() {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Reviews" component={ReviewScreen} />
                 <Tab.Screen name="NewReview" component={AddReviewScreen} />
-                <Tab.Screen name="SearchResults" component={SearchResults} />
+                <Tab.Screen name="SearchResults" component={SearchResultsScreen} />
               </Tab.Navigator>
               : // Web Navigation
               <Stack.Navigator
@@ -179,7 +179,7 @@ export default function App() {
                 <Stack.Screen name="Reviews" component={ReviewScreen} />
                 <Stack.Screen name="NewReview" component={AddReviewScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
-                <Stack.Screen name="SearchResults" component={SearchResults} />
+                <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
               </Stack.Navigator>
             }
           </SearchContext.Provider>

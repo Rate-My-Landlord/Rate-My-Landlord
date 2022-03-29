@@ -32,8 +32,6 @@ def create_app(config_name):
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
         
-    app.elasticsearch = Elasticsearch('http://localhost:9200')
-        
     # Loading environment variables
     app.config.from_envvar('ENV_FILE_LOCATION')
 
