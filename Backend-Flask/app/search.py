@@ -17,7 +17,6 @@ def remove_from_index(index, model):
 
 
 def query_index(index, query):
-    print(index, query)
     if not current_app.elasticsearch:
         return [], 0
     search = current_app.elasticsearch.search(

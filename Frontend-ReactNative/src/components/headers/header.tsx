@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default ({ windowWidth }: Props) => (
-    !isMobileScreen() ? (
+    !isMobileScreen(windowWidth) ? (
         <WebHeader />
     ) : (
         <MobileHeader windowWidth={windowWidth} />

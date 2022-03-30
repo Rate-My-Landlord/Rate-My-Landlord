@@ -17,7 +17,7 @@ export default (windowWidth: number) => StyleSheet.create({
         flex: 10,
         flexDirection: windowWidth >= screenChangePoint ? "row" : "column-reverse",
         paddingTop: isMobileDevice() ? 10 : 15,
-        paddingHorizontal: isMobileScreen() ? 5 : '10%',
+        paddingHorizontal: isMobileScreen(windowWidth) ? 5 : '10%',
         backgroundColor: ThemeColors.darkGrey,
     },
     // Content Containers
@@ -28,7 +28,7 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: !isMobileScreen() ? 5 : 0,
+        borderTopRightRadius: !isMobileScreen(windowWidth) ? 5 : 0,
     },
     // Contains Filter box, buttons, ect.
     listControlContainer: {
@@ -38,7 +38,7 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
 
         // Top Right only rounded when on IOS or Screen is small
-        borderTopRightRadius: !isMobileScreen() ? 0 : 5,
+        borderTopRightRadius: !isMobileScreen(windowWidth) ? 0 : 5,
         borderTopLeftRadius: 5,
     },
     // Header for Reviews Page
@@ -49,6 +49,6 @@ export default (windowWidth: number) => StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         // Top Right rounded only on Web when screen is big.
-        borderTopRightRadius: !isMobileScreen() ? 5 : 0,
+        borderTopRightRadius: !isMobileScreen(windowWidth) ? 5 : 0,
     }
 })

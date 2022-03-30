@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Text } from 'react-native';
+import { Text, useWindowDimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
@@ -105,6 +105,8 @@ const Stack = createNativeStackNavigator<NavParamList>();
 
 // Main App Tab Navigation
 export default function App() {
+  const windowWidth = useWindowDimensions().width;
+
   const [user, setUser] = useState<IAuthUser | null>(null);
   const [zipCode, setZipCode] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -161,7 +163,7 @@ export default function App() {
       <NavigationContainer linking={navLinking} fallback={<Text>Loading...</Text>}>
         <UserContext.Provider value={providerValue}>
           <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
-            {isMobileScreen() ? // Phone Navigation
+            {isMobileScreen(windowWidth) ? // Phone Navigation
               <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} >
                 <Tab.Screen name="Profile" component={ProfileScreen} />
                 <Tab.Screen name="Home" component={HomeScreen} />

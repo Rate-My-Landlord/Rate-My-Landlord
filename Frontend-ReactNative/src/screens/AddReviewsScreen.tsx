@@ -112,7 +112,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
 
 
   return (
-    <MainContainer windowWidth={windowWidth} >
+    <MainContainer >
       <>
         {!user ? <Text>Must be logged in to post reviews</Text>
           :

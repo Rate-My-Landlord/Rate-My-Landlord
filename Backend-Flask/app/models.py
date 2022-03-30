@@ -201,7 +201,7 @@ class Review(db.Model):
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     author = db.relationship('User', backref='review',
-                             uselist=False, lazy=True, viewonly=True)
+                             uselist=False, lazy=True, viewonly=True, sync_backref=False)
 
     def to_json(self):
         landlord = Landlord.query.get(self.landlord_id)
@@ -283,8 +283,7 @@ class Landlord(SearchableMixin, db.Model):
                                            for property in self.properties]
             json_landlord['reviews'] = [review.to_json()
                                         for review in self.reviews]
-
-        return json_landlord
+        return {'id': self.id}
 
     @staticmethod
     def from_json(json_review):
@@ -337,9 +336,10 @@ class Property(SearchableMixin, db.Model):
     country = db.Column(db.String(50))
 
     def to_json(self):
+        # landlord = Landlord.get(self.landlord_id)
         json_property = {
             'id': self.id,
-            'landlord_id': self.landlord_id,
+            # 'landlord': landlord.to_json(brief=True),
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,

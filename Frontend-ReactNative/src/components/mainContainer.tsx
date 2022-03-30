@@ -20,7 +20,7 @@ export default ({ children }: Props) => {
                     {children}
                 </View>
                 { // Right Container Only on Web and when screen is big
-                    isMobileScreen() && (
+                    isMobileScreen(windowWidth) && (
                         <View style={pageStyles.rightContainer}>
                             <Text style={pageStyles.textColor}>Ad Space?</Text>
                         </View>

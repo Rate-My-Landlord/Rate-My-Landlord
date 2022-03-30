@@ -1,13 +1,11 @@
-import { Keyboard, Platform, useWindowDimensions } from "react-native"
+import { Keyboard, Platform } from "react-native"
 import { screenChangePoint } from "./constants/Layout";
 
 const dismissKeyboard = () => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') Keyboard.dismiss()
 }
 
-const isMobileScreen = () => {
-    const windowWidth = useWindowDimensions().width;
-
+const isMobileScreen = (windowWidth: number) => {
     return Platform.OS === 'ios' || Platform.OS === 'android' || windowWidth < screenChangePoint;
 }
 
