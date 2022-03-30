@@ -13,4 +13,13 @@ const isMobileDevice = () => {
     return Platform.OS === 'ios' || Platform.OS === 'android';
 }
 
-export { dismissKeyboard, isMobileScreen, isMobileDevice }
+const isNumberKey = (e: any) => {
+    var charCode = (e.which) ? e.which : e.keyCode
+    if (charCode > 31 && (charCode !== 46 && (charCode < 48 || charCode > 57))) {
+        e.preventDefault();
+        return false;
+    }
+    return true;
+}
+
+export { dismissKeyboard, isMobileScreen, isMobileDevice, isNumberKey }

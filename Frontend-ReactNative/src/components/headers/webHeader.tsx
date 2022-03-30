@@ -11,10 +11,7 @@ import SearchBar from '../search/searchBar';
 const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
 export default () => {
-    const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>()
-    const { zipCode } = useSearchContext();
-
-
+    const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>();
 
     // Loads Font
     let [fontsLoaded] = useFonts({
@@ -35,8 +32,6 @@ export default () => {
             </TouchableOpacity>
 
             <View style={styles.spacer} />
-
-            <Text style={styles.headerText} >{zipCode}</Text>
 
             {/* Search Bar Section */}
             <View style={styles.searchContainer}>

@@ -5,8 +5,6 @@ from ariadne import convert_kwargs_to_snake_case
 def resolve_landlords(*_):
     """Get all landlords"""
     try:
-        
-        [print(landlord.to_json()) for landlord in Landlord.query.all()]
         landlords = [landlord.to_json() for landlord in Landlord.query.all()]
         payload = {
             'success': True,

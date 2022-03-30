@@ -283,7 +283,7 @@ class Landlord(SearchableMixin, db.Model):
                                            for property in self.properties]
             json_landlord['reviews'] = [review.to_json()
                                         for review in self.reviews]
-        return {'id': self.id}
+        return json_landlord
 
     @staticmethod
     def from_json(json_review):
@@ -336,10 +336,10 @@ class Property(SearchableMixin, db.Model):
     country = db.Column(db.String(50))
 
     def to_json(self):
-        # landlord = Landlord.get(self.landlord_id)
+        landlord = Landlord.query.get(self.landlord_id)
         json_property = {
             'id': self.id,
-            # 'landlord': landlord.to_json(brief=True),
+            'landlord': landlord.to_json(brief=True),
             'address_1': self.address_1,
             'address_2': self.address_2,
             'city': self.city,
