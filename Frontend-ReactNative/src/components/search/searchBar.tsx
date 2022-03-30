@@ -60,6 +60,7 @@ const SearchBar = () => {
           onChangeText={(e) => setSearchTerm(e)}
           onFocus={() => setClicked(true)}
           onBlur={() => setClicked(false)}
+          onSubmitEditing={handleSubmit}
         />
         {clicked && (
           <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => { setSearchTerm('') }} />

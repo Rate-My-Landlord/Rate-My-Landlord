@@ -1,26 +1,23 @@
 import { View, Text, StyleSheet, Platform } from 'react-native';
-import { SearchBar } from 'react-native-screens';
+import SearchBar from '../search/searchBar';
 import { ThemeColors } from '../../constants/Colors';
 import { useSearchContext } from '../../global/searchContext';
 import { isMobileDevice } from '../../utils';
 
-type Props = {
-    windowWidth: number,
-}
-
-export default ({ windowWidth }: Props) => {
+export default () => {
     const { zipCode } = useSearchContext();
 
-    return (<View style={styles(windowWidth).headerScreen}>
-        <SearchBar />
-        {/* <Text>{zipCode}</Text>
+    return (
+        <View style={styles.headerScreen}>
+            <SearchBar />
+            {/* <Text>{zipCode}</Text>
         <Text style={styles(windowWidth).textColor}>Rate My Landlord</Text> */}
-    </View>
+        </View>
     )
 }
 
 
-const styles = (windowWidth: number) => StyleSheet.create({
+const styles = StyleSheet.create({
     // Main Dividers of the Screen (Header from Body)
     headerScreen: {
         flex: 1,
