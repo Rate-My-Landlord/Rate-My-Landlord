@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Text, useWindowDimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking';
 import { registerRootComponent } from 'expo';
 import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from './src/global/localStorage';
@@ -36,7 +35,7 @@ import { onError } from "@apollo/client/link/error";
 
 /* Apollo Config */
 const apolloHttpLink = createHttpLink({
-  uri: 'http://127.0.0.1:5000/api/graphql'
+  uri: 'http://10.0.0.165:5000/api/graphql'
 })
 
 // Setting the jwt in the header if it is in local storage.
@@ -159,7 +158,7 @@ export default function App() {
         <UserContext.Provider value={providerValue}>
           <SearchContext.Provider value={{ zipCode, setZipCode, searchTerm, setSearchTerm }}>
             {isMobileScreen(windowWidth) ? // Phone Navigation
-              <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} >
+              <Tab.Navigator tabBar={props => <NavTabBar {...props} />} screenOptions={{ headerShown: false }} initialRouteName="Home" >
                 <Tab.Screen name="Profile" component={ProfileScreen} />
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Reviews" component={ReviewScreen} />
@@ -167,11 +166,7 @@ export default function App() {
                 <Tab.Screen name="SearchResults" component={SearchResultsScreen} />
               </Tab.Navigator>
               : // Web Navigation
-              <Stack.Navigator
-                screenOptions={({
-                  headerShown: false,
-                })}
-              >
+              <Stack.Navigator screenOptions={({ headerShown: false })} initialRouteName="Home">
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Reviews" component={ReviewScreen} />
                 <Stack.Screen name="NewReview" component={AddReviewScreen} />

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { isMobileDevice } from './utils';
 
 const ACTIVE_COLOR = 'tomato';
 const INACTIVE_COLOR = 'gray';
@@ -70,7 +71,7 @@ export default function NavTabBar({ state, descriptors, navigation }: BottomTabB
         onLongPress={() => onLongPress("Home")}
         style={{ flex: 1, alignItems: 'center' }}
       >
-        <Ionicons name="home" color={homeFocused ? ACTIVE_COLOR : INACTIVE_COLOR} size={20} />
+        <Ionicons name="home" color={homeFocused ? ACTIVE_COLOR : INACTIVE_COLOR} size={25} />
       </TouchableOpacity>
       <TouchableOpacity
         accessibilityRole="button"
@@ -80,7 +81,7 @@ export default function NavTabBar({ state, descriptors, navigation }: BottomTabB
         onLongPress={() => onLongPress("Profile")}
         style={{ flex: 1, alignItems: 'center' }}
       >
-        <Ionicons name="person" color={!homeFocused ? ACTIVE_COLOR : INACTIVE_COLOR} size={20} />
+        <Ionicons name="person" color={!homeFocused ? ACTIVE_COLOR : INACTIVE_COLOR} size={25} />
       </TouchableOpacity>
     </View>
   )
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
   navBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: isMobileDevice() ? 30 : 10,
     borderTopWidth: 1,
     borderTopColor: '#C7C7C7'
   }

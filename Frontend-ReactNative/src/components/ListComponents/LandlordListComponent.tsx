@@ -36,33 +36,33 @@ export const LandlordComponent = (props: Props) => {
   }
 
   return (
-    <View style={styles().listItemContainer}>
+    <View style={styles.listItemContainer}>
       <View style={headerStyle(ratingColor).headerContainer}>
-        <Text style={styles().headerText}>{props.firstName} {props.lastName}</Text>
+        <Text style={styles.headerText}>{props.firstName} {props.lastName}</Text>
       </View>
-      <View style={styles().bodyContainer}>
+      <View style={styles.bodyContainer}>
         <View>
-          <Text style={styles().ratingText}>{"Overall: " + props.overallRating}({props.totalReviews})</Text>
-          <Star style={styles().star} rating={props.overallRating} />
+          <Text style={styles.ratingText}>{"Overall: " + props.overallRating}({props.totalReviews})</Text>
+          <Star style={styles.star} rating={props.overallRating} />
         </View>
-        <View style={styles().spacer} />
+        <View style={styles.spacer} />
 
         {/** Button to Go to Review Screen */}
-        <TouchableOpacity onPress={() => navigation.navigate('Reviews', {landlordId : props.id})}>
-          <View style={styles().reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { landlordId: props.id })}>
+          <View style={styles.reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-const styles = () => StyleSheet.create({
+const styles = StyleSheet.create({
   // Back Ground Contain
   listItemContainer: {
+    flex: 1,
     flexDirection: 'column',
     height: 100,
     marginVertical: 5,
-    width: '100%',
     borderRadius: 5,
     borderColor: ThemeColors.darkGrey,
     borderWidth: 2,

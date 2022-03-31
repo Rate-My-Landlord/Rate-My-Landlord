@@ -14,8 +14,9 @@ export const PropertyComponent = ({ property }: Props) => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList, "Home">>();
 
     return (
-        <View style={styles.headerContainer}>
-            <Text style={styles.headerText}>{property.address1}, {property.city}, {property.state}, {property.zipCode}</Text>
+        <View style={styles.propertyContainer}>
+            <Text style={styles.address}>{property.address1}</Text>
+            <Text style={styles.detailAddress}>{property.city}, {property.state}, {property.zipCode}</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Reviews', { landlordId: property.landlord.id })}>
                 <View style={styles.reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
             </TouchableOpacity>
@@ -24,22 +25,32 @@ export const PropertyComponent = ({ property }: Props) => {
 };
 
 const styles = StyleSheet.create({
-    headerContainer: {
-        flex: 2,
+    propertyContainer: {
+        flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        height: 50,
+        justifyContent: 'space-between',
         borderRadius: 5,
         borderColor: ThemeColors.darkGrey,
         borderWidth: 2,
         backgroundColor: ThemeColors.blue,
-        padding: 0,
         marginVertical: 5,
     },
-    headerText: {
+    addressContainer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+    },
+    address: {
         color: ThemeColors.white,
         fontWeight: 'bold',
         fontSize: 20,
+        flex: 2,
+        textAlign: "center",
+    },
+    detailAddress: {
+        color: ThemeColors.white,
+        fontWeight: 'bold',
+        fontSize: 10,
         flex: 1,
         textAlign: "center",
     },

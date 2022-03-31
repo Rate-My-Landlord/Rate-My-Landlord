@@ -79,13 +79,14 @@ export default SearchBar;
 // styles
 const styles = StyleSheet.create({
   container: {
-    margin: 15,
+    margin: 3,
+    marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    width: "80%",
   },
   searchBar: {
+    flex: 4,
     padding: 10,
     flexDirection: "row",
     width: "95%",
@@ -102,10 +103,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   submit: {
+    flex: .5,
     backgroundColor: ThemeColors.blue,
     borderBottomRightRadius: 15,
     borderTopRightRadius: 15,
     padding: 12,
+    alignItems: 'center'
   },
   headerText: {
     color: ThemeColors.blue,
@@ -115,14 +118,14 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   zipCodeContainer: {
-    width: 100,
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     paddingHorizontal: 10,
     textAlign: 'center',
   },
   changeZip: {
-    flex: 1,
+    flex: 2,
     borderColor: ThemeColors.darkBlue,
     borderRadius: 5,
     borderWidth: 2,

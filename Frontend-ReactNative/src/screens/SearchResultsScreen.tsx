@@ -10,6 +10,11 @@ import { useEffect } from 'react';
 import { LandlordComponent } from '../components/ListComponents/LandlordListComponent';
 import { PropertyComponent } from '../components/ListComponents/propertyListComponent';
 
+const NoResults = () => (
+    <View style={styles.noResultContainer}>
+        <Text style={styles.noResultText}>No results found</Text>
+    </View>
+)
 
 const SEARCH_QUERY = gql`
     query Search($zipCode: String!, $searchTerm: String!) {
@@ -52,47 +57,52 @@ const SearchResultsScreen = () => {
         <MainContainer >
             {searchTerm === '' ? <Text style={styles.noResultText}>Enter a search term</Text>
                 :
-                <View style={[widthDepStyles(windowWidth).listContainer, { alignSelf: 'flex-start' }]}>
-                    <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-                        <Text style={pageStyles.whiteHeaderText}>Landlords</Text>
+                <>
+                    <View style={widthDepStyles(windowWidth).listContainer}>
+                        <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+                            <Text style={pageStyles.whiteHeaderText}>Landlords</Text>
+                        </View>
+                        {data?.Search.landlords?.length! > 0 ?
+                            <FlatList style={pageStyles.flatList}
+                                data={data?.Search.landlords}
+                                keyExtractor={item => item!!.id}
+                                renderItem={({ item }) => (
+                                    <LandlordComponent
+                                        id={item?.id!}
+                                        firstName={item?.firstName!}
+                                        lastName={item?.lastName!}
+                                        overallRating={item?.overallRating!}
+                                        totalReviews={item?.reviews!.length!} />
+                                )} />
+                            :
+                            <NoResults />
+                        }
                     </View>
-                    {data?.Search.landlords?.length! > 0 ?
-                        <FlatList style={pageStyles.flatList}
-                            data={data?.Search.landlords}
-                            keyExtractor={item => item!!.id}
-                            renderItem={({ item }) => (
-                                <LandlordComponent
-                                    id={item?.id!}
-                                    firstName={item?.firstName!}
-                                    lastName={item?.lastName!}
-                                    overallRating={item?.overallRating!}
-                                    totalReviews={item?.reviews!.length!}
-                                />
-                            )}
-                        />
-                        :
-                        <Text style={styles.noResultText}>No results found</Text>
-                    }
-                    <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-                        <Text style={pageStyles.whiteHeaderText}>Properties</Text>
+                    <View style={widthDepStyles(windowWidth).listContainer}>
+
+                        <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+                            <Text style={pageStyles.whiteHeaderText}>Properties</Text>
+                        </View>
+                        {data?.Search.properties?.length! > 0 ?
+                            <FlatList style={pageStyles.flatList}
+                                data={data?.Search.properties}
+                                keyExtractor={item => item!!.id}
+                                renderItem={({ item }) => (<PropertyComponent property={item!} />)} />
+                            :
+                            <NoResults />
+                        }
                     </View>
-                    {data?.Search.properties?.length! > 0 ?
-                        <FlatList style={pageStyles.flatList}
-                            data={data?.Search.properties}
-                            keyExtractor={item => item!!.id}
-                            renderItem={({ item }) => (<PropertyComponent property={item!} />)}
-                        />
-                        :
-                        <Text style={styles.noResultText}>No results found</Text>
-                    }
-                </View>
+                </>
             }
-        </MainContainer>
+        </MainContainer >
 
     )
 }
 
 const styles = StyleSheet.create({
+    noResultContainer: {
+        flex: 1,
+    },
     noResultText: {
         fontSize: 20,
         marginVertical: 5,

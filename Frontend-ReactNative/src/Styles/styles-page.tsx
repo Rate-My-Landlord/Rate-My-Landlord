@@ -24,6 +24,7 @@ import { ThemeColors } from "../constants/Colors";
     },
     // List containing Landlords and Reviews
     flatList: {
+        flex: 1,
         width: '100%',
         height: '100%',
         padding: 15,
