@@ -6,6 +6,7 @@ import { registerRootComponent } from 'expo';
 import loadUserCredsFromLocal, { getRefreshToken, saveUserCredsToLocal } from './src/global/localStorage';
 import { IAuthUser } from './src/types';
 import { isMobileScreen } from './src/utils';
+import { useFonts } from 'expo-font';
 //Navigation
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -16,7 +17,7 @@ import HomeScreen from './src/screens/HomeScreen'
 import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewScreen from './src/screens/AddReviewsScreen';
-import SearchResultsScreen from './src/screens/searchResultsScreen';
+import SearchResultsScreen from './src/screens/SearchResultsScreen';
 // Context
 import { UserContext } from './src/global/userContext';
 import { SearchContext } from './src/global/searchContext';
@@ -123,20 +124,6 @@ export default function App() {
     return () => { isMounted = false };
   }, [])
 
-
-  useEffect(() => {
-    let isMounted = true;
-    if (isMounted) {
-      fetch('https://ipapi.co/json/')
-        .then(response => response.json())
-        .then(data => setZipCode(data.postal))
-        .catch(error => console.log(error));
-    }
-
-    return () => { isMounted = false };
-  }, [])
-
-
   const providerValue = useMemo(() => ({ user, setUser }), [user, setUser]);
 
   // A kind of janky way to get a new token on startup
@@ -157,6 +144,14 @@ export default function App() {
       setUser(res);
     });
   }, [])
+
+  // Loads Font
+  let [fontsLoaded] = useFonts({
+    'BebasNeue-Regular': require('./assets/fonts/BebasNeue-Regular.ttf'),
+  });
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <ApolloProvider client={client}>

@@ -3,23 +3,12 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { Text, TouchableOpacity, View, Image, StyleSheet, Button } from 'react-native'
 import { NavParamList } from '../../../App';
 import { ThemeColors } from '../../constants/Colors';
-import AppLoading from 'expo-app-loading';
-import { useFonts } from 'expo-font';
-import { useSearchContext } from '../../global/searchContext';
 import SearchBar from '../search/searchBar';
 
 const logo = require('../../../assets/images/RateMyLandlordIcon.png');
 
 export default () => {
     const navigation = useNavigation<NativeStackNavigationProp<NavParamList>>();
-
-    // Loads Font
-    let [fontsLoaded] = useFonts({
-        'BebasNeue-Regular': require('../../../assets/fonts/BebasNeue-Regular.ttf'),
-    });
-    if (!fontsLoaded) {
-        return <AppLoading />;
-    }
 
     return (
         <View style={styles.navBar}>

@@ -60,17 +60,7 @@ export default ({ createAccountExpanded: expanded, setCreateAccountExpanded: set
     }
 
     // Form stuff
-    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>({
-        defaultValues: {
-            phone: 6,
-            email: 'hayden.stegman@gmail.com',
-            firstName: 'hayden',
-            lastName: 'stegman',
-            password: 'pw',
-            confirmPassword: 'pw'
-        }
-    }
-    );
+    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
 
     // Watching the value of password. We use this to make sure that the two password fields match
     const password = useRef({});

@@ -37,7 +37,7 @@ const SEARCH_QUERY = gql`
     }
 `
 
-const SearchResults = () => {
+const SearchResultsScreen = () => {
     const windowWidth = useWindowDimensions().width;
     const isFocused = useIsFocused();
     const { searchTerm, zipCode } = useSearchContext();
@@ -100,4 +100,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SearchResults;
+export default SearchResultsScreen;
