@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
@@ -7,13 +7,11 @@ import widthDepStyles from '../Styles/styles-width-dep';
 import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
-import { isMobileDevice, isMobileScreen } from '../utils';
+import { isMobileDevice } from '../utils';
 import StarInput from '../components/star/starInput';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
 import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
-import loadUserCredsFromLocal from '../global/localStorage';
-import { IAuthUser } from '../types';
 import { LANDLORD_REVIEWS } from './ReviewScreen';
 import { UserContext } from '../global/userContext'
 
@@ -65,9 +63,7 @@ const POST_REVIEW = gql`
 
 
 const AddReviewScreen = ({ route, navigation }: Props) => {
-  // const [user, setUser] = useState<IAuthUser | undefined | null>(undefined);
-  // const [_loading, set_Loading] = useState<boolean>(true);
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
   const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW, {
     refetchQueries: () => [{
@@ -83,12 +79,6 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const [comments, onCommentsText] = useState("");
 
   const windowWidth = useWindowDimensions().width;
-
-  // loadUserFromCreds() returns null if no user, so null means user is not authenticated
-  const isAuthenticated = () => { return user !== undefined }
-
-  console.log(user);
-
 
   const handleSuccess = (NewReview: ReviewResult) => {
     if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
@@ -117,7 +107,8 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
         {!user ? <Text>Must be logged in to post reviews</Text>
           :
           <>
-            <View style={formStyles.container}>
+            <View style={styles.container}>
+
               <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
                 <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
               </View>
@@ -128,7 +119,13 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
 
                 <View style={styles.formItem}>
                   <Text style={styles.sectionText}>Comments</Text>
-                  <TextInput style={styles.commentInput} maxLength={350} multiline={true} placeholder={'Comment'} keyboardType='default' onChangeText={onCommentsText} />
+                  <TextInput
+                    style={styles.commentInput}
+                    maxLength={350}
+                    multiline={true}
+                    placeholder={'Comment'}
+                    keyboardType='default'
+                    onChangeText={onCommentsText} />
                 </View>
 
                 <TouchableOpacity style={formStyles.submit} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
@@ -141,26 +138,18 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
         }
       </>
     </MainContainer>
+
   );
 }
 
 // Page Styles
 const styles = StyleSheet.create({
-  formItem: {
-    flex: 1,
-    flexDirection: 'column',
-    width: '90%',
+  container: {
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: isMobileDevice() ? 40 : 0,
-
-    // Header Gap - Only on Web
-    margin: isMobileDevice() ? 0 : 5,
-
-    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    borderRadius: isMobileDevice() ? 0 : 15,
+    padding: 0,
+    borderRadius: 5,
   },
   padding: {
     flex: 1,
@@ -173,16 +162,28 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   commentInput: {
-    height: '90%',
+    flex: 1.5,
     borderWidth: 1,
     padding: 10,
-    // width: '90%',
+  },
+  formItem: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 5,
+    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    borderRadius: isMobileDevice() ? 0 : 15,
   },
   sectionText: {
+    flex: 1,
     color: ThemeColors.darkBlue,
     fontWeight: 'bold',
     fontSize: 20,
     padding: 5,
+    textAlign: 'left'
   },
 })
 

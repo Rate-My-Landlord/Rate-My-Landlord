@@ -29,15 +29,15 @@ export const ReviewComponent = ({ review }: Props) => {
           <View style={styles.rating}>
             <Text style={styles.overallText}>Overall</Text>
             <Star rating={review.overallStarRating} />
+            {review.text &&
+              <View style={{ flex: 2 }}>
+                <View style={styles.line} />
+                  <Text style={styles.reviewText}>{review.text}</Text>
+              </View>
+            }
           </View>
           <Text style={styles.ratingDate}>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
         </View>
-        {review.text &&
-          <View style={{ flex: 2 }}>
-            <View style={styles.line} >
-              <Text style={styles.reviewText}>{review.text}</Text></View>
-          </View>
-        }
       </View>
     </View>
   );
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   // Back Ground Contain
   listItemContainer: {
     flexDirection: 'row',
-    height: 100,
+    minHeight: 100,
     marginVertical: 5,
     borderRadius: 15,
     borderColor: ThemeColors.darkGrey,
@@ -77,14 +77,14 @@ const styles = StyleSheet.create({
   ratingHeader: {
     flex: 2,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // alignContent: 'space-between',
+    justifyContent: 'flex-start',
+    alignContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 5
+    marginHorizontal: 20
   },
   rating: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   ratingDate: {
     flex: 1,

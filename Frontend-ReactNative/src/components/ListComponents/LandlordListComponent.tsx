@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   },
   reviewPageButton: {
     flex: 1,
-    flexGrow: .7,
+    flexGrow: .5,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: ThemeColors.white,
