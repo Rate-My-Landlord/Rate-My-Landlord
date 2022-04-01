@@ -8,6 +8,7 @@ import { Star } from '../star/Star';
 import { ThemeColors } from '../../constants/Colors';
 import { Review } from '../../../graphql/generated';
 import dayjs from 'dayjs';
+import { getRatingColor } from '../../utils';
 
 /* 
   Component added to list for each landlord present in area.
@@ -20,28 +21,23 @@ type Props = {
 export const ReviewComponent = ({ review }: Props) => {
   const navigation = useNavigation();
 
-  // Logic For Review Colors
-  let ratingColor = "green"; // Default Green
-
-  if (review.overallStarRating <= 2) {
-    ratingColor = "red";
-  } else if (review.overallStarRating == 3) {
-    ratingColor = "orange";
-  }
-
   return (
     <View style={styles.listItemContainer}>
-
-      <View style={headerStyle(ratingColor).headerContainer} />
+      <View style={[styles.headerContainer, { backgroundColor: getRatingColor(review.overallStarRating) }]} />
       <View style={styles.bodyContainer}>
-        <View>
-          <Text style={styles.ratingText}>Overall</Text>
-          <Star style={styles.star} rating={review.overallStarRating} />
-          <Text>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
+        <View style={styles.ratingHeader}>
+          <View style={styles.rating}>
+            <Text style={styles.overallText}>Overall</Text>
+            <Star rating={review.overallStarRating} />
+          </View>
+          <Text style={styles.ratingDate}>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
         </View>
-        <View style={styles.line} />
-        <View style={styles.spacer} />
-        <Text>{review.text}</Text>
+        {review.text &&
+          <View style={{ flex: 2 }}>
+            <View style={styles.line} >
+              <Text style={styles.reviewText}>{review.text}</Text></View>
+          </View>
+        }
       </View>
     </View>
   );
@@ -53,63 +49,62 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 100,
     marginVertical: 5,
-    width: '100%',
     borderRadius: 15,
     borderColor: ThemeColors.darkGrey,
     borderWidth: 3,
   },
-  bodyContainer: {
-    flex: 7,
-    backgroundColor: ThemeColors.grey,
-    paddingHorizontal: 15,
-    paddingTop: 10,
-    paddingBottom: 20,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
+  headerContainer: {
+    flex: 1,
+    borderBottomLeftRadius: 12,
+    borderTopLeftRadius: 12,
     alignItems: 'center',
-    flexDirection: 'column',
+    padding: 0,
   },
   headerText: {
     color: ThemeColors.white,
     fontWeight: 'bold',
     fontSize: 20,
   },
-  ratingContainer: {
-    flex: 1
+  bodyContainer: {
+    flex: 7,
+    justifyContent: 'center',
+    flexDirection: 'column',
+    backgroundColor: ThemeColors.grey,
+    paddingHorizontal: 10,
+    borderTopRightRadius: 15,
+    borderBottomRightRadius: 15,
   },
-  spacer: {
-    flex: 3,
+  ratingHeader: {
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // alignContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 5
   },
-  ratingText: {
+  rating: {
+    flex: 1,
+    flexDirection: 'column'
+  },
+  ratingDate: {
+    flex: 1,
+    textAlign: 'right',
+  },
+  overallText: {
     fontWeight: 'bold',
     fontSize: 10,
-    paddingRight: 10,
     textAlign: 'center',
   },
-  star: {
-    flex: 1,
-  },
   line: {
-    height: 2,
-    width: '15%',
+    flex: .5,
+    width: '50%',
     borderTopColor: ThemeColors.darkBlue,
     borderTopWidth: 3,
-    borderRadius: 5,
-    margin: 5
-  }
-})
-
-const headerStyle = (ratingColor: any) => StyleSheet.create({
-  headerContainer: {
-    flex: 1,
-
-    // Color Logic
-    backgroundColor: ratingColor == "green" ? '#10B981'
-      : ratingColor == "orange" ? '#FAAF3E' : '#EF4444',
-
-    borderBottomLeftRadius: 12,
-    borderTopLeftRadius: 12,
-    alignItems: 'center',
-    padding: 0,
+    margin: 3,
+    alignSelf: 'center'
   },
+  reviewText: {
+    flex: 1,
+    // alignSelf: 'center'
+  }
 })

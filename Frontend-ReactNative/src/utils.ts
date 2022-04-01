@@ -1,4 +1,5 @@
 import { Keyboard, Platform } from "react-native"
+import { ThemeColors } from "./constants/Colors";
 import { screenChangePoint } from "./constants/Layout";
 
 const dismissKeyboard = () => {
@@ -22,4 +23,14 @@ const isNumberKey = (e: any) => {
     return true;
 }
 
-export { dismissKeyboard, isMobileScreen, isMobileDevice, isNumberKey }
+function getRatingColor(rating: number): string {
+    if (rating <= 2) {
+        return ThemeColors.red;
+    } else if (rating <= 3.5) {
+        return ThemeColors.orange;
+    } else {
+        return ThemeColors.green
+    }
+}
+
+export { dismissKeyboard, isMobileScreen, isMobileDevice, isNumberKey, getRatingColor }

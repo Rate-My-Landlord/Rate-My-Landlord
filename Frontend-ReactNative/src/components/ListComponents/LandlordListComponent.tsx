@@ -9,6 +9,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import { ThemeColors } from '../../constants/Colors';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { NavParamList } from '../../../App';
+import { getRatingColor } from '../../utils';
 
 /* 
   Component added to list for each landlord present in area.
@@ -26,30 +27,20 @@ type Props = {
 export const LandlordComponent = (props: Props) => {
   const navigation = useNavigation<NativeStackNavigationProp<NavParamList, "Home">>();
 
-  // Logic For Review Colors
-  let ratingColor = "green"; // Default Green
-
-  if (props.overallRating <= 2) {
-    ratingColor = "red";
-  } else if (props.overallRating > 2 && props.overallRating < 3.5) {
-    ratingColor = "orange";
-  }
-
   return (
     <View style={styles.listItemContainer}>
-      <View style={headerStyle(ratingColor).headerContainer}>
+      <View style={[styles.headerContainer, { backgroundColor: getRatingColor(props.overallRating) }]}>
         <Text style={styles.headerText}>{props.firstName} {props.lastName}</Text>
       </View>
       <View style={styles.bodyContainer}>
-        <View>
+        <View style={styles.ratingContainer}>
           <Text style={styles.ratingText}>{"Overall: " + props.overallRating}({props.totalReviews})</Text>
-          <Star style={styles.star} rating={props.overallRating} />
+          <Star rating={props.overallRating} />
         </View>
-        <View style={styles.spacer} />
-
+        <View style={{ flex: 2 }} />
         {/** Button to Go to Review Screen */}
-        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { landlordId: props.id })}>
-          <View style={styles.reviewPageButton}><FontAwesome name="arrow-right" size={30} color={ThemeColors.darkBlue} /></View>
+        <TouchableOpacity style={styles.reviewPageButton} onPress={() => navigation.navigate('Reviews', { landlordId: props.id })}>
+          <FontAwesome name="arrow-right" size={25} color={ThemeColors.darkBlue} />
         </TouchableOpacity>
       </View>
     </View>
@@ -67,14 +58,12 @@ const styles = StyleSheet.create({
     borderColor: ThemeColors.darkGrey,
     borderWidth: 2,
   },
-  bodyContainer: {
+  headerContainer: {
     flex: 2,
-    backgroundColor: ThemeColors.grey,
-    padding: 10,
-    paddingHorizontal: 10,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
+    borderTopRightRadius: 5,
+    borderTopLeftRadius: 5,
     alignItems: 'center',
+    padding: 0,
     flexDirection: 'row',
   },
   headerText: {
@@ -84,10 +73,17 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
   },
-  ratingContainer: {
-    flex: 1
+  bodyContainer: {
+    flex: 2,
+    backgroundColor: ThemeColors.grey,
+    padding: 10,
+    borderBottomLeftRadius: 5,
+    borderBottomRightRadius: 5,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
-  spacer: {
+  ratingContainer: {
     flex: 3,
   },
   ratingText: {
@@ -96,34 +92,15 @@ const styles = StyleSheet.create({
     paddingBottom: 2.5,
     textAlign: 'center',
   },
-  star: {
-    flex: 1,
-  },
   reviewPageButton: {
     flex: 1,
+    flexGrow: .7,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: ThemeColors.white,
     borderRadius: 5,
-    alignItems: 'center',
-    padding: 5,
     borderColor: ThemeColors.darkGrey,
     borderWidth: 2,
-    width: 45,
-  },
-})
-
-const headerStyle = (ratingColor: any) => StyleSheet.create({
-  headerContainer: {
-    flex: 2,
-
-    // Color Logic
-    backgroundColor: ratingColor == "green" ? ThemeColors.green
-      : ratingColor == "orange" ? ThemeColors.orange : ThemeColors.red,
-
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5,
-    alignItems: 'center',
-    padding: 0,
-
-    flexDirection: 'row',
+    aspectRatio: 1,
   },
 })
