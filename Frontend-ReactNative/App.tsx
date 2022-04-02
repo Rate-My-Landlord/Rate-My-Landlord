@@ -35,7 +35,7 @@ import { onError } from "@apollo/client/link/error";
 
 /* Apollo Config */
 const apolloHttpLink = createHttpLink({
-  uri: 'http://10.0.0.133:5000/api/graphql'
+  uri: 'http://10.0.0.165:5000/api/graphql'
 })
 
 // Setting the jwt in the header if it is in local storage.

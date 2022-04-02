@@ -29,10 +29,10 @@ export const ReviewComponent = ({ review }: Props) => {
           <View style={styles.rating}>
             <Text style={styles.overallText}>Overall</Text>
             <Star rating={review.overallStarRating} />
-            {review.text &&
+            {review.text !== null &&
               <View style={{ flex: 2 }}>
                 <View style={styles.line} />
-                  <Text style={styles.reviewText}>{review.text}</Text>
+                <Text style={styles.reviewText}>{review.text}</Text>
               </View>
             }
           </View>

@@ -1,19 +1,21 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AddButton } from '../components/AddButton';
 import MainContainer from '../components/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
 import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page'
 import { ThemeColors } from '../constants/Colors';
-import { isMobileDevice } from '../utils';
+import { isMobileScreen } from '../utils';
 import StarInput from '../components/star/starInput';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
 import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
 import { LANDLORD_REVIEWS } from './ReviewScreen';
 import { UserContext } from '../global/userContext'
+import Dropdown, { Item } from '../components/form/dropdown';
 
 
 type FieldProps = {
@@ -25,7 +27,7 @@ type FieldProps = {
 const StarField = (props: FieldProps) => (
   <View style={styles.formItem}>
     <Text style={styles.sectionText}>{props.title}</Text>
-    <StarInput star={props.rating} setStar={props.setRating} />
+    <StarInput style={{ flex: 1, justifyContent: 'center' }} star={props.rating} setStar={props.setRating} />
   </View>
 )
 
@@ -37,8 +39,14 @@ const GET_LANDLORD = gql`
      success,
      errors,
      landlord {
-       firstName
+       firstName,
+       properties {
+       id,
+       address1,
+       city,
+       state
      }
+     },
    }
  }
 `
@@ -63,6 +71,7 @@ const POST_REVIEW = gql`
 
 
 const AddReviewScreen = ({ route, navigation }: Props) => {
+  const windowWidth = useWindowDimensions().width;
   const { user } = useContext(UserContext);
   const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
   const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW, {
@@ -77,8 +86,20 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const [communicationRating, setCommunicationRating] = useState<number>(0);
   const [maintenanceRating, setMaintenanceRating] = useState<number>(0);
   const [comments, onCommentsText] = useState("");
+  const [selectedProperty, setSelectedProperty] = useState<Item>();
 
-  const windowWidth = useWindowDimensions().width;
+  const [properties, setProperties] = useState<Item[]>();
+  useEffect(() => {
+    if (data?.LandlordById.landlord?.properties) {
+      let _properties: Item[] = [{ label: 'No Property', longerLabel: '', id: '' }];
+      data?.LandlordById.landlord?.properties.map(property => {
+        _properties.push({ label: property?.address1!, longerLabel: `${property?.address1}, ${property?.city}, ${property?.state}`, id: property?.id! })
+      })
+      setProperties(_properties);
+      setSelectedProperty(_properties[0]);
+    }
+  }, [data])
+
 
   const handleSuccess = (NewReview: ReviewResult) => {
     if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
@@ -100,19 +121,27 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     })
   }
 
-
   return (
     <MainContainer >
-      <>
-        {!user ? <Text>Must be logged in to post reviews</Text>
-          :
-          <>
-            <View style={styles.container}>
+      <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
 
-              <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-                <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
-              </View>
-              <View style={styles.padding}>
+        <View style={[styles.container, isMobileScreen(windowWidth) && { flexDirection: 'column-reverse' }]}>
+          <View style={[widthDepStyles(windowWidth).listControlContainer, styles.containerLeft, isMobileScreen(windowWidth) && { flex: .5 }]}>
+            <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate("Reviews", { landlordId: route.params.landlordId })} />
+          </View>
+
+          <View style={styles.containerRight}>
+            <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+              <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
+            </View>
+            {!user ? <Text>Must be logged in to post reviews</Text>
+              :
+              <View style={styles.form}>
+                {properties &&
+                  <View style={styles.formItem}>
+                    <Text style={styles.sectionText}>Property</Text>
+                    <Dropdown items={properties} choice={selectedProperty!} setChoice={setSelectedProperty} />
+                  </View>}
                 <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
                 <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
                 <StarField title="Maintenance Skills" rating={maintenanceRating} setRating={setMaintenanceRating} />
@@ -125,19 +154,17 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                     multiline={true}
                     placeholder={'Comment'}
                     keyboardType='default'
-                    onChangeText={onCommentsText} />
+                    onChangeText={onCommentsText}
+                  />
                 </View>
 
-                <TouchableOpacity style={formStyles.submit} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+                <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
               </View>
-            </View>
-            <View style={widthDepStyles(windowWidth).listControlContainer}>
-              <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate("Reviews", { landlordId: route.params.landlordId })} />
-            </View>
-          </>
-        }
-      </>
-    </MainContainer>
+            }
+          </View>
+        </View>
+      </KeyboardAwareScrollView >
+    </MainContainer >
 
   );
 }
@@ -146,36 +173,37 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 3,
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    padding: 0,
     borderRadius: 5,
   },
-  padding: {
+  containerLeft: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  numberInput: {
-    height: '35%',
-    borderWidth: 1,
-    padding: 10,
+  containerRight: {
+    flex: 3
+  },
+  form: {
+    flex: .5,
+    flexDirection: 'column',
+    marginHorizontal: 5,
   },
   commentInput: {
     flex: 1.5,
     borderWidth: 1,
     padding: 10,
+    borderRadius: 5,
+    height: 70,
+    overflow: 'hidden'
   },
   formItem: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
-    marginHorizontal: 5,
-    // Rounded Corners - All 4 on Web, Bottom 2 on IOS/Andriod
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    borderRadius: isMobileDevice() ? 0 : 15,
+    // borderWidth: 2,
+    // borderRadius: 5,
+    // borderColor: ThemeColors.blue
   },
   sectionText: {
     flex: 1,
@@ -184,6 +212,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 5,
     textAlign: 'left'
+  },
+  submit: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    flex: .1,
+    width: 200,
+    marginHorizontal: 'auto',
   },
 })
 
