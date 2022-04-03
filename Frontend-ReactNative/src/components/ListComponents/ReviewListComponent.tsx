@@ -3,7 +3,7 @@
 */
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Star } from '../star/Star';
 import { ThemeColors } from '../../constants/Colors';
 import { Review } from '../../../graphql/generated';
@@ -24,19 +24,25 @@ export const ReviewComponent = ({ review }: Props) => {
   return (
     <View style={styles.listItemContainer}>
       <View style={[styles.headerContainer, { backgroundColor: getRatingColor(review.overallStarRating) }]} />
-      <View style={styles.bodyContainer}>
-        <View style={styles.ratingHeader}>
-          <View style={styles.rating}>
-            <Text style={styles.overallText}>Overall</Text>
-            <Star rating={review.overallStarRating} />
-            {review.text !== null &&
-              <View style={{ flex: 2 }}>
-                <View style={styles.line} />
-                <Text style={styles.reviewText}>{review.text}</Text>
-              </View>
-            }
-          </View>
-          <Text style={styles.ratingDate}>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
+      <View style={styles.ratingHeader}>
+        <View style={styles.rating}>
+          <Text style={styles.overallText}>Overall</Text>
+          <Star rating={review.overallStarRating} />
+          {review.text !== null &&
+            <View style={{ flex: 2 }}>
+              <View style={styles.line} />
+              <Text style={styles.reviewText}>{review.text}</Text>
+            </View>
+          }
+        </View>
+        <View style={styles.ratingDate}>
+          <Text>{dayjs(review.createdAt).format("MMM D, YYYY")}</Text>
+          {review.property &&
+            <>
+              <View style={styles.line} />
+              <Text>{review.property.address1}, {review.property.city}, {review.property.state}</Text>
+            </>
+          }
         </View>
       </View>
     </View>
@@ -65,22 +71,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
   },
-  bodyContainer: {
-    flex: 7,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    backgroundColor: ThemeColors.grey,
-    paddingHorizontal: 10,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
-  },
   ratingHeader: {
-    flex: 2,
+    flex: 7,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 20
+    backgroundColor: ThemeColors.grey,
+    paddingHorizontal: 20,
+    borderTopRightRadius: 15,
+    borderBottomRightRadius: 15,
   },
   rating: {
     flex: 1,
@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
   },
   ratingDate: {
     flex: 1,
-    textAlign: 'right',
+    textAlign: 'center',
+    marginLeft: 10,
   },
   overallText: {
     fontWeight: 'bold',

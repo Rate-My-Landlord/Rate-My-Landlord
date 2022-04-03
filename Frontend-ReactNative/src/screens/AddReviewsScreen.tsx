@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AddButton } from '../components/AddButton';
-import MainContainer from '../components/mainContainer';
+import MainContainer from '../components/containers/mainContainer';
 import widthDepStyles from '../Styles/styles-width-dep';
 import formStyles from '../Styles/styles-form';
-import pageStyles from '../Styles/styles-page'
+import pageStyles from '../Styles/styles-page';
 import { ThemeColors } from '../constants/Colors';
 import { isMobileScreen } from '../utils';
 import StarInput from '../components/star/starInput';
@@ -16,7 +16,10 @@ import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewRe
 import { LANDLORD_REVIEWS } from './ReviewScreen';
 import { UserContext } from '../global/userContext'
 import Dropdown, { Item } from '../components/form/dropdown';
+import RightContainer from '../components/containers/rightContainer';
+import LeftContainer from '../components/containers/leftContainer';
 
+const noProperty: Item = { label: 'No Property', longerLabel: '', id: '-1' };
 
 type FieldProps = {
   title: string,
@@ -85,13 +88,14 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const [overallRating, setOverallRating] = useState<number>(0);
   const [communicationRating, setCommunicationRating] = useState<number>(0);
   const [maintenanceRating, setMaintenanceRating] = useState<number>(0);
-  const [comments, onCommentsText] = useState("");
+  const [comments, setComments] = useState("");
   const [selectedProperty, setSelectedProperty] = useState<Item>();
 
+  // For dropdown
   const [properties, setProperties] = useState<Item[]>();
   useEffect(() => {
     if (data?.LandlordById.landlord?.properties) {
-      let _properties: Item[] = [{ label: 'No Property', longerLabel: '', id: '' }];
+      let _properties: Item[] = [noProperty];
       data?.LandlordById.landlord?.properties.map(property => {
         _properties.push({ label: property?.address1!, longerLabel: `${property?.address1}, ${property?.city}, ${property?.state}`, id: property?.id! })
       })
@@ -100,11 +104,17 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     }
   }, [data])
 
+  const resetForm = () => {
+    setOverallRating(0);
+    setCommunicationRating(0);
+    setMaintenanceRating(0);
+    setComments("");
+    properties && setSelectedProperty(properties[0]);
+  }
 
   const handleSuccess = (NewReview: ReviewResult) => {
     if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
   }
-
 
   const handleSubmit = () => {
     if (overallRating === 0) return;
@@ -112,6 +122,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
       variables: {
         authorId: user!.userId,
         landlordId: route.params.landlordId,
+        propertyId: selectedProperty?.id !== noProperty.id ? selectedProperty?.id! : undefined,
         overallStarRating: overallRating,
         communicationStarRating: communicationRating,
         maintenanceStarRating: maintenanceRating,
@@ -126,42 +137,45 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
       <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
 
         <View style={[styles.container, isMobileScreen(windowWidth) && { flexDirection: 'column-reverse' }]}>
-          <View style={[widthDepStyles(windowWidth).listControlContainer, styles.containerLeft, isMobileScreen(windowWidth) && { flex: .5 }]}>
+          <LeftContainer style={widthDepStyles(windowWidth).listControlContainer}>
             <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate("Reviews", { landlordId: route.params.landlordId })} />
-          </View>
+          </LeftContainer>
 
-          <View style={styles.containerRight}>
-            <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-              <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
-            </View>
-            {!user ? <Text>Must be logged in to post reviews</Text>
-              :
-              <View style={styles.form}>
-                {properties &&
-                  <View style={styles.formItem}>
-                    <Text style={styles.sectionText}>Property</Text>
-                    <Dropdown items={properties} choice={selectedProperty!} setChoice={setSelectedProperty} />
-                  </View>}
-                <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
-                <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
-                <StarField title="Maintenance Skills" rating={maintenanceRating} setRating={setMaintenanceRating} />
-
-                <View style={styles.formItem}>
-                  <Text style={styles.sectionText}>Comments</Text>
-                  <TextInput
-                    style={styles.commentInput}
-                    maxLength={350}
-                    multiline={true}
-                    placeholder={'Comment'}
-                    keyboardType='default'
-                    onChangeText={onCommentsText}
-                  />
-                </View>
-
-                <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+          <RightContainer>
+            <>
+              <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
+                <Text style={pageStyles.whiteHeaderText}>Post a Review for {data?.LandlordById.landlord?.firstName}</Text>
               </View>
-            }
-          </View>
+              {!user ? <Text style={styles.sectionText}>Must be logged in to post reviews</Text>
+                :
+                <View style={styles.form}>
+                  {properties &&
+                    <View style={styles.formItem}>
+                      <Text style={styles.sectionText}>Property</Text>
+                      <Dropdown items={properties} choice={selectedProperty!} setChoice={setSelectedProperty} />
+                    </View>}
+                  <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
+                  <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
+                  <StarField title="Maintenance Skills" rating={maintenanceRating} setRating={setMaintenanceRating} />
+
+                  <View style={styles.formItem}>
+                    <Text style={styles.sectionText}>Comments</Text>
+                    <TextInput
+                      style={styles.commentInput}
+                      maxLength={350}
+                      multiline={true}
+                      placeholder={'Comment'}
+                      keyboardType='default'
+                      onChangeText={setComments}
+                      value={comments}
+                    />
+                  </View>
+
+                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+                </View>
+              }
+            </>
+          </RightContainer>
         </View>
       </KeyboardAwareScrollView >
     </MainContainer >

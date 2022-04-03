@@ -37,7 +37,7 @@ const Dropdown = ({ items, choice, setChoice }: Props) => {
     const toggleDropdown = () => expanded ? setExpanded(false) : openDropdown();
 
     const openDropdown = (): void => {
-        // Just ignore this error, it still works
+        // @ts-ignore - ignoring errors
         DropdownButton.current?.measure((_fx: number, _fy: number, _w: number, _h: number, _px: number, _py: number) => {
             setDropdownTop(_py + _h);
         });
@@ -50,7 +50,7 @@ const Dropdown = ({ items, choice, setChoice }: Props) => {
     }
 
     return (
-        // Also ignore this error, it also still works
+        // @ts-ignore - ignoring errors
         <TouchableOpacity ref={DropdownButton} onPress={toggleDropdown} style={styles.container} >
             <Modal visible={expanded} transparent animationType="none">
                 <TouchableOpacity style={isMobileScreen(windowWidth) ? styles.overlayMobile : styles.overlayDesktop} onPress={() => setExpanded(false)}>
@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     caret: {
-        flex: 1,
+        flex: .5,
+        textAlign: 'right'
     },
     dropdown: {
         position: 'absolute',

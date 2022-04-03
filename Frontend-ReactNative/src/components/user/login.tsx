@@ -4,7 +4,7 @@ import { IAuthUser } from '../../types';
 import { Mutation, MutationLoginArgs, Tokens } from '../../../graphql/generated';
 import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
-import TextField from './TextField';
+import TextField from '../form/TextField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useContext, useState } from 'react';
 import { dismissKeyboard } from '../../utils';

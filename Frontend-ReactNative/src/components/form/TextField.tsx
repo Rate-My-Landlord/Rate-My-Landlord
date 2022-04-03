@@ -11,11 +11,12 @@ type TextProps = {
     rules: any,
     secureTextEntry?: boolean,
     keyboardType?: 'default' | 'numeric' | 'email-address',
-    disabled?: boolean
+    disabled?: boolean,
+    style?: object
 }
 
-export default ({ label, name, error, control, rules, secureTextEntry = false, keyboardType = 'default', disabled = false }: TextProps) => (
-    <View>
+export default ({ label, name, error, control, rules, secureTextEntry = false, keyboardType = 'default', disabled = false, style }: TextProps) => (
+    <View style={[styles.container, style]}>
         <Text style={styles.label}>{label}</Text>
         <Controller
             control={control}
@@ -39,6 +40,9 @@ export default ({ label, name, error, control, rules, secureTextEntry = false, k
 )
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     input: {
         height: 40,
         alignItems: 'stretch',

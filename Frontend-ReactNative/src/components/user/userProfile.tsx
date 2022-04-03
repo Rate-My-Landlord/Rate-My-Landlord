@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Mutation, MutationUpdateUserArgs, Query, QueryUserByUserIdArgs } from '../../../graphql/generated';
-import TextField from './TextField';
+import TextField from '../form/TextField';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { resetCreds, saveUserCredsToLocal } from '../../global/localStorage';
 import { ThemeColors } from '../../constants/Colors';

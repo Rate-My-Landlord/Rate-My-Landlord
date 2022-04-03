@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
-import TextField from './TextField';
+import TextField from '../form/TextField';
 import { useMutation, gql } from '@apollo/client';
 import { Mutation, MutationNewUserExternalArgs, UserResult } from '../../../graphql/generated';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

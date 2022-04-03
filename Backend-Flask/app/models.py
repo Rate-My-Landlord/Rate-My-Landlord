@@ -214,7 +214,9 @@ class Review(db.Model):
             'text': self.text,
             'created_at': self.created_at}
         if (self.author_id):
-            json_review['author'] = self.author.to_json(brief=True),
+            json_review['author'] = self.author.to_json(brief=True)
+        if (self.property_id):
+            json_review['property'] = Property.query.get(self.property_id).to_json()
         return json_review
 
     @staticmethod

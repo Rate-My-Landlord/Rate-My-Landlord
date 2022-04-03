@@ -6,7 +6,7 @@ import { gql, useMutation } from '@apollo/client';
 import { Mutation, MutationNewUserArgs, Tokens } from '../../../graphql/generated';
 import { IAuthUser } from '../../types';
 import { saveUserCredsToLocal } from '../../global/localStorage';
-import TextField from './TextField';
+import TextField from '../form/TextField';
 import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 import { UserContext } from '../../global/userContext';

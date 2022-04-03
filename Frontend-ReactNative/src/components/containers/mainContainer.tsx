@@ -1,8 +1,8 @@
 import { View, Text, useWindowDimensions } from 'react-native';
-import Header from './headers/header';
-import pageStyles from '../Styles/styles-page';
-import widthDepStyles from '../Styles/styles-width-dep';
-import { isMobileScreen } from '../utils';
+import Header from '../headers/header';
+import pageStyles from '../../Styles/styles-page';
+import widthDepStyles from '../../Styles/styles-width-dep';
+import { isMobileScreen } from '../../utils';
 
 type Props = {
     children: JSX.Element

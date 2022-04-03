@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet, useWindowDimensions, FlatList } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { useSearchContext } from '../global/searchContext';
-import MainContainer from '../components/mainContainer';
+import MainContainer from '../components/containers/mainContainer';
 import { gql, useLazyQuery } from '@apollo/client';
 import { Query, QuerySearchArgs } from '../../graphql/generated';
 import widthDepStyles from '../Styles/styles-width-dep';
