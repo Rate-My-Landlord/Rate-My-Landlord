@@ -21,14 +21,14 @@ export type Item = {
     id: string
 }
 
-type Props = {
+export type DropdownProps = {
     items: Array<Item>,
     choice: Item,
     setChoice: (choice: Item) => void
 }
 
 // Reference for some of the things here: https://blog.logrocket.com/creating-custom-react-native-dropdown/
-const Dropdown = ({ items, choice, setChoice }: Props) => {
+const Dropdown = ({ items, choice, setChoice }: DropdownProps) => {
     const windowWidth = useWindowDimensions().width;
     const DropdownButton = useRef();
     const [expanded, setExpanded] = useState<boolean>(false);
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         textAlign: 'right'
     },
     dropdown: {
-        position: 'absolute',
+        // position: 'absolute',
         marginVertical: 5,
         padding: 10,
         marginHorizontal: 20,
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
     overlayMobile: {
         width: '90%',
         height: '90%',
+        paddingBottom: 500,
     },
     items: {
         flex: 1,
