@@ -15,8 +15,8 @@ import { UserContext } from '../global/userContext';
 import { gql, useQuery } from '@apollo/client';
 import { Query, QueryLandlordByIdArgs } from '../../graphql/generated';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import TextField, { formHeight, formWidth } from '../components/form/TextField';
-import Dropdown, { Item } from '../components/form/dropdown';
+import TextField from '../components/form/TextField';
+import { Item } from '../components/form/dropdown';
 import DropdownField from '../components/form/dropdownField';
 
 type Inputs = {
@@ -71,12 +71,16 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
     const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
 
 
-    const { control, handleSubmit, watch, formState: { errors } } = useForm<Inputs>();
+    const { control, handleSubmit, watch, formState: { errors: formErrors } } = useForm<Inputs>();
     const [selectedState, setSelectedState] = useState<Item>(usStates[0]);
     const [states, setStates] = useState<Item[]>(usStates);
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
+        if (selectedState.id == usStates[0].id) {
+            formErrors.state = { type: 'required', ref: { name: 'state' } };
+            return;
+        }
         // addProperty({
         //     variables: {
         //         phone: data.phone.toString(),
@@ -90,6 +94,7 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
 
+    console.log(formErrors);
 
     return (
         <MainContainer>
@@ -107,18 +112,10 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
                             {!user ? <Text style={styles.sectionText}>Must be logged in to add a property</Text>
                                 :
                                 <View style={styles.form}>
-                                    {/* <View style={[formStyles.container, {width: 'auto'}]}> */}
-                                    <TextField label='Address' name="address1" error={errors.address1} control={control} rules={{ required: true }} style={styles.formItem} />
-                                    <TextField label='Address 2 (optional)' name="address2" error={errors.address2} control={control} rules={{}} style={styles.formItem} />
-                                    <TextField label='City' name="city" error={errors.city} control={control} rules={{ required: true }} style={styles.formItem} />
-                                    <DropdownField label='State' name='state' error={errors.state} control={control} rules={{required: true}} items={states} choice={selectedState} setChoice={setSelectedState} />
-                                    {/* <View style={[styles.dropdownStyle, isMobileDevice() ? { flex: 3 } : undefined]}>
-                                        <Text>State</Text>
-                                        <Dropdown items={states} choice={selectedState} setChoice={setSelectedState} />
-                                    </View> */}
-                                    {/* <TextField label='State' name="state" error={errors.state} control={control} rules={{ required: true }} style={styles.formItem} /> */}
-                                    {/* <TextField label='Country' name="country" error={errors.country} control={control} rules={{ required: true }} style={styles.formItem}/> */}
-
+                                    <TextField label='Address' name="address1" error={formErrors.address1} control={control} rules={{ required: true }} style={styles.formItem} />
+                                    <TextField label='Address 2 (optional)' name="address2" error={formErrors.address2} control={control} style={styles.formItem} />
+                                    <TextField label='City' name="city" error={formErrors.city} control={control} rules={{ required: true }} style={styles.formItem} />
+                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} choice={selectedState} setChoice={setSelectedState} />
 
                                     <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
                                         <Text style={formStyles.submitText}>Add Property</Text>
@@ -151,8 +148,8 @@ const styles = StyleSheet.create({
     },
     dropdownStyle: {
         flex: 1,
-        height: formHeight,
-        width: formWidth,
+        // height: formHeight,
+        // width: formWidth,
     },
     sectionText: {
         flex: 3,

@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, FlatList, Modal, useWindowDimensions } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
 import { AntDesign } from '@expo/vector-icons';
@@ -25,10 +25,11 @@ export type DropdownProps = {
     items: Array<Item>,
     choice: Item,
     setChoice: (choice: Item) => void
+    style?: object,
 }
 
 // Reference for some of the things here: https://blog.logrocket.com/creating-custom-react-native-dropdown/
-const Dropdown = ({ items, choice, setChoice }: DropdownProps) => {
+const Dropdown = ({ items, choice, setChoice, style }: DropdownProps) => {
     const windowWidth = useWindowDimensions().width;
     const DropdownButton = useRef();
     const [expanded, setExpanded] = useState<boolean>(false);
@@ -51,7 +52,7 @@ const Dropdown = ({ items, choice, setChoice }: DropdownProps) => {
 
     return (
         // @ts-ignore - ignoring errors
-        <TouchableOpacity ref={DropdownButton} onPress={toggleDropdown} style={styles.container} >
+        <TouchableOpacity ref={DropdownButton} onPress={toggleDropdown} style={[styles.container, style]} >
             <Modal visible={expanded} transparent animationType="none">
                 <TouchableOpacity style={isMobileScreen(windowWidth) ? styles.overlayMobile : styles.overlayDesktop} onPress={() => setExpanded(false)}>
                     <View style={[styles.dropdown, { top: dropdownTop }]}>

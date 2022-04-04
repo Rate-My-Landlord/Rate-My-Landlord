@@ -1,5 +1,4 @@
-import { StyleSheet, View } from 'react-native';
-import FormContainer, { GenericFormProps } from './formContainer';
+import FormContainer, { GenericFormProps, GenericFormStyles } from './fieldContainer';
 import Dropdown, { DropdownProps as GenericDropDownProps } from './dropdown';
 
 type DropdownProps = GenericFormProps & GenericDropDownProps;
@@ -7,7 +6,7 @@ type DropdownProps = GenericFormProps & GenericDropDownProps;
 export default (props: DropdownProps) => (
     <FormContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
-            <Dropdown {...props} />
+            <Dropdown {...props} style={[GenericFormStyles, { marginHorizontal: 0 }]} />
         )}
     />
 )

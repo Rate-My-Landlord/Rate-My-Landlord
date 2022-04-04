@@ -1,12 +1,13 @@
 import { Control, FieldError, Controller, ControllerRenderProps, ControllerFieldState, UseFormStateReturn } from 'react-hook-form';
 import { View, Text, StyleSheet } from 'react-native';
+import { ThemeColors } from '../../constants/Colors';
 
 export type GenericFormProps = {
     label: string,
     name: string,
     error: FieldError | undefined,
     control: Control<any>
-    rules: any,
+    rules?: object,
     style?: object,
 }
 
@@ -27,9 +28,23 @@ export default ({ label, name, error, control, rules, style, render }: FormProps
     </View>
 )
 
+export const formHeight = 40;
+export const formWidth = 250;
+
+export const GenericFormStyles = {
+    flex: .1,
+    height: formHeight,
+    borderWidth: 2,
+    marginVertical: 5,
+    width: formWidth,
+    borderRadius: 5,
+    padding: 10,
+    backgroundColor: ThemeColors.white,
+}
+
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
     },
     label: {
     },
