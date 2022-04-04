@@ -34,7 +34,7 @@ const StarField = (props: FieldProps) => (
   </View>
 )
 
-type Props = NativeStackScreenProps<NavParamList, "NewReview">;
+type Props = NativeStackScreenProps<NavParamList, "AddReview">;
 
 const GET_LANDLORD = gql`
  query GetLandlord($landlordId: ID!) {

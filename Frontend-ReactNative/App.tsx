@@ -17,6 +17,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import ReviewScreen from './src/screens/ReviewScreen'
 import AddReviewScreen from './src/screens/AddReviewsScreen';
 import AddPropertyScreen from './src/screens/AddPropertyScreen';
+import AddLandlordScreen from './src/screens/AddLandlordScreen';
 import SearchResultsScreen from './src/screens/SearchResultsScreen';
 // Context
 import { UserContext } from './src/global/userContext';
@@ -82,7 +83,8 @@ const navLinking = {
     screens: {
       Home: '',
       Reviews: 'reviews/:landlordId',
-      NewReview: 'reviews/new/r/:landlordId',
+      AddReview: 'reviews/new/r/:landlordId',
+      AddLandlord: '/new/l',
       AddProperty: 'reviews/new/p/:landlordId',
       SearchResults: 'search',
       Profile: 'profile',
@@ -94,8 +96,9 @@ const navLinking = {
 export type NavParamList = {
   Home: undefined,
   Reviews: { landlordId: string }
-  NewReview: { landlordId: string },
+  AddReview: { landlordId: string },
   AddProperty: { landlordId: string },
+  AddLandlord: undefined,
   SearchResults: undefined,
   Profile: undefined,
 }
@@ -165,8 +168,9 @@ export default function App() {
                 <Tab.Screen name="Profile" component={ProfileScreen} />
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Reviews" component={ReviewScreen} />
-                <Tab.Screen name="NewReview" component={AddReviewScreen} />
+                <Tab.Screen name="AddReview" component={AddReviewScreen} />
                 <Tab.Screen name="AddProperty" component={AddPropertyScreen} />
+                <Tab.Screen name="AddLandlord" component={AddLandlordScreen} />
                 <Tab.Screen name="SearchResults" component={SearchResultsScreen} />
               </Tab.Navigator>
               : // Web Navigation
@@ -174,8 +178,9 @@ export default function App() {
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Reviews" component={ReviewScreen} />
-                <Stack.Screen name="NewReview" component={AddReviewScreen} />
+                <Stack.Screen name="AddReview" component={AddReviewScreen} />
                 <Stack.Screen name="AddProperty" component={AddPropertyScreen} />
+                <Stack.Screen name="AddLandlord" component={AddLandlordScreen} />
                 <Stack.Screen name="SearchResults" component={SearchResultsScreen} />
               </Stack.Navigator>
             }

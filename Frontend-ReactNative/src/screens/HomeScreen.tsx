@@ -64,7 +64,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         </RightContainer>
         <LeftContainer>
           <View style={widthDepStyles(windowWidth).listControlContainer}>
-            <AddButton buttonText={"Add Landlord"} onPress={() => navigation.navigate('Reviews', { landlordId: '0' })} />
+            <AddButton buttonText={"Add Landlord"} onPress={() => navigation.navigate('AddLandlord')} />
           </View>
         </LeftContainer>
       </>
