@@ -13,7 +13,7 @@ import RightContainer from '../components/containers/rightContainer';
 
 type Props = NativeStackScreenProps<NavParamList, "Home">;
 
-const ALLLANDLORDS = gql`
+export const ALLLANDLORDS = gql`
 query {
     AllLandlords {
         success,

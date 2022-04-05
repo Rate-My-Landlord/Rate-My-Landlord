@@ -1,6 +1,6 @@
 import { TextInput, StyleSheet } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
-import FormContainer, { GenericFormProps, GenericFormStyles } from './fieldContainer';
+import FormContainer, { GenericFormProps, GenericFormStyles, ErrorBorder } from './fieldContainer';
 
 type TextProps = GenericFormProps & {
     secureTextEntry?: boolean,
@@ -13,7 +13,7 @@ export default (props: TextProps) => (
     <FormContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-                style={[GenericFormStyles, props.disabled ? styles.inputDisabled : undefined]}
+                style={[GenericFormStyles, props.disabled ? styles.inputDisabled : undefined, props.error ? ErrorBorder : undefined]}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 secureTextEntry={props.secureTextEntry}

@@ -19,14 +19,17 @@ type FormProps = GenericFormProps & {
     }) => React.ReactElement
 }
 
-export default ({ label, name, error, control, rules, style, render }: FormProps) => (
-    <View style={[styles.container, style]}>
-        <Text style={styles.label}>{label}</Text>
-        <Controller control={control} rules={rules} render={render} name={name} />
-        {error?.type === 'required' && <Text style={styles.error}>{label} is required</Text>}
-        {error?.type === 'validate' && <Text style={styles.error}>{error.message}</Text>}
-    </View>
-)
+export default ({ label, name, error, control, rules, style, render }: FormProps) => {
+    return (
+        <View style={[styles.container, style]}>
+            {/* <View style={[styles.container, style, error ? styles.errorBorder : undefined]}> */}
+            <Text style={styles.label}>{label}</Text>
+            <Controller control={control} rules={rules} render={render} name={name} />
+            {error?.type === 'required' && <Text style={styles.errorMessage}>{label} is required</Text>}
+            {error?.type === 'validate' && <Text style={styles.errorMessage}>{error.message}</Text>}
+        </View>
+    )
+}
 
 export const formHeight = 40;
 export const formWidth = 250;
@@ -43,13 +46,17 @@ export const GenericFormStyles = {
     backgroundColor: ThemeColors.white,
 }
 
+export const ErrorBorder = {
+    borderColor: ThemeColors.red
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
     label: {
     },
-    error: {
-        color: 'red',
+    errorMessage: {
+        color: ThemeColors.red,
     },
 })

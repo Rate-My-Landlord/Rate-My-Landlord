@@ -1,5 +1,5 @@
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { useContext, useEffect, useState } from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { useContext, useState } from 'react';
 import { StyleSheet, View, Text, useWindowDimensions, TextInput, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AddButton } from '../components/AddButton';
@@ -11,19 +11,27 @@ import { ThemeColors } from '../constants/Colors';
 import { isMobileScreen } from '../utils';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
-import { Mutation, MutationNewReviewArgs, LandlordResult, MutationNewLandlordArgs} from '../../graphql/generated';
+import { Mutation, LandlordResult, MutationNewLandlordArgs } from '../../graphql/generated';
 import { UserContext } from '../global/userContext'
 import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import TextField from '../components/form/TextField';
+import { ALLLANDLORDS } from './HomeScreen';
 
 type Props = NativeStackScreenProps<NavParamList, "AddLandlord">;
 
+type Inputs = {
+  firstName: string,
+  lastName: string,
+  zipCode: string,
+}
+
 const POST_LANDLORD = gql`
   mutation NewLandlord($firstName: String!, $lastName: String!, $zipCode: String!) {
-      NewReview(firstName: $landlordFirstName, lastName: $landlordLastName, zipCode: $zipCode) {
+      NewLandlord(firstName: $firstName, lastName: $lastName, zipCode: $zipCode) {
           success,
           errors,
-          landlord,
         }
     }
 `
@@ -31,31 +39,28 @@ const POST_LANDLORD = gql`
 const AddLandlordScreen = ({ route, navigation }: Props) => {
   const windowWidth = useWindowDimensions().width;
   const { user } = useContext(UserContext);
-  const [postLandlord, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewLandlordArgs>(POST_LANDLORD);
-  const [landlordFirstName, setLandlordFirstName] = useState("");
-  const [landlordLastName, setLandlordLastName] = useState("");
-  const [zipcode, setZipcode] = useState("");
+  const [postLandlord, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewLandlordArgs>(POST_LANDLORD, {
+    refetchQueries: () => [{ query: ALLLANDLORDS }]
+  });
 
-  const resetForm = () => {
-    setLandlordFirstName("");
-    setLandlordLastName("");
-    setZipcode("");
-  }
+  const { control, handleSubmit, formState: { errors: formErrors } } = useForm<Inputs>();
 
   const handleSuccess = (NewLandlord: LandlordResult) => {
-    if (NewLandlord.success) return navigation.navigate("Home")
+    if (NewLandlord.success) return navigation.navigate("Home");
   }
 
-  const handleSubmit = () => {
+  const onSubmit: SubmitHandler<Inputs> = data => {
     postLandlord({
       variables: {
-        firstName: landlordFirstName,
-        lastName: landlordLastName,
-        zipCode: zipcode,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        zipCode: data.zipCode,
       },
-      onCompleted({ NewLandlord }) { NewLandlord && handleSuccess(NewLandlord) }
+      onCompleted({ NewLandlord }) { console.log(NewLandlord); NewLandlord!.success && navigation.navigate("Home"); }
     })
   }
+
+  const onError: SubmitErrorHandler<Inputs> = data => { };
 
   return (
     <MainContainer >
@@ -71,35 +76,17 @@ const AddLandlordScreen = ({ route, navigation }: Props) => {
               <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
                 <Text style={pageStyles.whiteHeaderText}>Add a Landlord</Text>
               </View>
-              {!user ? <Text style={styles.sectionText}>Must be logged in to add Landlords</Text>
+              {!user ? <Text style={styles.sectionText}>Must be logged in to add a Landlord</Text>
                 :
                 <View style={styles.form}>
-                  <TextInput 
-                    maxLength={50}
-                    multiline={false}
-                    placeholder={'First Name'}
-                    keyboardType='default'
-                    onChangeText={setLandlordFirstName}
-                    value={landlordLastName}
-                  />
-                  <TextInput
-                    maxLength={50}
-                    multiline={false}
-                    placeholder={'Last Name'}
-                    keyboardType='default'
-                    onChangeText={setLandlordLastName}
-                    value={landlordLastName}
-                  />
-                  <TextInput
-                    maxLength={50}
-                    multiline={false}
-                    placeholder={'Zipcode'}
-                    keyboardType='default'
-                    onChangeText={setZipcode}
-                    value={zipcode}
-                  />
+                  {postData?.NewLandlord?.errors && <Text style={formStyles.error}>{postData?.NewLandlord.errors.map((e: any) => e)} </Text> /* Errors from our API */}
+                  <TextField label="First Name" name="firstName" error={formErrors.firstName} control={control} rules={{ required: true }} style={styles.formItem} />
+                  <TextField label="Last Name" name="lastName" error={formErrors.lastName} control={control} rules={{ required: true }} style={styles.formItem} />
+                  <TextField label="Zip Code" name="zipCode" error={formErrors.zipCode} control={control} rules={{ required: true }} keyboardType="numeric" maxLength={5} style={styles.formItem} />
 
-                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit}><Text style={formStyles.submitText}>Add Landlord</Text></TouchableOpacity>
+                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
+                    <Text style={formStyles.submitText}>Add Landlord</Text>
+                  </TouchableOpacity>
                 </View>
               }
             </>
@@ -126,9 +113,10 @@ const styles = StyleSheet.create({
     flex: 3
   },
   form: {
-    flex: .5,
+    flex: .6,
     flexDirection: 'column',
-    marginHorizontal: 5,
+    alignItems: 'center',
+    margin: 5,
   },
   commentInput: {
     flex: 1.5,
@@ -140,12 +128,6 @@ const styles = StyleSheet.create({
   },
   formItem: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    // borderWidth: 2,
-    // borderRadius: 5,
-    // borderColor: ThemeColors.blue
   },
   sectionText: {
     flex: 1,
