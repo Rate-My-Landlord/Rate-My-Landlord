@@ -6,7 +6,7 @@ type DropdownProps = GenericFormProps & GenericDropDownProps;
 export default (props: DropdownProps) => (
     <FormContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
-            <Dropdown {...props} style={[GenericFormStyles, { marginHorizontal: 0 }]} />
+            <Dropdown {...props} />
         )}
     />
 )

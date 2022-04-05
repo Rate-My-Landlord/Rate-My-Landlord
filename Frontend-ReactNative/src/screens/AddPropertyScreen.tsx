@@ -16,8 +16,10 @@ import { gql, useQuery } from '@apollo/client';
 import { Query, QueryLandlordByIdArgs } from '../../graphql/generated';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import TextField from '../components/form/TextField';
-import { Item } from '../components/form/dropdown';
+import Dropdown, { Item } from '../components/form/dropdown';
 import DropdownField from '../components/form/dropdownField';
+
+const selectAState = { label: 'Select a state', value: '-1' };
 
 type Inputs = {
     address1: string,
@@ -72,12 +74,12 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
 
 
     const { control, handleSubmit, watch, formState: { errors: formErrors } } = useForm<Inputs>();
-    const [selectedState, setSelectedState] = useState<Item>(usStates[0]);
-    const [states, setStates] = useState<Item[]>(usStates);
+    const [selectedState, setSelectedState] = useState<Item>(selectAState);
+    const [states, setStates] = useState<Item[]>([selectAState].concat(usStates));
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
-        if (selectedState.id == usStates[0].id) {
+        if (selectedState.value === selectAState.value) {
             formErrors.state = { type: 'required', ref: { name: 'state' } };
             return;
         }
@@ -93,8 +95,6 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
         // });
     };
     const onError: SubmitErrorHandler<Inputs> = data => console.warn(data);
-
-    console.log(formErrors);
 
     return (
         <MainContainer>
@@ -115,7 +115,7 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
                                     <TextField label='Address' name="address1" error={formErrors.address1} control={control} rules={{ required: true }} style={styles.formItem} />
                                     <TextField label='Address 2 (optional)' name="address2" error={formErrors.address2} control={control} style={styles.formItem} />
                                     <TextField label='City' name="city" error={formErrors.city} control={control} rules={{ required: true }} style={styles.formItem} />
-                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} choice={selectedState} setChoice={setSelectedState} />
+                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} setChoice={setSelectedState} />
 
                                     <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
                                         <Text style={formStyles.submitText}>Add Property</Text>

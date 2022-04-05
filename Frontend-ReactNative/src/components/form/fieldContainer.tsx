@@ -35,6 +35,7 @@ export const GenericFormStyles = {
     flex: .1,
     height: formHeight,
     borderWidth: 2,
+    borderColor: ThemeColors.darkBlue,
     marginVertical: 5,
     width: formWidth,
     borderRadius: 5,
