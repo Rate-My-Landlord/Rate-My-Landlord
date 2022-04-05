@@ -15,7 +15,7 @@ export type DropdownProps = {
 const Dropdown = ({ items, setChoice }: DropdownProps) => (
     <RNPickerSelect
         placeholder={{}}
-        onValueChange={(value, index) => setChoice(items[index])}
+        onValueChange={(_, index) => setChoice(items[index])}
         style={{ ...customPickerStyles }}
         items={items}
     />

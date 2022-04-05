@@ -6,6 +6,7 @@ type TextProps = GenericFormProps & {
     secureTextEntry?: boolean,
     keyboardType?: 'default' | 'numeric' | 'email-address',
     disabled?: boolean,
+    maxLength?: number,
 }
 
 export default (props: TextProps) => (
@@ -19,6 +20,7 @@ export default (props: TextProps) => (
                 value={value ? String(value) : ''}
                 keyboardType={props.keyboardType}
                 editable={!props.disabled}
+                maxLength={props.maxLength ? props.maxLength : undefined}
             />
         )} />
 )
