@@ -19,7 +19,7 @@ import Dropdown, { Item } from '../components/form/dropdown';
 import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
 
-const noProperty: Item = { label: 'No Property', longerLabel: '', id: '-1' };
+const noProperty: Item = { label: 'No Property', value: '-1' };
 
 type FieldProps = {
   title: string,
@@ -36,7 +36,7 @@ const StarField = (props: FieldProps) => (
 
 type Props = NativeStackScreenProps<NavParamList, "AddReview">;
 
-const GET_LANDLORD = gql`
+export const GET_LANDLORD = gql`
  query GetLandlord($landlordId: ID!) {
    LandlordById(landlordId: $landlordId) {
      success,
@@ -97,7 +97,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     if (data?.LandlordById.landlord?.properties) {
       let _properties: Item[] = [noProperty];
       data?.LandlordById.landlord?.properties.map(property => {
-        _properties.push({ label: property?.address1!, longerLabel: `${property?.address1}, ${property?.city}, ${property?.state}`, id: property?.id! })
+        _properties.push({ label: `${property?.address1}, ${property?.city}, ${property?.state}`, value: property?.id! })
       })
       setProperties(_properties);
       setSelectedProperty(_properties[0]);
@@ -122,7 +122,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
       variables: {
         authorId: user!.userId,
         landlordId: route.params.landlordId,
-        propertyId: selectedProperty?.id !== noProperty.id ? selectedProperty?.id! : undefined,
+        propertyId: selectedProperty?.value !== noProperty.value ? selectedProperty?.value! : undefined,
         overallStarRating: overallRating,
         communicationStarRating: communicationRating,
         maintenanceStarRating: maintenanceRating,
@@ -152,7 +152,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                   {properties &&
                     <View style={styles.formItem}>
                       <Text style={styles.sectionText}>Property</Text>
-                      <Dropdown items={properties} choice={selectedProperty!} setChoice={setSelectedProperty} />
+                      <Dropdown items={properties} setChoice={setSelectedProperty} />
                     </View>}
                   <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
                   <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
