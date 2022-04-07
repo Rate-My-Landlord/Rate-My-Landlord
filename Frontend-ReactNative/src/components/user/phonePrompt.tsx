@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
-import TextField from '../form/TextField';
+import TextField from '../form/textField';
 import { useMutation, gql } from '@apollo/client';
 import { Mutation, MutationNewUserExternalArgs, UserResult } from '../../../graphql/generated';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -74,7 +74,7 @@ const PhonePrompt = ({ externalToken, resetExternalToken }: Props) => {
                 {loading && <Text>Submitting...</Text>}
                 {error && <Text style={styles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
                 {data?.NewUserExternal.errors && <Text style={styles.error}>{data?.NewUserExternal.errors.map((e: any) => e)} </Text> /* Errors from our API */}
-                <TextField label='Phone' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
+                <TextField label='Phone' name='phone' error={errors.phone} control={control} rules={{ required: true }} textInputProps={{keyboardType: 'phone-pad'}} />
                 <TouchableOpacity style={styles.submit} onPress={handleSubmit(onSubmit, onError)}>
                     <Text>Submit</Text>
                 </TouchableOpacity>

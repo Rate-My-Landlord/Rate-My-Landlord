@@ -4,7 +4,7 @@ import { IAuthUser } from '../../types';
 import { Mutation, MutationLoginArgs, Tokens } from '../../../graphql/generated';
 import { SubmitHandler, SubmitErrorHandler, useForm } from 'react-hook-form';
 import { ThemeColors } from '../../constants/Colors';
-import TextField from '../form/TextField';
+import TextField from '../form/textField';
 import { saveUserCredsToLocal } from '../../global/localStorage';
 import React, { useContext, useState } from 'react';
 import { dismissKeyboard } from '../../utils';
@@ -83,8 +83,8 @@ export default ({ loginExpanded: expanded, setLoginExpanded: setExpanded, setCre
                     <View style={{ flex: 1 }}>
                         <Text style={formStyles.formHeaderText}>Login</Text>
                         {data?.Login.errors && <Text style={formStyles.error}>{data?.Login.errors.map((e: any) => e)} </Text> /* Errors from our API */}
-                        <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
-                        <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} secureTextEntry={true} />
+                        <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} textInputProps={{keyboardType: 'number-pad'}} />
+                        <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} textInputProps={{secureTextEntry: true}}/>
                         <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
                             <Text style={formStyles.submitText}>Login</Text>
                         </TouchableOpacity>

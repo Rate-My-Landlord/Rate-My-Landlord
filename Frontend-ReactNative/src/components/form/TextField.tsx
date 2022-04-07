@@ -1,26 +1,25 @@
-import { TextInput, StyleSheet } from 'react-native';
+import { TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
 import FormContainer, { GenericFormProps, GenericFormStyles, ErrorBorder } from './fieldContainer';
 
 type TextProps = GenericFormProps & {
-    secureTextEntry?: boolean,
-    keyboardType?: 'default' | 'numeric' | 'email-address',
-    disabled?: boolean,
-    maxLength?: number,
+    textInputProps?: TextInputProps
 }
 
 export default (props: TextProps) => (
     <FormContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-                style={[GenericFormStyles, props.disabled ? styles.inputDisabled : undefined, props.error ? ErrorBorder : undefined]}
+                style={[
+                    GenericFormStyles,
+                    props.textInputProps?.editable === false ? styles.inputDisabled : undefined,
+                    props.error ? ErrorBorder : undefined,
+                    props.textInputProps?.multiline !== undefined ? styles.multiline : undefined
+                ]}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                secureTextEntry={props.secureTextEntry}
                 value={value ? String(value) : ''}
-                keyboardType={props.keyboardType}
-                editable={!props.disabled}
-                maxLength={props.maxLength ? props.maxLength : undefined}
+                {...props.textInputProps}
             />
         )} />
 )
@@ -29,4 +28,12 @@ const styles = StyleSheet.create({
     inputDisabled: {
         backgroundColor: ThemeColors.darkGrey,
     },
+    multiline: {
+        flex: 1,
+        borderWidth: 1,
+        padding: 10,
+        borderRadius: 5,
+        height: 70,
+        overflow: 'hidden'
+    }
 })

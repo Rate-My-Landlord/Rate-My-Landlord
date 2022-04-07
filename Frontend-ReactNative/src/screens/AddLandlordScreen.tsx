@@ -16,7 +16,7 @@ import { UserContext } from '../global/userContext'
 import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import TextField from '../components/form/TextField';
+import TextField from '../components/form/textField';
 import { ALLLANDLORDS } from './HomeScreen';
 
 type Props = NativeStackScreenProps<NavParamList, "AddLandlord">;

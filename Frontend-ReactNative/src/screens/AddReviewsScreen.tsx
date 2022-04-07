@@ -9,16 +9,19 @@ import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page';
 import { ThemeColors } from '../constants/Colors';
 import { isMobileScreen } from '../utils';
-import StarInput from '../components/star/starInput';
+// import StarInput from '../components/star/starInput';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
-import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs, ReviewResult } from '../../graphql/generated';
-import { LANDLORD_REVIEWS } from './ReviewScreen';
+import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs } from '../../graphql/generated';
+import { LANDLORD_BY_ID } from './ReviewScreen';
 import { UserContext } from '../global/userContext'
-import Dropdown, { Item } from '../components/form/dropdown';
+import { Item } from '../components/form/dropdown';
 import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
-import { useForm } from 'react-hook-form';
+import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
+import DropdownField from '../components/form/dropdownField';
+import StarInput from '../components/form/starField';
+import TextField from '../components/form/textField';
 
 const noProperty: Item = { label: 'No Property', value: '-1' };
 
@@ -28,17 +31,17 @@ type FieldProps = {
   setRating: (rating: number) => void;
 }
 
-const StarField = (props: FieldProps) => (
-  <View style={styles.formItem}>
-    <Text style={styles.sectionText}>{props.title}</Text>
-    <StarInput style={{ flex: 1, justifyContent: 'center' }} star={props.rating} setStar={props.setRating} />
-  </View>
-)
+// const StarField = (props: FieldProps) => (
+//   <View style={styles.formItem}>
+//     <Text style={styles.sectionText}>{props.title}</Text>
+//     <StarInput style={{ flex: 1, justifyContent: 'center' }} star={props.rating} setStar={props.setRating} />
+//   </View>
+// )
 
 type Props = NativeStackScreenProps<NavParamList, "AddReview">;
 
 type Inputs = {
-  property: string,
+  property?: string,
   overallRating: number,
   communicationRating: number,
   maintenanceRating: number,
@@ -88,60 +91,59 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(GET_LANDLORD, { variables: { landlordId: route.params.landlordId } });
   const [postReview, { data: postData, loading: postLoading, error: postError }] = useMutation<Mutation, MutationNewReviewArgs>(POST_REVIEW, {
     refetchQueries: () => [{
-      query: LANDLORD_REVIEWS,
+      query: LANDLORD_BY_ID,
       variables: {
         landlordId: route.params.landlordId
       }
     }]
   });
-  const [overallRating, setOverallRating] = useState<number>(0);
-  const [communicationRating, setCommunicationRating] = useState<number>(0);
-  const [maintenanceRating, setMaintenanceRating] = useState<number>(0);
-  const [comments, setComments] = useState("");
-  const [selectedProperty, setSelectedProperty] = useState<Item>();
 
   const { register, setValue, control, handleSubmit, formState: { errors: formErrors }, setError, clearErrors } = useForm<Inputs>();
 
-  // For dropdown
+  // For dropdown - populating properties
   const [properties, setProperties] = useState<Item[]>();
   useEffect(() => {
-    if (data?.LandlordById.landlord?.properties) {
+    if (data?.LandlordById.landlord?.properties?.length! > 0) {
       let _properties: Item[] = [noProperty];
-      data?.LandlordById.landlord?.properties.map(property => {
+      data?.LandlordById.landlord?.properties!.map(property => {
         _properties.push({ label: `${property?.address1}, ${property?.city}, ${property?.state}`, value: property?.id! })
       })
       setProperties(_properties);
-      setSelectedProperty(_properties[0]);
     }
   }, [data])
 
-  const resetForm = () => {
-    setOverallRating(0);
-    setCommunicationRating(0);
-    setMaintenanceRating(0);
-    setComments("");
-    properties && setSelectedProperty(properties[0]);
-  }
+  useEffect(() => {
+    register("property");
+    setValue("property", undefined);
+    register("overallRating");
+    setValue("overallRating", 0);
+    register("communicationRating");
+    setValue("communicationRating", 0);
+    register("maintenanceRating")
+    setValue("maintenanceRating", 0);
+  }, [register])
 
-  const handleSuccess = (NewReview: ReviewResult) => {
-    if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
-  }
+  const setProperty = (e: Item) => setValue("property", e.value);
+  const setOverallRating = (e: number) => setValue("overallRating", e);
+  const setCommunicationRating = (e: number) => setValue("communicationRating", e);
+  const setMaintenanceRating = (e: number) => setValue("maintenanceRating", e);
 
-  const _handleSubmit = () => {
-    if (overallRating === 0) return;
+  const onSubmit: SubmitHandler<Inputs> = data => {
     postReview({
       variables: {
         authorId: user!.userId,
         landlordId: route.params.landlordId,
-        propertyId: selectedProperty?.value !== noProperty.value ? selectedProperty?.value! : undefined,
-        overallStarRating: overallRating,
-        communicationStarRating: communicationRating,
-        maintenanceStarRating: maintenanceRating,
-        text: comments
+        propertyId: data.property ? data.property : undefined,
+        overallStarRating: data.overallRating,
+        communicationStarRating: data.communicationRating,
+        maintenanceStarRating: data.maintenanceRating,
+        text: data.comments
       },
-      onCompleted({ NewReview }) { NewReview && handleSuccess(NewReview) }
+      onCompleted({ NewReview }) { NewReview.success && navigation.navigate("Reviews", { landlordId: route.params.landlordId }) }
     })
   }
+
+  const onError: SubmitErrorHandler<Inputs> = data => { };
 
   return (
     <MainContainer >
@@ -161,28 +163,16 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                 :
                 <View style={styles.form}>
                   {properties &&
-                    <View style={styles.formItem}>
-                      <Text style={styles.sectionText}>Property</Text>
-                      <Dropdown items={properties} setChoice={setSelectedProperty} />
-                    </View>}
-                  <StarField title="Overall Rating" rating={overallRating} setRating={setOverallRating} />
-                  <StarField title="Communication Skills" rating={communicationRating} setRating={setCommunicationRating} />
-                  <StarField title="Maintenance Skills" rating={maintenanceRating} setRating={setMaintenanceRating} />
+                    <DropdownField label="Property" name="property" error={formErrors.property} control={control} items={properties} setChoice={setProperty} style={styles.formItem} />
+                  }
+                  <StarInput label='Overall Rating' name="overallRating" error={formErrors.overallRating} control={control} rules={{ required: true, validate: (value: number) => value !== 0 || "This field is required" }} setStar={setOverallRating} style={styles.formItem} />
+                  <StarInput label='Communication Rating' name="communicationRating" error={formErrors.communicationRating} control={control} setStar={setCommunicationRating} style={styles.formItem} />
+                  <StarInput label='Maintenance Rating' name="maintenanceRating" error={formErrors.maintenanceRating} control={control} setStar={setMaintenanceRating} style={styles.formItem} />
+                  <TextField label='Comments' name="comments" error={formErrors.comments} control={control} textInputProps={{ keyboardType: "default", multiline: true, maxLength: 400 }} style={styles.formItem} />
 
-                  <View style={styles.formItem}>
-                    <Text style={styles.sectionText}>Comments</Text>
-                    <TextInput
-                      style={styles.commentInput}
-                      maxLength={350}
-                      multiline={true}
-                      placeholder={'Comment'}
-                      keyboardType='default'
-                      onChangeText={setComments}
-                      value={comments}
-                    />
-                  </View>
-
-                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={_handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
+                    <Text style={formStyles.submitText}>Post Review</Text>
+                  </TouchableOpacity>
                 </View>
               }
             </>
@@ -226,9 +216,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    // borderWidth: 2,
-    // borderRadius: 5,
-    // borderColor: ThemeColors.blue
   },
   sectionText: {
     flex: 1,

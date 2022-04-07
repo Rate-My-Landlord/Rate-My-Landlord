@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Mutation, MutationUpdateUserArgs, Query, QueryUserByUserIdArgs } from '../../../graphql/generated';
-import TextField from '../form/TextField';
+import TextField from '../form/textField';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import { resetCreds, saveUserCredsToLocal } from '../../global/localStorage';
 import { ThemeColors } from '../../constants/Colors';
@@ -125,8 +125,8 @@ export default () => {
                     {feedback && <Text style={formStyles.feedback}>{feedback} </Text>/* Feedback from updating profile */}
                     {m_error && <Text style={formStyles.error}>An error occurred: {m_error.message} </Text>/* Errors from apollo */}
                     {m_data?.UpdateUser.errors && <Text style={formStyles.error}>{m_data?.UpdateUser.errors.map((e: any) => e)} </Text>/* Errors from our API */}
-                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' disabled={true} />
-                    <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
+                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} textInputProps={{editable: false}} />
+                    <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} textInputProps={{keyboardType: 'email-address'}} />
                     <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
                     <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
 

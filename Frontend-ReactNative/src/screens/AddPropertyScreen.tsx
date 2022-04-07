@@ -15,7 +15,7 @@ import { UserContext } from '../global/userContext';
 import { gql, useMutation, useQuery } from '@apollo/client';
 import { Mutation, MutationNewPropertyArgs, Query, QueryLandlordByIdArgs } from '../../graphql/generated';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
-import TextField from '../components/form/TextField';
+import TextField from '../components/form/textField';
 import Dropdown, { Item } from '../components/form/dropdown';
 import DropdownField from '../components/form/dropdownField';
 
@@ -96,14 +96,6 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
-        if (data.state === emptyState.value || data.state === undefined) {
-            setError('state', { type: 'required' })
-            return;
-        }
-        if (data.zipCode.length !== 5) {
-            setError('zipCode', { type: 'validate', message: 'Zip Code is invalid' });
-            return;
-        }
         clearErrors();
         addProperty({
             variables: {
@@ -141,8 +133,8 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
                                     <TextField label='Address' name="address1" error={formErrors.address1} control={control} rules={{ required: true }} style={styles.formItem} />
                                     <TextField label='Address 2 (optional)' name="address2" error={formErrors.address2} control={control} style={styles.formItem} />
                                     <TextField label='City' name="city" error={formErrors.city} control={control} rules={{ required: true }} style={styles.formItem} />
-                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} setChoice={setSelectedState} />
-                                    <TextField label='Zip Code' name="zipCode" error={formErrors.zipCode} control={control} rules={{ required: true }} style={styles.formItem} keyboardType="numeric" maxLength={5} />
+                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} setChoice={setSelectedState} rules={{validate: (value: string) => value !== emptyState.value || "This field is required"}} />
+                                    <TextField label='Zip Code' name="zipCode" error={formErrors.zipCode} control={control} rules={{ required: true, validate: (value: string) => value.length === 5 || "Invalid zip code" }} style={styles.formItem} textInputProps={{ keyboardType: "numeric", maxLength: 5 }} />
 
                                     <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
                                         <Text style={formStyles.submitText}>Add Property</Text>
@@ -165,7 +157,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     form: {
-        flex: .6,
+        flex: .8,    
         flexDirection: 'column',
         alignItems: 'center',
         margin: 5,

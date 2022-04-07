@@ -6,7 +6,7 @@ import { gql, useMutation } from '@apollo/client';
 import { Mutation, MutationNewUserArgs, Tokens } from '../../../graphql/generated';
 import { IAuthUser } from '../../types';
 import { saveUserCredsToLocal } from '../../global/localStorage';
-import TextField from '../form/TextField';
+import TextField from '../form/textField';
 import { dismissKeyboard } from '../../utils';
 import formStyles from '../../Styles/styles-form';
 import { UserContext } from '../../global/userContext';
@@ -98,12 +98,12 @@ export default ({ createAccountExpanded: expanded, setCreateAccountExpanded: set
                     {error && <Text style={formStyles.error}>An error occurred: {error.message} </Text> /* Errors from apollo */}
                     {data?.NewUser.errors && <Text style={formStyles.error}>{data?.NewUser.errors.map((e: any) => e)} </Text> /* Errors from our API */}
                     <Text style={formStyles.formHeaderText}>Create an Account</Text>
-                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} keyboardType='numeric' />
-                    <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} keyboardType='email-address' />
+                    <TextField label='Phone Number' name='phone' error={errors.phone} control={control} rules={{ required: true }} textInputProps={{ keyboardType: 'phone-pad' }} />
+                    <TextField label='Email' name='email' error={errors.email} control={control} rules={{ required: true }} textInputProps={{ keyboardType: 'email-address' }} />
                     <TextField label='First Name' name='firstName' error={errors.firstName} control={control} rules={{ required: true }} />
                     <TextField label='Last Name' name='lastName' error={errors.lastName} control={control} rules={{ required: true }} />
-                    <TextField label='Password' name='password' error={errors.password} control={control} secureTextEntry={true} rules={{ required: true }} />
-                    <TextField label='Confirm Password' name='confirmPassword' error={errors.confirmPassword} control={control} secureTextEntry={true} rules={{ required: true, validate: (value: any) => value == password.current || 'Passwords do not match' }} />
+                    <TextField label='Password' name='password' error={errors.password} control={control} rules={{ required: true }} textInputProps={{ secureTextEntry: true }} />
+                    <TextField label='Confirm Password' name='confirmPassword' error={errors.confirmPassword} control={control} textInputProps={{ secureTextEntry: true }} rules={{ required: true, validate: (value: any) => value === password.current || 'Passwords do not match' }} />
 
                     <TouchableOpacity style={formStyles.submit} onPress={handleSubmit(onSubmit, onError)}>
                         <Text style={formStyles.submitText}>Submit</Text>

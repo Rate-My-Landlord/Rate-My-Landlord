@@ -1,11 +1,10 @@
-import { useState, useEffect } from 'react';
 import { View, Text, useWindowDimensions, FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 import { NavParamList } from '../../App';
 import { ReviewComponent } from '../components/ListComponents/ReviewListComponent';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MainContainer from '../components/containers/mainContainer';
-import { Query, QueryReviewsByLandlordIdArgs } from '../../graphql/generated';
+import { Query, QueryLandlordByIdArgs } from '../../graphql/generated';
 import pageStyles from '../Styles/styles-page';
 import widthDepStyles from '../Styles/styles-width-dep';
 import { AddButton } from '../components/AddButton';
@@ -16,44 +15,33 @@ import { isMobileScreen } from '../utils';
 type Props = NativeStackScreenProps<NavParamList, "Reviews">;
 
 // Gets the Reviews for the Landlord
-export const LANDLORD_REVIEWS = gql`
-query ReviewsByLandlordId($landlordId: ID!){
-    ReviewsByLandlordId(landlordId: $landlordId) {
+export const LANDLORD_BY_ID = gql`
+query LandlordById($landlordId: ID!){
+    LandlordById(landlordId: $landlordId) {
         success,
         errors,
-        reviews {
-          id,
-          overallStarRating,
-          text,
-          createdAt,
-          landlord {
-            firstName,
-            lastName,
-          }
-          property {
-            address1,
-            city,
-            state,
-          }
+        landlord {
+          firstName,
+          reviews {
+            id,
+            overallStarRating,
+            text,
+            createdAt,
+            property {
+              address1,
+              city,
+              state,
+            }
         }
+      }
     }
 }
 `
 
 const ReviewsScreen = ({ route, navigation }: Props) => {
-  const { loading, error, data } = useQuery<Query, QueryReviewsByLandlordIdArgs>(LANDLORD_REVIEWS, { variables: { landlordId: route.params.landlordId } });
-  const [name, setName] = useState<string | undefined>(undefined);
-
-  useEffect(() => {
-    let mounted = true;
-    if (data?.ReviewsByLandlordId.success && mounted) {
-      setName(data.ReviewsByLandlordId!.reviews!.find(_ => true)?.landlord.firstName);
-    }
-    return () => { mounted = false }
-  }, [data])
-
-
   const windowWidth = useWindowDimensions().width;
+  const { loading, error, data } = useQuery<Query, QueryLandlordByIdArgs>(LANDLORD_BY_ID, { variables: { landlordId: route.params.landlordId } });
+
 
   return (
     <MainContainer>
@@ -61,10 +49,10 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
         <RightContainer>
           <View style={widthDepStyles(windowWidth).listContainer}>
             <View style={widthDepStyles(windowWidth).reviewsPageHeader}>
-              <Text style={pageStyles.whiteHeaderText}>Reviews for {name}</Text>
+              <Text style={pageStyles.whiteHeaderText}>Reviews for {data?.LandlordById.landlord?.firstName!}</Text>
             </View>
             <FlatList style={pageStyles.flatList}
-              data={data?.ReviewsByLandlordId.reviews}
+              data={data?.LandlordById.landlord?.reviews}
               keyExtractor={item => item!!.id}
               renderItem={({ item }) => (
                 <ReviewComponent review={item!} />

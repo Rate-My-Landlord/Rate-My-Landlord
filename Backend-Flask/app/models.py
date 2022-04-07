@@ -270,7 +270,7 @@ class Landlord(SearchableMixin, db.Model):
     # one to many relationship
     properties = db.relationship('Property', backref='landlord')
     # one to many relationship
-    reviews = db.relationship('Review', backref='landlord')
+    reviews = db.relationship('Review', backref='landlord', order_by="Review.created_at.desc()")
 
     def to_json(self, brief=False):
         json_landlord = {
