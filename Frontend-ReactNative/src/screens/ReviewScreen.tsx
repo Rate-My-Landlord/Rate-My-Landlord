@@ -74,7 +74,7 @@ const ReviewsScreen = ({ route, navigation }: Props) => {
         </RightContainer>
         <LeftContainer style={isMobileScreen(windowWidth) ? { flex: .9 } : undefined}>
           <View style={widthDepStyles(windowWidth).listControlContainer}>
-            <AddButton buttonText={"Add Review"} onPress={() => navigation.navigate('NewReview', { landlordId: route.params.landlordId })} />
+            <AddButton buttonText={"Add Review"} onPress={() => navigation.navigate('AddReview', { landlordId: route.params.landlordId })} />
             <AddButton buttonText={"Add Property"} onPress={() => navigation.navigate('AddProperty', { landlordId: route.params.landlordId })} />
             <AddButton buttonText={"Go Back"} onPress={() => navigation.navigate('Home')} />
           </View>

@@ -6,6 +6,7 @@ type DropdownProps = GenericFormProps & GenericDropDownProps;
 export default (props: DropdownProps) => (
     <FormContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
-            <Dropdown {...props} />
-        )}
+            <Dropdown {...props} hasError={props.error !== undefined} />
+        )
+        }
     />)

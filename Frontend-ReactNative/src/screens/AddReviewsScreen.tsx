@@ -18,6 +18,7 @@ import { UserContext } from '../global/userContext'
 import Dropdown, { Item } from '../components/form/dropdown';
 import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
+import { useForm } from 'react-hook-form';
 
 const noProperty: Item = { label: 'No Property', value: '-1' };
 
@@ -35,6 +36,14 @@ const StarField = (props: FieldProps) => (
 )
 
 type Props = NativeStackScreenProps<NavParamList, "AddReview">;
+
+type Inputs = {
+  property: string,
+  overallRating: number,
+  communicationRating: number,
+  maintenanceRating: number,
+  comments: string
+}
 
 export const GET_LANDLORD = gql`
  query GetLandlord($landlordId: ID!) {
@@ -91,6 +100,8 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   const [comments, setComments] = useState("");
   const [selectedProperty, setSelectedProperty] = useState<Item>();
 
+  const { register, setValue, control, handleSubmit, formState: { errors: formErrors }, setError, clearErrors } = useForm<Inputs>();
+
   // For dropdown
   const [properties, setProperties] = useState<Item[]>();
   useEffect(() => {
@@ -116,7 +127,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     if (NewReview.success) return navigation.navigate("Reviews", { landlordId: route.params.landlordId })
   }
 
-  const handleSubmit = () => {
+  const _handleSubmit = () => {
     if (overallRating === 0) return;
     postReview({
       variables: {
@@ -171,7 +182,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                     />
                   </View>
 
-                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
+                  <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={_handleSubmit}><Text style={formStyles.submitText}>Post Review</Text></TouchableOpacity>
                 </View>
               }
             </>

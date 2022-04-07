@@ -84,13 +84,19 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
     });
 
 
-    const { control, handleSubmit, formState: { errors: formErrors }, setError, clearErrors } = useForm<Inputs>();
-    const [selectedState, setSelectedState] = useState<Item>(emptyState);
+    const { register, setValue, control, handleSubmit, formState: { errors: formErrors }, setError, clearErrors } = useForm<Inputs>();
     const states = [emptyState].concat(usStates);
+
+    useEffect(() => {
+        register("state");
+        setValue("state", states[0].value);
+    }, [register])
+
+    const setSelectedState = (e: Item) => setValue("state", e.value);
 
     // Form event handlers
     const onSubmit: SubmitHandler<Inputs> = data => {
-        if (selectedState.value === emptyState.value) {
+        if (data.state === emptyState.value || data.state === undefined) {
             setError('state', { type: 'required' })
             return;
         }
@@ -106,7 +112,7 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
                 address2: data.address2,
                 city: data.city,
                 zipCode: data.zipCode,
-                state: selectedState.value,
+                state: data.state,
                 country: 'US'
             },
             onCompleted({ NewProperty }) { NewProperty.success && navigation.navigate("Reviews", { landlordId: route.params.landlordId }) }
