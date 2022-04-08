@@ -24,12 +24,8 @@ export default ({ label, name, error, control, rules, style, render }: FormProps
         <View style={[styles.container, style]}>
             <Text style={styles.label}>{label}</Text>
             <Controller control={control} rules={rules} render={render} name={name} />
-            {error !== undefined &&
-                <View style={styles.errorContainer}>
-                    {error?.type === 'required' && <Text style={styles.errorMessage}>{label} is required</Text>}
-                    {error?.type === 'validate' && <Text style={styles.errorMessage}>{error.message}</Text>}
-                </View>
-            }
+            {error?.type === 'required' && <Text style={styles.errorMessage}>{label} is required</Text>}
+            {error?.type === 'validate' && <Text style={styles.errorMessage}>{error.message}</Text>}
         </View>
     )
 }

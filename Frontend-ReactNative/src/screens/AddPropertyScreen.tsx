@@ -133,7 +133,7 @@ const AddPropertyScreen = ({ route, navigation }: Props) => {
                                     <TextField label='Address' name="address1" error={formErrors.address1} control={control} rules={{ required: true }} style={styles.formItem} />
                                     <TextField label='Address 2 (optional)' name="address2" error={formErrors.address2} control={control} style={styles.formItem} />
                                     <TextField label='City' name="city" error={formErrors.city} control={control} rules={{ required: true }} style={styles.formItem} />
-                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} setChoice={setSelectedState} rules={{validate: (value: string) => value !== emptyState.value || "This field is required"}} />
+                                    <DropdownField label='State' name='state' error={formErrors.state} control={control} items={states} setChoice={setSelectedState} rules={{validate: (value: string) => value !== emptyState.value || "State is required"}} />
                                     <TextField label='Zip Code' name="zipCode" error={formErrors.zipCode} control={control} rules={{ required: true, validate: (value: string) => value.length === 5 || "Invalid zip code" }} style={styles.formItem} textInputProps={{ keyboardType: "numeric", maxLength: 5 }} />
 
                                     <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>

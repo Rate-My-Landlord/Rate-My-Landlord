@@ -20,6 +20,13 @@ For all queries, you do no have to worry about authentication. However, there ar
 
 ## Data types
 
+### CostOfRentRating (ENUM):
+| Value | Description   |
+| ----- | ------------- |
+| Cheap | Rent is cheap |
+| Fair  | Rent is fair  |
+| Pricy | Rent is pricy |
+
 ### User:  
 | Name      | Type                | Description                                                                                                   |
 | --------- | ------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -32,17 +39,19 @@ For all queries, you do no have to worry about authentication. However, there ar
 | createdAt | String              | Date of the user account creation (in [UTC format](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)) |
 
 ### Review:
-| Name                    | Type                  | Description                                                                                             |
-| ----------------------- | --------------------- | ------------------------------------------------------------------------------------------------------- |
-| id                      | ID                    | Unique identifier of the review                                                                         |
-| author                  | [User](#user)         | User of the author of the review                                                                        |
-| landlord                | [Landlord](#landlord) | Landlord that the review is associated with                                                             |
-| property                | [Property](#property) | Property associated with the review (optional)                                                          |
-| overallStarRating       | Int                   | 1-5 rating of the overall quality                                                                       |
-| communicationStarRating | Int                   | 1-5 rating of the communication quality                                                                 |
-| maintenanceStarRating   | Int                   | 1-5 rating of the maintenance quality                                                                   |
-| text                    | String                | Comments for the review (optional)                                                                      |
-| createdAt               | String                | Date of the review creation (in [UTC format](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)) |
+| Name                    | Type                                       | Description                                                                                             |
+| ----------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| id                      | ID                                         | Unique identifier of the review                                                                         |
+| author                  | [User](#user)                              | User of the author of the review                                                                        |
+| landlord                | [Landlord](#landlord)                      | Landlord that the review is associated with                                                             |
+| property                | [Property](#property)                      | Property associated with the review (optional)                                                          |
+| overallStarRating       | Int                                        | 1-5 rating of the overall quality                                                                       |
+| communicationStarRating | Int                                        | 1-5 rating of the communication quality                                                                 |
+| maintenanceStarRating   | Int                                        | 1-5 rating of the maintenance quality                                                                   |
+| entryWithoutNotice      | Boolean                                    | True or False, did the landlord enter without giving 48 hours notice                                    |
+| costOfRentRating        | [CostOfRentRating](#costofrentrating-enum) | cheap, fair, pricy are the 3 options. Rating of the cost of rent                                        |
+| text                    | String                                     | Comments for the review (optional)                                                                      |
+| createdAt               | String                                     | Date of the review creation (in [UTC format](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)) |
 
 
 ### Landlord: 

@@ -7,6 +7,12 @@ schema {
 #       Data types       #
 ##########################
 
+enum CostOfRentRating {
+    CHEAP
+    FAIR
+    PRICY
+}
+
 type User {
     id: ID!
     phone: String
@@ -19,12 +25,14 @@ type User {
 
 type Review {
     id: ID!
-    author: User
+    author: User!
     landlord: Landlord!
     property: Property
     overallStarRating: Int!
     communicationStarRating: Int
     maintenanceStarRating: Int
+    entryWithoutNotice: Boolean
+    costOfRentRating: CostOfRentRating
     text: String
     createdAt: String!
 }
@@ -154,6 +162,7 @@ type Mutation {
     """Create a new review"""
     NewReview(authorId: ID!, landlordId: ID!, propertyId: ID, 
                 overallStarRating: Int!, communicationStarRating: Int,
+                entryWithoutNotice: Boolean, costOfRentRating: CostOfRentRating,
                 maintenanceStarRating: Int, text: String): ReviewResult!
     """Create a new landlord"""
     NewLandlord(firstName: String!, lastName: String!, zipCode: String!, userId: ID): LandlordResult

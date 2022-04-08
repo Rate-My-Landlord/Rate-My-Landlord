@@ -1,3 +1,4 @@
+import enum
 from flask.helpers import url_for
 from app.exceptions import ValidationError
 from app import db
@@ -6,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import phonenumbers
 import re
 from sqlalchemy.orm import backref
-from sqlalchemy import desc
+from sqlalchemy import Enum, desc
 from .search import *
 
 
@@ -51,14 +52,6 @@ class SearchableMixin(object):
 
 db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
 db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
-
-
-class Permission:
-    FOLLOW = 1
-    COMMENT = 2
-    WRITE = 4
-    MODERATE = 8
-    ADMIN = 16
 
 
 class ExternalAuth(db.Model):
@@ -189,15 +182,15 @@ class User(db.Model):
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey(
-        'user.id'), nullable=True)  # change to False later
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     landlord_id = db.Column(db.Integer, db.ForeignKey(
-        'landlord.id'), nullable=True)  # change to False later
-    property_id = db.Column(db.Integer, db.ForeignKey(
-        'property.id'), nullable=True)  # change to False later
+        'landlord.id'), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('property.id'))
     overall_star_rating = db.Column(db.Integer)
     communication_star_rating = db.Column(db.Integer)
     maintenance_star_rating = db.Column(db.Integer)
+    entry_without_notice = db.Column(db.Boolean)
+    cost_of_rent_rating = db.Column(db.String(10))
     text = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     author = db.relationship('User', backref='review',
@@ -205,18 +198,22 @@ class Review(db.Model):
 
     def to_json(self):
         landlord = Landlord.query.get(self.landlord_id)
+        print(self.cost_of_rent_rating)
         json_review = {
             'id': self.id,
             'landlord': landlord.to_json(brief=True),
             'overall_star_rating': self.overall_star_rating,
             'communication_star_rating': self.communication_star_rating,
             'maintenance_star_rating': self.maintenance_star_rating,
+            'entry_without_notice': self.entry_without_notice,
+            'cost_of_rent_rating': self.cost_of_rent_rating,
             'text': self.text,
             'created_at': self.created_at}
         if (self.author_id):
             json_review['author'] = self.author.to_json(brief=True)
         if (self.property_id):
-            json_review['property'] = Property.query.get(self.property_id).to_json()
+            json_review['property'] = Property.query.get(
+                self.property_id).to_json()
         return json_review
 
     @staticmethod
@@ -270,7 +267,8 @@ class Landlord(SearchableMixin, db.Model):
     # one to many relationship
     properties = db.relationship('Property', backref='landlord')
     # one to many relationship
-    reviews = db.relationship('Review', backref='landlord', order_by="Review.created_at.desc()")
+    reviews = db.relationship(
+        'Review', backref='landlord', order_by="Review.created_at.desc()")
 
     def to_json(self, brief=False):
         json_landlord = {

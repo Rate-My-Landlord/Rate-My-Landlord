@@ -124,7 +124,10 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   }, [register])
 
   const setProperty = (e: Item) => setValue("property", e.value);
-  const setOverallRating = (e: number) => setValue("overallRating", e);
+  const setOverallRating = (e: number) => {
+    setValue("overallRating", e);
+    clearErrors("overallRating");
+  }
   const setCommunicationRating = (e: number) => setValue("communicationRating", e);
   const setMaintenanceRating = (e: number) => setValue("maintenanceRating", e);
 
@@ -214,7 +217,7 @@ const styles = StyleSheet.create({
   formItem: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   sectionText: {
