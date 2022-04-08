@@ -198,7 +198,6 @@ class Review(db.Model):
 
     def to_json(self):
         landlord = Landlord.query.get(self.landlord_id)
-        print(self.cost_of_rent_rating)
         json_review = {
             'id': self.id,
             'landlord': landlord.to_json(brief=True),

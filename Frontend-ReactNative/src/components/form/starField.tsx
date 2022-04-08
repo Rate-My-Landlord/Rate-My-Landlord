@@ -1,5 +1,5 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import FormContainer, { GenericFormProps } from '../form/fieldContainer';
+import FieldContainer, { GenericFormProps } from '../form/fieldContainer';
 import { FontAwesome } from '@expo/vector-icons'
 
 type StarProps = {
@@ -21,8 +21,8 @@ type StarFieldProps = GenericFormProps & {
     style?: object
 }
 
-const StarInput = (props: StarFieldProps) => (
-    <FormContainer {...props}
+const StarField = (props: StarFieldProps) => (
+    <FieldContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
             <View style={[styles.starContainer, props.style && props.style]}>
                 {[1, 2, 3, 4, 5].map((i) => <Star key={i} on={i <= value} index={i} setStar={props.setStar} />)}
@@ -37,4 +37,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default StarInput
+export default StarField

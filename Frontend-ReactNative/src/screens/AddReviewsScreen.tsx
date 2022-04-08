@@ -12,7 +12,7 @@ import { isMobileScreen } from '../utils';
 // import StarInput from '../components/star/starInput';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
-import { Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs } from '../../graphql/generated';
+import { CostOfRentRating, Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs } from '../../graphql/generated';
 import { LANDLORD_BY_ID } from './ReviewScreen';
 import { UserContext } from '../global/userContext'
 import { Item } from '../components/form/dropdown';
@@ -20,23 +20,11 @@ import RightContainer from '../components/containers/rightContainer';
 import LeftContainer from '../components/containers/leftContainer';
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import DropdownField from '../components/form/dropdownField';
-import StarInput from '../components/form/starField';
+import StarField from '../components/form/starField';
 import TextField from '../components/form/textField';
+import CostOfRentRadioField from '../components/form/costOfRentRadioField';
 
 const noProperty: Item = { label: 'No Property', value: '-1' };
-
-type FieldProps = {
-  title: string,
-  rating: number,
-  setRating: (rating: number) => void;
-}
-
-// const StarField = (props: FieldProps) => (
-//   <View style={styles.formItem}>
-//     <Text style={styles.sectionText}>{props.title}</Text>
-//     <StarInput style={{ flex: 1, justifyContent: 'center' }} star={props.rating} setStar={props.setRating} />
-//   </View>
-// )
 
 type Props = NativeStackScreenProps<NavParamList, "AddReview">;
 
@@ -45,6 +33,7 @@ type Inputs = {
   overallRating: number,
   communicationRating: number,
   maintenanceRating: number,
+  rentCostRating: CostOfRentRating | undefined,
   comments: string
 }
 
@@ -121,6 +110,8 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     setValue("communicationRating", 0);
     register("maintenanceRating")
     setValue("maintenanceRating", 0);
+    register("rentCostRating");
+    setValue("rentCostRating", undefined);
   }, [register])
 
   const setProperty = (e: Item) => setValue("property", e.value);
@@ -130,6 +121,7 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
   }
   const setCommunicationRating = (e: number) => setValue("communicationRating", e);
   const setMaintenanceRating = (e: number) => setValue("maintenanceRating", e);
+  const setRentCostRating = (e: CostOfRentRating) => setValue("rentCostRating", e);
 
   const onSubmit: SubmitHandler<Inputs> = data => {
     postReview({
@@ -168,9 +160,10 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                   {properties &&
                     <DropdownField label="Property" name="property" error={formErrors.property} control={control} items={properties} setChoice={setProperty} style={styles.formItem} />
                   }
-                  <StarInput label='Overall Rating' name="overallRating" error={formErrors.overallRating} control={control} rules={{ required: true, validate: (value: number) => value !== 0 || "This field is required" }} setStar={setOverallRating} style={styles.formItem} />
-                  <StarInput label='Communication Rating' name="communicationRating" error={formErrors.communicationRating} control={control} setStar={setCommunicationRating} style={styles.formItem} />
-                  <StarInput label='Maintenance Rating' name="maintenanceRating" error={formErrors.maintenanceRating} control={control} setStar={setMaintenanceRating} style={styles.formItem} />
+                  <StarField label='Overall Rating' name="overallRating" error={formErrors.overallRating} control={control} rules={{ required: true, validate: (value: number) => value !== 0 || "This field is required" }} setStar={setOverallRating} style={styles.formItem} />
+                  <StarField label='Communication Rating' name="communicationRating" error={formErrors.communicationRating} control={control} setStar={setCommunicationRating} style={styles.formItem} />
+                  <StarField label='Maintenance Rating' name="maintenanceRating" error={formErrors.maintenanceRating} control={control} setStar={setMaintenanceRating} style={styles.formItem} />
+                  <CostOfRentRadioField label='Rent Cost Rating' name="rentCostRating" error={formErrors.rentCostRating} control={control} setSelected={setRentCostRating} style={styles.formItem} />
                   <TextField label='Comments' name="comments" error={formErrors.comments} control={control} textInputProps={{ keyboardType: "default", multiline: true, maxLength: 400 }} style={styles.formItem} />
 
                   <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
@@ -204,7 +197,7 @@ const styles = StyleSheet.create({
   form: {
     flex: .5,
     flexDirection: 'column',
-    marginHorizontal: 5,
+    marginHorizontal: 10,
   },
   commentInput: {
     flex: 1.5,

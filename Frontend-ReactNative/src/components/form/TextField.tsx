@@ -1,13 +1,13 @@
 import { TextInput, StyleSheet, TextInputProps } from 'react-native';
 import { ThemeColors } from '../../constants/Colors';
-import FormContainer, { GenericFormProps, GenericFormStyles, ErrorBorder } from './fieldContainer';
+import FieldContainer, { GenericFormProps, GenericFormStyles, ErrorBorder } from './fieldContainer';
 
 type TextProps = GenericFormProps & {
     textInputProps?: TextInputProps
 }
 
 export default (props: TextProps) => (
-    <FormContainer {...props}
+    <FieldContainer {...props}
         render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
                 style={[

@@ -12,6 +12,12 @@ export type Scalars = {
   Float: number;
 };
 
+export enum CostOfRentRating {
+  Cheap = 'CHEAP',
+  Fair = 'FAIR',
+  Pricy = 'PRICY'
+}
+
 export type Landlord = {
   __typename?: 'Landlord';
   firstName: Scalars['String'];
@@ -93,6 +99,8 @@ export type MutationNewPropertyArgs = {
 export type MutationNewReviewArgs = {
   authorId: Scalars['ID'];
   communicationStarRating?: InputMaybe<Scalars['Int']>;
+  costOfRentRating?: InputMaybe<CostOfRentRating>;
+  entryWithoutNotice?: InputMaybe<Scalars['Boolean']>;
   landlordId: Scalars['ID'];
   maintenanceStarRating?: InputMaybe<Scalars['Int']>;
   overallStarRating: Scalars['Int'];
@@ -226,9 +234,11 @@ export type RefreshTokenResult = {
 
 export type Review = {
   __typename?: 'Review';
-  author?: Maybe<User>;
+  author: User;
   communicationStarRating?: Maybe<Scalars['Int']>;
+  costOfRentRating?: Maybe<CostOfRentRating>;
   createdAt: Scalars['String'];
+  entryWithoutNotice?: Maybe<Scalars['Boolean']>;
   id: Scalars['ID'];
   landlord: Landlord;
   maintenanceStarRating?: Maybe<Scalars['Int']>;
@@ -336,12 +346,34 @@ export type GetUserByIdQueryVariables = Exact<{
 
 export type GetUserByIdQuery = { __typename?: 'Query', UserByUserId: { __typename?: 'UserResult', success: boolean, errors?: Array<string | null> | null, user?: { __typename?: 'User', id: string, firstName: string, lastName: string, email?: string | null, phone?: string | null } | null, tokens?: { __typename?: 'Tokens', accessToken: string, refreshToken: string } | null } };
 
+export type NewLandlordMutationVariables = Exact<{
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  zipCode: Scalars['String'];
+}>;
+
+
+export type NewLandlordMutation = { __typename?: 'Mutation', NewLandlord?: { __typename?: 'LandlordResult', success: boolean, errors?: Array<string | null> | null } | null };
+
+export type NewPropertyMutationVariables = Exact<{
+  landlordId: Scalars['ID'];
+  address1: Scalars['String'];
+  address2?: InputMaybe<Scalars['String']>;
+  city: Scalars['String'];
+  zipCode: Scalars['String'];
+  state: Scalars['String'];
+  country: Scalars['String'];
+}>;
+
+
+export type NewPropertyMutation = { __typename?: 'Mutation', NewProperty: { __typename?: 'PropertyResult', success: boolean, errors?: Array<string | null> | null } };
+
 export type GetLandlordQueryVariables = Exact<{
   landlordId: Scalars['ID'];
 }>;
 
 
-export type GetLandlordQuery = { __typename?: 'Query', LandlordById: { __typename?: 'LandlordResult', success: boolean, errors?: Array<string | null> | null, landlord?: { __typename?: 'Landlord', firstName: string } | null } };
+export type GetLandlordQuery = { __typename?: 'Query', LandlordById: { __typename?: 'LandlordResult', success: boolean, errors?: Array<string | null> | null, landlord?: { __typename?: 'Landlord', firstName: string, properties?: Array<{ __typename?: 'Property', id: string, address1: string, city: string, state: string } | null> | null } | null } };
 
 export type NewReviewMutationVariables = Exact<{
   authorId: Scalars['ID'];
@@ -361,9 +393,17 @@ export type Unnamed_1_QueryVariables = Exact<{ [key: string]: never; }>;
 
 export type Unnamed_1_Query = { __typename?: 'Query', AllLandlords: { __typename?: 'LandlordsResult', success: boolean, errors?: Array<string | null> | null, landlords?: Array<{ __typename?: 'Landlord', id: string, overallRating: number, firstName: string, lastName: string, zipCode: string, reviews?: Array<{ __typename?: 'Review', id: string } | null> | null } | null> | null } };
 
-export type ReviewsByLandlordIdQueryVariables = Exact<{
+export type LandlordByIdQueryVariables = Exact<{
   landlordId: Scalars['ID'];
 }>;
 
 
-export type ReviewsByLandlordIdQuery = { __typename?: 'Query', ReviewsByLandlordId: { __typename?: 'ReviewsResult', success: boolean, errors?: Array<string | null> | null, reviews?: Array<{ __typename?: 'Review', id: string, overallStarRating: number, text?: string | null, createdAt: string, landlord: { __typename?: 'Landlord', firstName: string, lastName: string } } | null> | null } };
+export type LandlordByIdQuery = { __typename?: 'Query', LandlordById: { __typename?: 'LandlordResult', success: boolean, errors?: Array<string | null> | null, landlord?: { __typename?: 'Landlord', firstName: string, reviews?: Array<{ __typename?: 'Review', id: string, overallStarRating: number, text?: string | null, createdAt: string, property?: { __typename?: 'Property', address1: string, city: string, state: string } | null } | null> | null } | null } };
+
+export type SearchQueryVariables = Exact<{
+  zipCode: Scalars['String'];
+  searchTerm: Scalars['String'];
+}>;
+
+
+export type SearchQuery = { __typename?: 'Query', Search: { __typename?: 'SearchResult', success: boolean, errors?: Array<string | null> | null, landlords?: Array<{ __typename?: 'Landlord', firstName: string, lastName: string, overallRating: number, reviews?: Array<{ __typename?: 'Review', id: string } | null> | null } | null> | null, properties?: Array<{ __typename?: 'Property', address1: string, city: string, state: string, zipCode: string, landlord: { __typename?: 'Landlord', id: string } } | null> | null } };
