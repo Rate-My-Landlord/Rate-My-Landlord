@@ -48,7 +48,7 @@ For all queries, you do no have to worry about authentication. However, there ar
 | overallStarRating       | Int                                        | 1-5 rating of the overall quality                                                                       |
 | communicationStarRating | Int                                        | 1-5 rating of the communication quality                                                                 |
 | maintenanceStarRating   | Int                                        | 1-5 rating of the maintenance quality                                                                   |
-| entryWithoutNotice      | Boolean                                    | True or False, did the landlord enter without giving 48 hours notice                                    |
+| entryWithoutNotice      | Boolean                                    | Did the landlord enter without giving 48 hours notice                                                   |
 | costOfRentRating        | [CostOfRentRating](#costofrentrating-enum) | cheap, fair, pricy are the 3 options. Rating of the cost of rent                                        |
 | text                    | String                                     | Comments for the review (optional)                                                                      |
 | createdAt               | String                                     | Date of the review creation (in [UTC format](https://en.wikipedia.org/wiki/Coordinated_Universal_Time)) |

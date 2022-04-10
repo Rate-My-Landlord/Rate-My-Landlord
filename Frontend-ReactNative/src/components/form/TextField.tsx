@@ -14,7 +14,7 @@ export default (props: TextProps) => (
                     GenericFormStyles,
                     props.textInputProps?.editable === false ? styles.inputDisabled : undefined,
                     props.error ? ErrorBorder : undefined,
-                    props.textInputProps?.multiline !== undefined ? styles.multiline : undefined
+                    props.textInputProps?.multiline !== undefined ? styles.multiline : undefined,
                 ]}
                 onBlur={onBlur}
                 onChangeText={onChange}

@@ -22,7 +22,7 @@ import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
 import DropdownField from '../components/form/dropdownField';
 import StarField from '../components/form/starField';
 import TextField from '../components/form/textField';
-import CostOfRentRadioField from '../components/form/costOfRentRadioField';
+import RadioField, { RadioItem } from '../components/form/radioField';
 
 const noProperty: Item = { label: 'No Property', value: '-1' };
 
@@ -34,6 +34,7 @@ type Inputs = {
   communicationRating: number,
   maintenanceRating: number,
   rentCostRating: CostOfRentRating | undefined,
+  entryWithoutNotice: boolean | undefined,
   comments: string
 }
 
@@ -58,12 +59,14 @@ export const GET_LANDLORD = gql`
 const POST_REVIEW = gql`
   mutation NewReview(
     $authorId: ID!, $landlordId: ID!, $propertyId: ID, 
-    $overallStarRating: Int!, $communicationStarRating: Int, $maintenanceStarRating: Int
-    $text: String) {
+    $overallStarRating: Int!, $communicationStarRating: Int, 
+    $maintenanceStarRating: Int, $entryWithoutNotice: Boolean,
+    $costOfRentRating: CostOfRentRating, $text: String) {
       NewReview(
         authorId: $authorId, landlordId: $landlordId, propertyId: $propertyId, 
         overallStarRating: $overallStarRating, communicationStarRating: $communicationStarRating, 
-        maintenanceStarRating: $maintenanceStarRating, text: $text) {
+        maintenanceStarRating: $maintenanceStarRating, entryWithoutNotice: $entryWithoutNotice,
+        costOfRentRating: $costOfRentRating, text: $text) {
           success,
           errors,
           review {
@@ -112,17 +115,31 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
     setValue("maintenanceRating", 0);
     register("rentCostRating");
     setValue("rentCostRating", undefined);
+    register("entryWithoutNotice");
+    setValue("entryWithoutNotice", undefined);
   }, [register])
 
-  const setProperty = (e: Item) => setValue("property", e.value);
-  const setOverallRating = (e: number) => {
-    setValue("overallRating", e);
+  const setProperty = (property: Item) => setValue("property", property.value);
+  const setOverallRating = (overallRating: number) => {
+    setValue("overallRating", overallRating);
     clearErrors("overallRating");
   }
-  const setCommunicationRating = (e: number) => setValue("communicationRating", e);
-  const setMaintenanceRating = (e: number) => setValue("maintenanceRating", e);
-  const setRentCostRating = (e: CostOfRentRating) => setValue("rentCostRating", e);
+  const setCommunicationRating = (communicationRating: number) => setValue("communicationRating", communicationRating);
+  const setMaintenanceRating = (maintenanceRating: number) => setValue("maintenanceRating", maintenanceRating);
+  const setRentCostRating = (rentCostRating: CostOfRentRating) => setValue("rentCostRating", rentCostRating);
+  const setEntryWithoutNotice = (entryWithoutNotice: boolean) => setValue("entryWithoutNotice", entryWithoutNotice);
 
+
+  const costOfRentItems: RadioItem<CostOfRentRating>[] = [
+    { value: CostOfRentRating.Cheap, label: "Cheap", style: { backgroundColor: ThemeColors.green } },
+    { value: CostOfRentRating.Fair, label: "Fair", style: { backgroundColor: ThemeColors.orange } },
+    { value: CostOfRentRating.Pricy, label: "Pricy", style: { backgroundColor: ThemeColors.red } },
+  ]
+
+  const entryWithoutNoticeItems: RadioItem<boolean>[] = [
+    { value: false, label: "No", style: { backgroundColor: ThemeColors.green } },
+    { value: true, label: "Yes", style: { backgroundColor: ThemeColors.red } }
+  ]
   const onSubmit: SubmitHandler<Inputs> = data => {
     postReview({
       variables: {
@@ -132,6 +149,8 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
         overallStarRating: data.overallRating,
         communicationStarRating: data.communicationRating,
         maintenanceStarRating: data.maintenanceRating,
+        entryWithoutNotice: data.entryWithoutNotice,
+        costOfRentRating: data.rentCostRating,
         text: data.comments
       },
       onCompleted({ NewReview }) { NewReview.success && navigation.navigate("Reviews", { landlordId: route.params.landlordId }) }
@@ -163,7 +182,8 @@ const AddReviewScreen = ({ route, navigation }: Props) => {
                   <StarField label='Overall Rating' name="overallRating" error={formErrors.overallRating} control={control} rules={{ required: true, validate: (value: number) => value !== 0 || "This field is required" }} setStar={setOverallRating} style={styles.formItem} />
                   <StarField label='Communication Rating' name="communicationRating" error={formErrors.communicationRating} control={control} setStar={setCommunicationRating} style={styles.formItem} />
                   <StarField label='Maintenance Rating' name="maintenanceRating" error={formErrors.maintenanceRating} control={control} setStar={setMaintenanceRating} style={styles.formItem} />
-                  <CostOfRentRadioField label='Rent Cost Rating' name="rentCostRating" error={formErrors.rentCostRating} control={control} setSelected={setRentCostRating} style={styles.formItem} />
+                  <RadioField label='Rent Cost Rating' name="rentCostRating" error={formErrors.rentCostRating} control={control} setSelected={setRentCostRating} style={styles.formItem} items={costOfRentItems} />
+                  <RadioField label='Entry Without Notice' name="entryWithoutNotice" error={formErrors.entryWithoutNotice} control={control} setSelected={setEntryWithoutNotice} style={styles.formItem} items={entryWithoutNoticeItems} />
                   <TextField label='Comments' name="comments" error={formErrors.comments} control={control} textInputProps={{ keyboardType: "default", multiline: true, maxLength: 400 }} style={styles.formItem} />
 
                   <TouchableOpacity style={[formStyles.submit, styles.submit]} onPress={handleSubmit(onSubmit, onError)}>
@@ -195,7 +215,7 @@ const styles = StyleSheet.create({
     flex: 3
   },
   form: {
-    flex: .5,
+    flex: .7,
     flexDirection: 'column',
     marginHorizontal: 10,
   },
