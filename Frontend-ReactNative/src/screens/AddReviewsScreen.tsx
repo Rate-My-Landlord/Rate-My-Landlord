@@ -9,7 +9,6 @@ import formStyles from '../Styles/styles-form';
 import pageStyles from '../Styles/styles-page';
 import { ThemeColors } from '../constants/Colors';
 import { isMobileScreen } from '../utils';
-// import StarInput from '../components/star/starInput';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { NavParamList } from '../../App';
 import { CostOfRentRating, Mutation, MutationNewReviewArgs, Query, QueryLandlordByIdArgs } from '../../graphql/generated';
