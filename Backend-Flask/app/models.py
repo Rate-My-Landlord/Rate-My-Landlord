@@ -1,5 +1,3 @@
-import enum
-from flask.helpers import url_for
 from app.exceptions import ValidationError
 from app import db
 from datetime import datetime
@@ -7,21 +5,24 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import phonenumbers
 import re
 from sqlalchemy.orm import backref
-from sqlalchemy import Enum, desc
+from sqlalchemy import desc
 from .search import *
 
 
 class SearchableMixin(object):
     @classmethod
-    def search(cls, expression):
+    def search(cls, expression, zip_code):
         ids, total = query_index(cls.__tablename__, expression)
         if total == 0:
             return cls.query.filter_by(id=0), 0
         when = []
         for i in range(len(ids)):
             when.append((ids[i], i))
+    
+        zip_codes = [z.zip for z in current_app.zipcode_db.get_zipcodes_around_radius(zip_code, 10)]
+    
         return cls.query.filter(cls.id.in_(ids)).order_by(
-            db.case(when, value=cls.id)).all(), total
+            db.case(when, value=cls.id)).filter(cls.zipcode.in_(zip_codes)).all(), total
 
     @classmethod
     def before_commit(cls, session):
@@ -102,44 +103,6 @@ class User(db.Model):
         return json_user
 
     @staticmethod
-    def from_json(json_user):
-        body = json_user.get('body')
-        if body is None or body == '':
-            raise ValidationError('User has no body')
-
-        user_items = {'phone': '',
-                      'first_name': '',
-                      'last_name': '',
-                      'email': ''}
-
-        for key, _ in user_items.items():
-            user_items[key] = body.get(key)
-            if user_items[key] is None or user_items[key] == '':
-                raise ValidationError('User has no {}'.format(key))
-
-        # Formatting phone to E.164 format
-        user_items['phone'] = '+1{}'.format(
-            re.sub('[^0-9]', '', user_items['phone']))
-        # Validating phone
-        User.validate_phone(user_items['phone'])
-        # Validating email
-        User.validate_email(user_items['email'])
-
-        pw = body.get('password')
-        if pw is None or pw == '':
-            raise ValidationError('User has no password')
-
-        new_user = User(phone=user_items['phone'],
-                        first_name=user_items['first_name'],
-                        last_name=user_items['last_name'],
-                        email=user_items['email'])
-
-        # Setting password
-        new_user.set_password(pw)
-
-        return new_user
-
-    @staticmethod
     def validate_email(email):
         user = User.query.filter(User.email == email).first()
         if user is not None:
@@ -173,6 +136,7 @@ class User(db.Model):
     def onboard_user(phone, email, first_name, last_name):
         phone = User.format_phone(phone)
         User.validate_phone(phone)
+        User.validate_email(email)
         new_user = User(phone=phone,
                         first_name=first_name,
                         last_name=last_name,
@@ -219,36 +183,6 @@ class Review(db.Model):
     def reviews_for_landlord(landlord_id):
         return Review.query.filter(Review.landlord_id == landlord_id).order_by(desc(Review.created_at)).all()
 
-    @staticmethod
-    def from_json(json_review):
-        body = json_review.get('body')
-        if body is None or body == '':
-            raise ValidationError('Review has no body')
-
-        review_items = {'author_id': '',
-                        'landlord_id': '',
-                        'property_id': '',
-                        'overall_star_rating': '',
-                        'communication_star_rating': '',
-                        'maintenance_star_rating': '',
-                        'text': ''}
-        for key, _ in review_items.items():
-            review_items[key] = body.get(key)
-
-        if review_items['landlord_id'] is None:
-            raise ValidationError('Review has not landlord')
-
-        # if review_items['author_id'] is None:
-        #     raise ValidationError('Review has not author')
-
-        return Review(landlord_id=review_items['landlord_id'],
-                      property_id=review_items['property_id'],
-                      #   author_id=review_items['author_id'],
-                      overall_star_rating=review_items['overall_star_rating'],
-                      communication_star_rating=review_items['communication_star_rating'],
-                      maintenance_star_rating=review_items['maintenance_star_rating'],
-                      text=review_items['text'])
-
     # for debug purposes
 
     def __repr__(self):
@@ -283,27 +217,6 @@ class Landlord(SearchableMixin, db.Model):
             json_landlord['reviews'] = [review.to_json()
                                         for review in self.reviews]
         return json_landlord
-
-    @staticmethod
-    def from_json(json_review):
-        body = json_review.get('body')
-        if body is None or body == '':
-            raise ValidationError('review does not have text')
-        landlord_items = {'first_name': '',
-                          'last_name': '',
-                          'user_id': '',
-                          'zipcode': ''}
-        for key, _ in landlord_items.items():
-            landlord_items[key] = body.get(key)
-        if landlord_items['user_id'] is not None and landlord_items['user_id'] != '':
-            user = User.query.get(landlord_items['user_id'])
-            if user is None:
-                raise ValidationError('user does not exist')
-
-        return Landlord(user_id=landlord_items['user_id'],
-                        first_name=landlord_items['first_name'],
-                        last_name=landlord_items['last_name'],
-                        zipcode=landlord_items['zipcode'])
 
     def getOverallRating(self):
         if len(self.reviews) == 0:
@@ -347,35 +260,6 @@ class Property(SearchableMixin, db.Model):
             'country': self.country}
 
         return json_property
-
-    @staticmethod
-    def from_json(json_property):
-        body = json_property.get('body')
-        if body is None or body == '':
-            raise ValidationError('Property has no body')
-        property_items = {'landlord_id': '',
-                          'address_1': '',
-                          'address_2': '',
-                          'city': '',
-                          'zipcode': '',
-                          'state': '',
-                          'country': ''}
-        for key, _ in property_items.items():
-            property_items[key] = body.get(key)
-
-        if property_items['landlord_id'] is not None and property_items['landlord_id'] != '':
-            landlord = Landlord.query.get(property_items['landlord_id'])
-            if landlord is None:
-                raise ValidationError('Lanlord does not exist')
-        else:
-            raise ValidationError('No landlord provided')
-
-        return Property(address_1=property_items['address_1'],
-                        address_2=property_items['address_2'],
-                        city=property_items['city'],
-                        zipcode=property_items['zipcode'],
-                        state=property_items['state'],
-                        country=property_items['country'])
 
     @staticmethod
     def property_exists(address_1, city, state, zip_code, country):

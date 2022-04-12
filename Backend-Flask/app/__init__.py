@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from elasticsearch import Elasticsearch
 import os
+from pyzipcode import ZipCodeDatabase
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -31,6 +32,8 @@ def create_app(config_name):
 
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
+        
+    app.zipcode_db = ZipCodeDatabase()
         
     # Loading environment variables
     app.config.from_envvar('ENV_FILE_LOCATION')
